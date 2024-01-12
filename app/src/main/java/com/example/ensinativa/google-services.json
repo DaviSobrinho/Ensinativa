@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "591395200926",
+    "project_id": "ensinativa-29786",
+    "storage_bucket": "ensinativa-29786.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591395200926:android:bbbc3cb6637606005e408f",
+        "android_client_info": {
+          "package_name": "com.example.ensinativa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKqlQGq0WL4t_H9f8Hub1KWgeRwuEsH2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

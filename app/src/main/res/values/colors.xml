@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blueedwhite">#E6E4F1</color>
+
+    <!-- Azuis -->
+    <color name="azul_1">#C2D8F7</color>
+    <color name="azul_2">#A2BCED</color>
+    <color name="azul_3">#82A1E4</color>
+    <color name="azul_4">#627BCF</color>
+    <color name="azul_5">#5271FF</color>
+    <color name="azul_6">#3E60D4</color>
+    <color name="azul_7">#314CA8</color>
+    <color name="azul_8">#243781</color>
+    <color name="azul_9">#17225E</color>
+    <color name="azul_10">#0E1342</color>
+
+    <!-- Amarelos -->
+    <color name="amarelo_1">#FFE082</color>
+    <color name="amarelo_2">#FFD54F</color>
+    <color name="amarelo_3">#FFC107</color>
+    <color name="amarelo_4">#FFB300</color>
+    <color name="amarelo_5">#FFA000</color>
+    <color name="amarelo_6">#FF8F00</color>
+    <color name="amarelo_7">#FF6F00</color>
+    <color name="amarelo_8">#E65100</color>
+    <color name="amarelo_9">#BF360C</color>
+    <color name="amarelo_10">#8D6E63</color>
+
+    <!-- Verdes -->
+    <color name="verde_1">#A5D6A7</color>
+    <color name="verde_2">#81C784</color>
+    <color name="verde_3">#66BB6A</color>
+    <color name="verde_4">#4CAF50</color>
+    <color name="verde_5">#43A047</color>
+    <color name="verde_6">#388E3C</color>
+    <color name="verde_7">#2E7D32</color>
+    <color name="verde_8">#1B5E20</color>
+    <color name="verde_9">#004D40</color>
+    <color name="verde_10">#004D40</color>
+
+    <!-- Escala de Cinza -->
+    <color name="cinza_1">#F5F5F5</color>
+    <color name="cinza_2">#E0E0E0</color>
+    <color name="cinza_3">#BDBDBD</color>
+    <color name="cinza_4">#9E9E9E</color>
+    <color name="cinza_5">#757575</color>
+    <color name="cinza_6">#616161</color>
+    <color name="cinza_7">#424242</color>
+    <color name="cinza_8">#212121</color>
+    <color name="cinza_9">#191919</color>
+    <color name="cinza_10">#000000</color>
+
+    <!-- Vermelhos -->
+    <color name="vermelho_1">#FFCDD2</color>
+    <color name="vermelho_2">#EF9A9A</color>
+    <color name="vermelho_3">#E57373</color>
+    <color name="vermelho_4">#EF5350</color>
+    <color name="vermelho_5">#F44336</color>
+    <color name="vermelho_6">#E53935</color>
+    <color name="vermelho_7">#D32F2F</color>
+    <color name="vermelho_8">#C62828</color>
+    <color name="vermelho_9">#B71C1C</color>
+    <color name="vermelho_10">#FF8A80</color>
+
+    <!-- Transparent -->
+    <color name="transaparent">#00FFFFFF</color>
+    <color name="cinza7_50_100">#80424242</color>
+</resources>
