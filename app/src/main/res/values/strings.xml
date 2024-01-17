@@ -11,4 +11,23 @@
     <string name="confirm_request">Confirm request</string>
     <string name="insert_image_of_problem">Insert image of problem</string>
     <string name="problem_image">Problem image</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="sign_in">Sign in</string>
+    <string name="continue_with_facebook">Continue with Facebook</string>
+    <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign up</string>
+    <string name="or">Or</string>
+    <string name="sign_up">Sign up</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="email">Email</string>
+    <string name="nickname">Nickname</string>
+    <string name="remember_me">Remember me</string>
+    <string name="password_error_message">Password error message</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="email_error_message">Email error message</string>
+    <string name="nickname_error_message">Nickname error message</string>
+    <string name="first_name_error_message">First name error message</string>
+    <string name="last_name_error_message">Last name error message</string>
 </resources>
