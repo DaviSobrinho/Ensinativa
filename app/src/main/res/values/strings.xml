@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Ensinativa</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home_fragment">Home fragment</string>
     <string name="message_fragment">Message fragment</string>
@@ -30,4 +29,5 @@
     <string name="nickname_error_message">Nickname error message</string>
     <string name="first_name_error_message">First name error message</string>
     <string name="last_name_error_message">Last name error message</string>
+    <string name="default_web_client_id" translatable="false">591395200926-vqe5n8ieucu7ibekq04pe4n2qhck5afm.apps.googleusercontent.com</string>
 </resources>

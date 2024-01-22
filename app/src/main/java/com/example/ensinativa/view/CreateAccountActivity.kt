@@ -122,13 +122,11 @@ class CreateAccountActivity : AppCompatActivity() {
             startActivity(intent, customAnimation.toBundle())
         }
         task.addOnFailureListener { exception ->
-            // Verifica se a exceção é relacionada a e-mail já existente
             if (exception is FirebaseAuthUserCollisionException) {
                 val emailErrorMessage = binding.emailErrorMessage
                 emailErrorMessage.text = "This email is already registered"
                 emailErrorMessage.visibility = View.VISIBLE
             } else {
-                // Caso contrário, trata outras falhas como de costume
                 Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
             }
         }

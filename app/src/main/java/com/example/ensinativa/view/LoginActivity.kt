@@ -1,5 +1,6 @@
 package com.example.ensinativa.view
 
+import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
@@ -7,10 +8,15 @@ import com.example.ensinativa.R
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.datastore.preferences.preferencesDataStore
@@ -24,9 +30,14 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.CoroutineScope
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.ensinativa.firebaseauth.FirebaseCommons
+import com.example.ensinativa.firebaseauth.FirebaseSignInListener
+import com.example.ensinativa.firebaseauth.GoogleSignIn
+import com.example.ensinativa.firebaseauth.GoogleSignInListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 private val Context.dataStore by preferencesDataStore("user_preferences")
 
@@ -34,34 +45,96 @@ private const val DATA_STORE_EMAIL_KEY = "email"
 private const val DATA_STORE_PASSWORD_KEY = "password"
 
 private lateinit var binding: ActivityLoginBinding
+private var firebaseAuth: FirebaseAuth = Firebase.auth
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity(), GoogleSignInListener,FirebaseSignInListener {
     private var showPassword = false
+    private lateinit var rememberMeCheckBox: CheckBox
+    private lateinit var emailTextInput: TextInputEditText
+    private lateinit var passwordTextInput: TextInputEditText
+    private lateinit var passwordErrorMessageTextView: TextView
+
+    override fun onGoogleSignInSuccess() {
+        startMainActivity()
+    }
+    override fun onGoogleSignInFailure() {
+        Toast.makeText(this, "Something went wrong while trying to link account with Google", Toast.LENGTH_SHORT).show()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        val emailTextInput = binding.emailTextInput
-        val passwordTextInput = binding.passwordTextInput
+
+        emailTextInput = binding.emailTextInput
+        passwordTextInput = binding.passwordTextInput
+        rememberMeCheckBox = binding.rememberMeCheckBox
         val showPasswordButton = binding.showPasswordButton
         val createAccountTextView = binding.createAccountTextView
         val signInButton = binding.signIn
-        val firebaseAuth = Firebase.auth
-        val rememberMeCheckBox = binding.rememberMeCheckBox
+        val googleButton = binding.googleLogo
+        val googleSignIn = com.example.ensinativa.firebaseauth.GoogleSignIn(this, firebaseAuth, this)
+        val firebaseCommons = FirebaseCommons(this, firebaseAuth)
         fillEmailPasswordAndCheckboxFromDataStorage(emailTextInput,passwordTextInput,rememberMeCheckBox)
+        configGoogleSignInButton(googleButton, googleSignIn)
         configShowPasswordButton(showPasswordButton,passwordTextInput)
+        configCreateAccountButton(createAccountTextView)
+        configSignInButton(signInButton, firebaseCommons, emailTextInput, passwordTextInput)
+    }
+
+    private fun configGoogleSignInButton(
+        googleButton: ImageView,
+        googleSignIn: GoogleSignIn
+    ) {
+        googleButton.setOnClickListener {
+            googleSignIn.googleSignIn()
+            googleButton.startAnimation(
+                AnimationUtils.loadAnimation(
+                    this,
+                    androidx.appcompat.R.anim.abc_fade_in
+                )
+            )
+        }
+    }
+
+    private fun configCreateAccountButton(createAccountTextView: TextView) {
         createAccountTextView.setOnClickListener {
-            createAccountTextView.startAnimation(AnimationUtils.loadAnimation(this,androidx.appcompat.R.anim.abc_fade_in))
-            val customAnimation = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left)
+            createAccountTextView.startAnimation(
+                AnimationUtils.loadAnimation(
+                    this,
+                    androidx.appcompat.R.anim.abc_fade_in
+                )
+            )
+            val customAnimation = ActivityOptions.makeCustomAnimation(
+                this,
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
             val intent = Intent(this, CreateAccountActivity::class.java)
             startActivity(intent, customAnimation.toBundle())
         }
+    }
+
+    private fun configSignInButton(
+        signInButton: Button,
+        firebaseCommons: FirebaseCommons,
+        emailTextInput: TextInputEditText,
+        passwordTextInput: TextInputEditText
+    ) {
         signInButton.setOnClickListener {
-            signInButton.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_fade_in))
-            signIn(firebaseAuth, emailTextInput, passwordTextInput)
+            signInButton.startAnimation(
+                AnimationUtils.loadAnimation(
+                    this,
+                    androidx.appcompat.R.anim.abc_fade_in
+                )
+            )
+            firebaseCommons.signIn(
+                emailTextInput.text.toString(),
+                passwordTextInput.text.toString()
+            )
         }
     }
+
 
     private fun fillEmailPasswordAndCheckboxFromDataStorage(emailTextInput: TextInputEditText, passwordTextInput: TextInputEditText, rememberMeCheckBox: CheckBox) {
         val scope = CoroutineScope(Dispatchers.Main)
@@ -88,29 +161,17 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun startMainActivity(firebaseAuth: FirebaseAuth) {
-        val logged = getUserState(firebaseAuth)
-        if (logged) {
-            val customAnimation = ActivityOptions.makeCustomAnimation(
-                this,
-                R.anim.slide_in_right,
-                R.anim.slide_out_left
-            )
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent, customAnimation.toBundle())
-        }
+    private fun startMainActivity() {
+        val customAnimation = ActivityOptions.makeCustomAnimation(
+            this,
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
+        )
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent, customAnimation.toBundle())
     }
 
-    private fun getUserState(firebaseAuth: FirebaseAuth) : Boolean {
-        val firebaseUser : FirebaseUser? = firebaseAuth.currentUser
-        return if (firebaseUser != null) {
-            Toast.makeText(this, "User signed in", Toast.LENGTH_SHORT).show()
-            true
-        }else{
-            Toast.makeText(this,"User not signed in",Toast.LENGTH_SHORT).show()
-            false
-        }
-    }
+
     override fun onStart() {
         super.onStart()
     }
@@ -131,32 +192,16 @@ class LoginActivity : AppCompatActivity() {
             passwordTextInput.setSelection(selectionStart, selectionEnd)
         }
     }
-    private fun signIn(
-        firebaseAuth: FirebaseAuth,
-        emailTextInput: TextInputEditText,
-        passwordTextInput: TextInputEditText
-    ) {
-        val task = firebaseAuth.signInWithEmailAndPassword(
-            emailTextInput.text.toString(),
-            passwordTextInput.text.toString()
-        )
-        task.addOnSuccessListener {
-            Toast.makeText(this, "Signed in successfully", Toast.LENGTH_SHORT).show()
-            if(binding.rememberMeCheckBox.isChecked){
-                saveEmailAndPassword(binding.emailTextInput.text.toString(),binding.passwordTextInput.text.toString())
-            }else{
-                saveEmailAndPassword("","")
-            }
-            startMainActivity(firebaseAuth)
-        }
-        task.addOnFailureListener {
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
+    private fun configPasswordErrorMessage(passwordErrorMessageTextView: TextView, errorMessage : String){
+        passwordErrorMessageTextView.text = errorMessage
+        if(errorMessage != ""){
+            passwordErrorMessageTextView.visibility = View.VISIBLE
+        }else{
+            passwordErrorMessageTextView.visibility = View.GONE
         }
     }
-
     private fun saveEmailAndPassword(email: String, password: String) {
         val scope = CoroutineScope(Dispatchers.IO)
-
         scope.launch {
             val dataStore = applicationContext.dataStore
 
@@ -169,4 +214,41 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+    private fun setErrorMessage(passwordErrorMessageTextView: TextView, passwordErrorMessage: String) {
+        passwordErrorMessageTextView.text = passwordErrorMessage
+        if(passwordErrorMessage!= ""){
+            passwordErrorMessageTextView.visibility = View.GONE
+        }else{
+            passwordErrorMessageTextView.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onUserSignedIn() {
+        startMainActivity()
+    }
+
+    override fun onUserNotSignedIn() {
+        Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
+    }
+
+
+
+    override fun onSignInSuccess(email: String, password: String) {
+        if(rememberMeCheckBox.isChecked){
+            saveEmailAndPassword(email,password)
+        }else{
+            saveEmailAndPassword("","")
+        }
+        setErrorMessage(passwordErrorMessageTextView,"")
+    }
+    override fun onSignInFailureCredentials(exception: Exception) {
+        setErrorMessage(passwordErrorMessageTextView,"The inserted email or password is invalid")
+    }
+
+    override fun onSignInFailure() {
+        setErrorMessage(passwordErrorMessageTextView,"")
+        Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
+    }
+
+
 }

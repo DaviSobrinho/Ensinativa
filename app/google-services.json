@@ -12,7 +12,20 @@
           "package_name": "com.example.ensinativa"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "591395200926-gqo1gpbo6j0t90g72doefhff8gl1tr5r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ensinativa",
+            "certificate_hash": "55d87109d0db4bd52d263ad97329b6ae7f6ec4ea"
+          }
+        },
+        {
+          "client_id": "591395200926-vqe5n8ieucu7ibekq04pe4n2qhck5afm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCKqlQGq0WL4t_H9f8Hub1KWgeRwuEsH2w"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591395200926-vqe5n8ieucu7ibekq04pe4n2qhck5afm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

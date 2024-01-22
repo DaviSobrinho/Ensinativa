@@ -57,13 +57,14 @@
                     android:textColor="@color/cinza_7">
                 </com.google.android.material.textfield.TextInputEditText>
             </com.google.android.material.textfield.TextInputLayout>
+
             <TextView
                 android:id="@+id/emailErrorMessage"
                 android:padding="0dp"
                 android:layout_gravity="center"
                 android:textColor="@color/vermelho_4"
-                android:layout_width="200dp"
-                android:layout_height="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/email_error_message"
                 android:gravity="center"
                 android:textSize="12sp"
@@ -95,6 +96,8 @@
                         android:textColor="@color/cinza_7">
                     </com.google.android.material.textfield.TextInputEditText>
                 </com.google.android.material.textfield.TextInputLayout>
+
+
                 <Button
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="48dp"
@@ -114,14 +117,13 @@
                     app:backgroundTintMode="src_atop">
                 </Button>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
             <TextView
                 android:id="@+id/passwordErrorMessage"
                 android:padding="0dp"
                 android:layout_gravity="center"
                 android:textColor="@color/vermelho_4"
-                android:layout_width="200dp"
-                android:layout_height="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/password_error_message"
                 android:gravity="center"
                 android:textSize="12sp"
@@ -194,7 +196,8 @@
                 app:backgroundTintMode="src_atop">
             </TextView>
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content">
                 <Button
                     android:layout_gravity="center"
@@ -236,7 +239,9 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+                android:id="@+id/googleContinueLayout"
+                android:layout_gravity="center"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp">
                 <Button
