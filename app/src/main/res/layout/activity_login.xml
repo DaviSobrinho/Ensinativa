@@ -109,7 +109,7 @@
                     android:scaleY=".8"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:foreground="@drawable/eye"
+                    android:foreground="@drawable/eye_slash"
                     android:foregroundTint="@color/cinza_5"
                     app:tint="@color/cinza_5"
                     android:background="@color/transaparent"

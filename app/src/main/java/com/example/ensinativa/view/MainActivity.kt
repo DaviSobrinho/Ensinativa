@@ -5,24 +5,34 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.ensinativa.R
 import com.example.ensinativa.databinding.ActivityMainBinding
+import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
+import com.example.ensinativa.firebaseauth.FirebaseAuthListener
+import com.example.ensinativa.firebaseauth.GoogleAuthCommons
+import com.example.ensinativa.firebaseauth.GoogleAuthListener
 import com.example.ensinativa.viewmodel.ViewPagerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import java.lang.Exception
 
-private lateinit var auth: FirebaseAuth
+private lateinit var firebaseAuth: FirebaseAuth
 private lateinit var binding: ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
-    lateinit var mainPager: ViewPager2
+class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListener {
+    private lateinit var mainPager: ViewPager2
+    private var emailPasswordAuthLoggedIn = false
+    private var googleAuthLoggedIn = false
+    private var facebookAuthLoggedIn = false
+    private lateinit var googleAuthCommons: GoogleAuthCommons
+    private lateinit var firebaseAuthCommons : FirebaseAuthCommons
+
     var fragmentArrayList : ArrayList<Fragment> = ArrayList<Fragment>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,39 +42,35 @@ class MainActivity : AppCompatActivity() {
     }
     public override fun onStart() {
         super.onStart()
-        // Initialize Firebase Auth
         FirebaseApp.initializeApp(this);
-        auth = Firebase.auth
-        verifyAuth()
-    }
-    private fun verifyAuth(){
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        if (currentUser == null) {
-            val intent = Intent(this, LoginActivity::class.java).apply {
-            }
-            startActivity(intent)
-            Toast.makeText(this, "CurrentUser != null", Toast.LENGTH_SHORT).show()
-        }else{
-            renderView()
-        }
+        firebaseAuth = Firebase.auth
+        googleAuthCommons = GoogleAuthCommons(this, firebaseAuth, this)
+        firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
+        renderView()
+        configViewPager()
+        configMenuButton(binding.menuButton)
     }
     private fun renderView(){
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        configViewPager()
-        configMenuButton(binding.menuButton)
     }
 
     private fun configMenuButton(menuButton: Button) {
         menuButton.setOnClickListener{
-            if(auth.currentUser != null){
-                auth.signOut()
+            val providers = firebaseAuthCommons.getProviders()
+            emailPasswordAuthLoggedIn = providers.emailPasswordProvider
+            googleAuthLoggedIn = providers.googleProvider
+            if(emailPasswordAuthLoggedIn){
+                firebaseAuth.signOut()
             }
-            val customAnimation = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_left, R.anim.slide_out_right)
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent, customAnimation.toBundle())
+            if(googleAuthLoggedIn){
+                googleAuthCommons.googleSignOut()
+            }
+            if(facebookAuthLoggedIn){
+                //Missing facebook auth
+            }
+            startLoginActivity()
         }
     }
 
@@ -111,5 +117,54 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
         })
+    }
+
+    override fun onUserSignedIn() {
+
+    }
+
+    override fun onUserNotSignedIn() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSignInFailureCredentials(exception: Exception) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSignInSuccess(email: String, password: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSignInFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSignUpSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSignUpFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSignUpFailureDuplicatedCredentials() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onGoogleSignInSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onGoogleSignInFailure() {
+        TODO("Not yet implemented")
+    }
+    private fun startLoginActivity() {
+        val customAnimation = ActivityOptions.makeCustomAnimation(
+            this,
+            R.anim.slide_in_left,
+            R.anim.slide_out_right
+        )
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent, customAnimation.toBundle())
     }
 }

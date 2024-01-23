@@ -1,6 +1,6 @@
 package com.example.ensinativa.firebaseauth
 
-interface GoogleSignInListener {
+interface GoogleAuthListener {
     fun onGoogleSignInSuccess()
     fun onGoogleSignInFailure()
 }

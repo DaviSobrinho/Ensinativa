@@ -1,6 +1,5 @@
 package com.example.ensinativa.view
 
-import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
@@ -15,44 +14,41 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.ensinativa.databinding.ActivityLoginBinding
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
-
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.CoroutineScope
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.ensinativa.firebaseauth.FirebaseCommons
-import com.example.ensinativa.firebaseauth.FirebaseSignInListener
-import com.example.ensinativa.firebaseauth.GoogleSignIn
-import com.example.ensinativa.firebaseauth.GoogleSignInListener
+import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
+import com.example.ensinativa.firebaseauth.FirebaseAuthListener
+import com.example.ensinativa.firebaseauth.GoogleAuthCommons
+import com.example.ensinativa.firebaseauth.GoogleAuthListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-private val Context.dataStore by preferencesDataStore("user_preferences")
 
 private const val DATA_STORE_EMAIL_KEY = "email"
 private const val DATA_STORE_PASSWORD_KEY = "password"
-
+private val Context.dataStore by preferencesDataStore("user_preferences")
 private lateinit var binding: ActivityLoginBinding
 private var firebaseAuth: FirebaseAuth = Firebase.auth
 
-class LoginActivity : AppCompatActivity(), GoogleSignInListener,FirebaseSignInListener {
+class LoginActivity : AppCompatActivity(), GoogleAuthListener,FirebaseAuthListener {
     private var showPassword = false
     private lateinit var rememberMeCheckBox: CheckBox
     private lateinit var emailTextInput: TextInputEditText
     private lateinit var passwordTextInput: TextInputEditText
     private lateinit var passwordErrorMessageTextView: TextView
+    private lateinit var googleAuthCommons: GoogleAuthCommons
+    private lateinit var firebaseAuthCommons : FirebaseAuthCommons
 
     override fun onGoogleSignInSuccess() {
         startMainActivity()
@@ -66,28 +62,12 @@ class LoginActivity : AppCompatActivity(), GoogleSignInListener,FirebaseSignInLi
         val view = binding.root
         setContentView(view)
 
-        emailTextInput = binding.emailTextInput
-        passwordTextInput = binding.passwordTextInput
-        rememberMeCheckBox = binding.rememberMeCheckBox
-        val showPasswordButton = binding.showPasswordButton
-        val createAccountTextView = binding.createAccountTextView
-        val signInButton = binding.signIn
-        val googleButton = binding.googleLogo
-        val googleSignIn = com.example.ensinativa.firebaseauth.GoogleSignIn(this, firebaseAuth, this)
-        val firebaseCommons = FirebaseCommons(this, firebaseAuth)
-        fillEmailPasswordAndCheckboxFromDataStorage(emailTextInput,passwordTextInput,rememberMeCheckBox)
-        configGoogleSignInButton(googleButton, googleSignIn)
-        configShowPasswordButton(showPasswordButton,passwordTextInput)
-        configCreateAccountButton(createAccountTextView)
-        configSignInButton(signInButton, firebaseCommons, emailTextInput, passwordTextInput)
+
     }
 
-    private fun configGoogleSignInButton(
-        googleButton: ImageView,
-        googleSignIn: GoogleSignIn
-    ) {
+    private fun configGoogleSignInButton(googleButton: ImageView, googleAuthCommons: GoogleAuthCommons) {
         googleButton.setOnClickListener {
-            googleSignIn.googleSignIn()
+            googleAuthCommons.googleSignIn()
             googleButton.startAnimation(
                 AnimationUtils.loadAnimation(
                     this,
@@ -115,23 +95,10 @@ class LoginActivity : AppCompatActivity(), GoogleSignInListener,FirebaseSignInLi
         }
     }
 
-    private fun configSignInButton(
-        signInButton: Button,
-        firebaseCommons: FirebaseCommons,
-        emailTextInput: TextInputEditText,
-        passwordTextInput: TextInputEditText
-    ) {
+    private fun configSignInButton(signInButton: Button, firebaseAuthCommons: FirebaseAuthCommons, emailTextInput: TextInputEditText, passwordTextInput: TextInputEditText) {
         signInButton.setOnClickListener {
-            signInButton.startAnimation(
-                AnimationUtils.loadAnimation(
-                    this,
-                    androidx.appcompat.R.anim.abc_fade_in
-                )
-            )
-            firebaseCommons.signIn(
-                emailTextInput.text.toString(),
-                passwordTextInput.text.toString()
-            )
+            signInButton.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_fade_in))
+            firebaseAuthCommons.emailPasswordSignIn(emailTextInput.text.toString(), passwordTextInput.text.toString())
         }
     }
 
@@ -174,6 +141,21 @@ class LoginActivity : AppCompatActivity(), GoogleSignInListener,FirebaseSignInLi
 
     override fun onStart() {
         super.onStart()
+        emailTextInput = binding.emailTextInput
+        passwordTextInput = binding.passwordTextInput
+        rememberMeCheckBox = binding.rememberMeCheckBox
+        passwordErrorMessageTextView = binding.passwordErrorMessage
+        val showPasswordButton = binding.showPasswordButton
+        val createAccountTextView = binding.createAccountTextView
+        val signInButton = binding.signIn
+        val googleButton = binding.googleLogo
+        googleAuthCommons = GoogleAuthCommons(this, firebaseAuth, this)
+        firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
+        fillEmailPasswordAndCheckboxFromDataStorage(emailTextInput,passwordTextInput,rememberMeCheckBox)
+        configGoogleSignInButton(googleButton, googleAuthCommons)
+        configShowPasswordButton(showPasswordButton,passwordTextInput)
+        configCreateAccountButton(createAccountTextView)
+        configSignInButton(signInButton, firebaseAuthCommons, emailTextInput, passwordTextInput)
     }
     private fun configShowPasswordButton(showPasswordButton : Button, passwordTextInput: TextInputEditText){
         showPasswordButton.setOnClickListener {
@@ -181,23 +163,14 @@ class LoginActivity : AppCompatActivity(), GoogleSignInListener,FirebaseSignInLi
             val selectionEnd = passwordTextInput.selectionEnd
             if (!showPassword) {
                 passwordTextInput.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                showPasswordButton.foreground = AppCompatResources.getDrawable(this, R.drawable.eye_slash)
+                showPasswordButton.foreground = AppCompatResources.getDrawable(this, R.drawable.eye)
                 showPassword = true
             } else {
                 passwordTextInput.transformationMethod = PasswordTransformationMethod.getInstance()
-                showPasswordButton.foreground = AppCompatResources.getDrawable(this, R.drawable.eye)
+                showPasswordButton.foreground = AppCompatResources.getDrawable(this, R.drawable.eye_slash)
                 showPassword = false
             }
-            // Restaura a posição do cursor após alterar o inputType
             passwordTextInput.setSelection(selectionStart, selectionEnd)
-        }
-    }
-    private fun configPasswordErrorMessage(passwordErrorMessageTextView: TextView, errorMessage : String){
-        passwordErrorMessageTextView.text = errorMessage
-        if(errorMessage != ""){
-            passwordErrorMessageTextView.visibility = View.VISIBLE
-        }else{
-            passwordErrorMessageTextView.visibility = View.GONE
         }
     }
     private fun saveEmailAndPassword(email: String, password: String) {
@@ -214,12 +187,12 @@ class LoginActivity : AppCompatActivity(), GoogleSignInListener,FirebaseSignInLi
             }
         }
     }
-    private fun setErrorMessage(passwordErrorMessageTextView: TextView, passwordErrorMessage: String) {
+    private fun configErrorMessageTextView(passwordErrorMessageTextView: TextView, passwordErrorMessage: String) {
         passwordErrorMessageTextView.text = passwordErrorMessage
         if(passwordErrorMessage!= ""){
-            passwordErrorMessageTextView.visibility = View.GONE
-        }else{
             passwordErrorMessageTextView.visibility = View.VISIBLE
+        }else{
+            passwordErrorMessageTextView.visibility = View.GONE
         }
     }
 
@@ -239,15 +212,25 @@ class LoginActivity : AppCompatActivity(), GoogleSignInListener,FirebaseSignInLi
         }else{
             saveEmailAndPassword("","")
         }
-        setErrorMessage(passwordErrorMessageTextView,"")
+        configErrorMessageTextView(passwordErrorMessageTextView,"")
+        firebaseAuthCommons.getUserState()
     }
     override fun onSignInFailureCredentials(exception: Exception) {
-        setErrorMessage(passwordErrorMessageTextView,"The inserted email or password is invalid")
+        configErrorMessageTextView(passwordErrorMessageTextView,"The inserted email or password is invalid")
     }
 
     override fun onSignInFailure() {
-        setErrorMessage(passwordErrorMessageTextView,"")
+        configErrorMessageTextView(passwordErrorMessageTextView,"")
         Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onSignUpSuccess() {
+    }
+
+    override fun onSignUpFailure() {
+    }
+
+    override fun onSignUpFailureDuplicatedCredentials() {
     }
 
 

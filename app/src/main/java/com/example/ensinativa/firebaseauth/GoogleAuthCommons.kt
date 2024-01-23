@@ -13,7 +13,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 
-class GoogleSignIn( appCompatActivity: AppCompatActivity, private val firebaseAuth: FirebaseAuth, private val signInListener: GoogleSignInListener) {
+class GoogleAuthCommons(appCompatActivity: AppCompatActivity, private val firebaseAuth: FirebaseAuth, private val signInListener: GoogleAuthListener) {
 
     private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(appCompatActivity.getString(R.string.default_web_client_id)).requestEmail().build()
     private val googleSignInClient = GoogleSignIn.getClient(appCompatActivity,gso)
@@ -30,6 +30,10 @@ class GoogleSignIn( appCompatActivity: AppCompatActivity, private val firebaseAu
             .requestEmail()
             .build()
         return GoogleSignIn.getClient(this, gso)
+    }
+    fun googleSignOut(){
+        val googleSignInClient = googleSignInClient
+        googleSignInClient.signOut()
     }
     fun googleSignIn(){
         val signInClient = googleSignInClient.signInIntent

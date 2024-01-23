@@ -6,65 +6,44 @@ import com.example.ensinativa.R
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ensinativa.databinding.ActivityCreateAccountBinding
+import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
+import com.example.ensinativa.firebaseauth.FirebaseAuthListener
+import com.example.ensinativa.model.EmailValidation
+import com.example.ensinativa.model.PasswordValidation
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.auth
 import org.apache.commons.validator.routines.EmailValidator
+import java.lang.Exception
 
 
 private lateinit var binding: ActivityCreateAccountBinding
+private var firebaseAuth: FirebaseAuth = Firebase.auth
 
-class CreateAccountActivity : AppCompatActivity() {
+class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener {
+    private lateinit var firebaseAuthCommons : FirebaseAuthCommons
+    private lateinit var emailErrorMessageTextView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreateAccountBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        var backButton = binding.backButton
-        backButton.setOnClickListener {
-            backButton.startAnimation(AnimationUtils.loadAnimation(this,androidx.appcompat.R.anim.abc_fade_in))
-            val customAnimation = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_left, R.anim.slide_out_right)
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent, customAnimation.toBundle())
-        }
-        val firebaseAuth = Firebase.auth
-        val nicknameTextInput = binding.nicknameTextInput
-        val emailTextInput = binding.emailTextInput
-        val firstNameTextInput = binding.firstNameTextInput
-        val lastNameTextInput = binding.lastNameTextInput
-        val passwordTextInput = binding.passwordTextInput
-        val createAccountButton = binding.createAccountButton
-        createAccountButton.setOnClickListener {
-            var validNickName = false
-            var validFirstName = false
-            var validLastName = false
-            var validEmail = false
-            var validPassword = false
 
-            val validatedEmail = validateEmail(emailTextInput.text.toString())
-            setErrorMessage(binding.emailErrorMessage, validatedEmail.errorMessage, validatedEmail.valid)
-            //Validates password requirements and sets the error message if necessary
-            val validatedPassword = validatePassword(passwordTextInput.text.toString())
-            setErrorMessage(binding.passwordErrorMessage, validatedPassword.errorMessage, validatedPassword.valid)
-            createAccountButton.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_fade_in))
-            if(validatedEmail.valid && validatedPassword.valid){
-                createAccount(firebaseAuth, emailTextInput, passwordTextInput)
-            }
-        }
     }
 
-    private fun setErrorMessage(textView: TextView, passwordErrorMessage: String, valid: Boolean) {
-        textView.text = passwordErrorMessage
-        if(valid){
-            textView.visibility = View.GONE
-        }else{
+    private fun configErrorMessageTextView(textView: TextView, errorMessage: String) {
+        textView.text = errorMessage
+        if(errorMessage != ""){
             textView.visibility = View.VISIBLE
+        }else{
+            textView.visibility = View.GONE
         }
     }
 
@@ -97,43 +76,49 @@ class CreateAccountActivity : AppCompatActivity() {
         }
         return passwordValidation
     }
-    data class EmailValidation(
-        var errorMessage: String,
-        var valid: Boolean
-    )
-    data class PasswordValidation(
-        var errorMessage: String,
-        var valid: Boolean
-    )
 
-    private fun createAccount(
-        firebaseAuth: FirebaseAuth,
-        emailTextInput: TextInputEditText,
-        passwordTextInput: TextInputEditText
-    ) {
-        val task = firebaseAuth.createUserWithEmailAndPassword(
-            emailTextInput.text.toString(),
-            passwordTextInput.text.toString()
-        )
-        task.addOnSuccessListener {
-            Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
-            val customAnimation = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_left, R.anim.slide_out_right)
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent, customAnimation.toBundle())
-        }
-        task.addOnFailureListener { exception ->
-            if (exception is FirebaseAuthUserCollisionException) {
-                val emailErrorMessage = binding.emailErrorMessage
-                emailErrorMessage.text = "This email is already registered"
-                emailErrorMessage.visibility = View.VISIBLE
-            } else {
-                Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
+
+
+    override fun onStart() {
+        super.onStart()
+        firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
+        emailErrorMessageTextView = binding.emailErrorMessage
+        var backButton = binding.backButton
+        val nicknameTextInput = binding.nicknameTextInput
+        val emailTextInput = binding.emailTextInput
+        val firstNameTextInput = binding.firstNameTextInput
+        val lastNameTextInput = binding.lastNameTextInput
+        val passwordTextInput = binding.passwordTextInput
+        val createAccountButton = binding.createAccountButton
+        configBackButton(backButton)
+        configCreateAccountButton(createAccountButton, emailTextInput, passwordTextInput)
+    }
+
+    private fun configCreateAccountButton(createAccountButton: Button, emailTextInput: TextInputEditText, passwordTextInput: TextInputEditText) {
+        createAccountButton.setOnClickListener {
+            val validatedEmail = validateEmail(emailTextInput.text.toString())
+            val validatedPassword = validatePassword(passwordTextInput.text.toString())
+            configErrorMessageTextView(binding.emailErrorMessage, validatedEmail.errorMessage)
+            configErrorMessageTextView(binding.passwordErrorMessage, validatedPassword.errorMessage)
+            createAccountButton.startAnimation(
+                AnimationUtils.loadAnimation(
+                    this,
+                    androidx.appcompat.R.anim.abc_fade_in
+                )
+            )
+            if (validatedEmail.valid && validatedPassword.valid) {
+                firebaseAuthCommons.emailPasswordSignUp(firebaseAuth, emailTextInput, passwordTextInput)
             }
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    private fun configBackButton(backButton: MaterialButton) {
+        backButton.setOnClickListener {
+            backButton.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_fade_in))
+            val customAnimation = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_left, R.anim.slide_out_right)
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent, customAnimation.toBundle())
+        }
     }
 
     private fun validateEmail(email : String) : EmailValidation{
@@ -145,6 +130,48 @@ class CreateAccountActivity : AppCompatActivity() {
         return emailValidation
     }
 
+    override fun onUserSignedIn() {
+        startMainActivity()
+    }
 
+    override fun onUserNotSignedIn() {
+        Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onSignInFailureCredentials(exception: Exception) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSignInSuccess(email: String, password: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSignInFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSignUpSuccess() {
+        configErrorMessageTextView(emailErrorMessageTextView,"")
+        Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
+        firebaseAuthCommons.getUserState()
+    }
+
+    override fun onSignUpFailure() {
+        Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onSignUpFailureDuplicatedCredentials() {
+        configErrorMessageTextView(emailErrorMessageTextView,"This email is already registered")
+    }
+
+    private fun startMainActivity() {
+        val customAnimation = ActivityOptions.makeCustomAnimation(
+            this,
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
+        )
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent, customAnimation.toBundle())
+    }
 
 }
