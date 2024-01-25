@@ -13,13 +13,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.ensinativa.databinding.ActivityCreateAccountBinding
 import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
 import com.example.ensinativa.firebaseauth.FirebaseAuthListener
+import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
+import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.model.EmailValidation
 import com.example.ensinativa.model.PasswordValidation
+import com.example.ensinativa.model.User
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.storage.storage
 import org.apache.commons.validator.routines.EmailValidator
 import java.lang.Exception
 
@@ -27,9 +31,16 @@ import java.lang.Exception
 private lateinit var binding: ActivityCreateAccountBinding
 private var firebaseAuth: FirebaseAuth = Firebase.auth
 
-class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener {
+class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, FirebaseRTDBListener {
     private lateinit var firebaseAuthCommons : FirebaseAuthCommons
+    private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
+    private lateinit var displayNameTextInput: TextInputEditText
+    private lateinit var emailTextInput: TextInputEditText
+    private lateinit var passwordTextInput: TextInputEditText
+    private lateinit var displayNameErrorMessageTextView: TextView
     private lateinit var emailErrorMessageTextView: TextView
+    private lateinit var passwordErrorMessageTextView: TextView
+    val storage = Firebase.storage
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreateAccountBinding.inflate(layoutInflater)
@@ -81,25 +92,31 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener {
 
     override fun onStart() {
         super.onStart()
+        firebaseRTDBCommons = FirebaseRTDBCommons(this)
         firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
         emailErrorMessageTextView = binding.emailErrorMessage
+        passwordErrorMessageTextView = binding.passwordErrorMessage
+        displayNameErrorMessageTextView = binding.displayNameErrorMessage
+        displayNameTextInput = binding.displayNameTextInput
+        passwordTextInput = binding.passwordTextInput
+        emailTextInput = binding.emailTextInput
         var backButton = binding.backButton
-        val nicknameTextInput = binding.nicknameTextInput
-        val emailTextInput = binding.emailTextInput
-        val firstNameTextInput = binding.firstNameTextInput
-        val lastNameTextInput = binding.lastNameTextInput
-        val passwordTextInput = binding.passwordTextInput
         val createAccountButton = binding.createAccountButton
         configBackButton(backButton)
         configCreateAccountButton(createAccountButton, emailTextInput, passwordTextInput)
+    }
+
+    private fun configUserAccount( displayName: String, email: String){
+        val user = User(displayName = displayName, email = email)
+        firebaseRTDBCommons.updateUser(user, firebaseAuth)
     }
 
     private fun configCreateAccountButton(createAccountButton: Button, emailTextInput: TextInputEditText, passwordTextInput: TextInputEditText) {
         createAccountButton.setOnClickListener {
             val validatedEmail = validateEmail(emailTextInput.text.toString())
             val validatedPassword = validatePassword(passwordTextInput.text.toString())
-            configErrorMessageTextView(binding.emailErrorMessage, validatedEmail.errorMessage)
-            configErrorMessageTextView(binding.passwordErrorMessage, validatedPassword.errorMessage)
+            configErrorMessageTextView(emailErrorMessageTextView, validatedEmail.errorMessage)
+            configErrorMessageTextView(passwordErrorMessageTextView, validatedPassword.errorMessage)
             createAccountButton.startAnimation(
                 AnimationUtils.loadAnimation(
                     this,
@@ -130,39 +147,51 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener {
         return emailValidation
     }
 
-    override fun onUserSignedIn() {
-        startMainActivity()
+    override fun onGetUserSignOn() {
+        configUserAccount(
+            displayName = displayNameTextInput.text.toString(),
+            email = emailTextInput.text.toString()
+        )
     }
 
-    override fun onUserNotSignedIn() {
+    override fun onGetUserSignOut() {
         Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onSignInFailureCredentials(exception: Exception) {
+    override fun onEmailPasswordSignInFailureCredentials(exception: Exception) {
         TODO("Not yet implemented")
     }
 
-    override fun onSignInSuccess(email: String, password: String) {
+    override fun onEmailPasswordSignInSuccess(email: String, password: String) {
         TODO("Not yet implemented")
     }
 
-    override fun onSignInFailure() {
+    override fun onEmailPasswordSignInFailure() {
         TODO("Not yet implemented")
     }
 
-    override fun onSignUpSuccess() {
+    override fun onEmailPasswordSignUpSuccess() {
         configErrorMessageTextView(emailErrorMessageTextView,"")
         Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
         firebaseAuthCommons.getUserState()
     }
 
-    override fun onSignUpFailure() {
+    override fun onEmailPasswordSignUpFailure() {
         Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onSignUpFailureDuplicatedCredentials() {
+    override fun onEmailPasswordSignUpFailureDuplicatedCredentials() {
         configErrorMessageTextView(emailErrorMessageTextView,"This email is already registered")
     }
+
+    override fun onUserDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
+
 
     private fun startMainActivity() {
         val customAnimation = ActivityOptions.makeCustomAnimation(
@@ -172,6 +201,30 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener {
         )
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent, customAnimation.toBundle())
+    }
+
+    override fun onUserRTDBDataUpdatedSuccess() {
+        startMainActivity()
+    }
+
+    override fun onUserRTDBDataUpdatedFailure() {
+
+    }
+
+    override fun onUserRTDBDataRetrievedSuccess(user: User) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserRTDBGoogleDataInsertedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserRTDBGoogleDataInsertedFailure() {
+        TODO("Not yet implemented")
     }
 
 }

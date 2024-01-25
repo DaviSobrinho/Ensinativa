@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ensinativa.R
+import com.example.ensinativa.model.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -45,7 +46,8 @@ class GoogleAuthCommons(appCompatActivity: AppCompatActivity, private val fireba
             val credential = GoogleAuthProvider.getCredential(account.idToken,null)
             firebaseAuth.signInWithCredential(credential).addOnCompleteListener{
                 if(task.isSuccessful){
-                    signInListener.onGoogleSignInSuccess()
+                    val user = User(email = account.email.toString(), displayName = account.displayName.toString())
+                    signInListener.onGoogleSignInSuccess(user)
                 }else{
                     signInListener.onGoogleSignInFailure()
                 }

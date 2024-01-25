@@ -30,4 +30,6 @@
     <string name="first_name_error_message">First name error message</string>
     <string name="last_name_error_message">Last name error message</string>
     <string name="default_web_client_id" translatable="false">591395200926-vqe5n8ieucu7ibekq04pe4n2qhck5afm.apps.googleusercontent.com</string>
+    <string name="fullname">Fullname</string>
+    <string name="display_name">Display name</string>
 </resources>

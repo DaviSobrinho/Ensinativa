@@ -12,17 +12,21 @@ import com.example.ensinativa.databinding.FragmentHomeBinding
 import com.example.ensinativa.databinding.FragmentRequestBinding
 
 // TODO: Rename parameter arguments, choose names that match
+
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 var page = 1
 
 private lateinit var binding: FragmentRequestBinding
+
 /**
  * A simple [Fragment] subclass.
  * Use the [RequestFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+
 class RequestFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -47,8 +51,13 @@ class RequestFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setSwitcher()
 
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setSwitcher()
     }
     private fun setSwitcher(){
         binding.viewSwitcher.setInAnimation(AnimationUtils.loadAnimation(requireContext(),android.R.anim.slide_in_left))

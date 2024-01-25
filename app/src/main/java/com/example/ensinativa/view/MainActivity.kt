@@ -14,6 +14,7 @@ import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
 import com.example.ensinativa.firebaseauth.FirebaseAuthListener
 import com.example.ensinativa.firebaseauth.GoogleAuthCommons
 import com.example.ensinativa.firebaseauth.GoogleAuthListener
+import com.example.ensinativa.model.User
 import com.example.ensinativa.viewmodel.ViewPagerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
@@ -36,7 +37,8 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
     var fragmentArrayList : ArrayList<Fragment> = ArrayList<Fragment>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        renderView()
+        configViewPager()
 
 
     }
@@ -46,8 +48,6 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         firebaseAuth = Firebase.auth
         googleAuthCommons = GoogleAuthCommons(this, firebaseAuth, this)
         firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
-        renderView()
-        configViewPager()
         configMenuButton(binding.menuButton)
     }
     private fun renderView(){
@@ -119,39 +119,47 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         })
     }
 
-    override fun onUserSignedIn() {
+    override fun onGetUserSignOn() {
 
     }
 
-    override fun onUserNotSignedIn() {
+    override fun onGetUserSignOut() {
         TODO("Not yet implemented")
     }
 
-    override fun onSignInFailureCredentials(exception: Exception) {
+    override fun onEmailPasswordSignInFailureCredentials(exception: Exception) {
         TODO("Not yet implemented")
     }
 
-    override fun onSignInSuccess(email: String, password: String) {
+    override fun onEmailPasswordSignInSuccess(email: String, password: String) {
         TODO("Not yet implemented")
     }
 
-    override fun onSignInFailure() {
+    override fun onEmailPasswordSignInFailure() {
         TODO("Not yet implemented")
     }
 
-    override fun onSignUpSuccess() {
+    override fun onEmailPasswordSignUpSuccess() {
         TODO("Not yet implemented")
     }
 
-    override fun onSignUpFailure() {
+    override fun onEmailPasswordSignUpFailure() {
         TODO("Not yet implemented")
     }
 
-    override fun onSignUpFailureDuplicatedCredentials() {
+    override fun onEmailPasswordSignUpFailureDuplicatedCredentials() {
         TODO("Not yet implemented")
     }
 
-    override fun onGoogleSignInSuccess() {
+    override fun onUserDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onGoogleSignInSuccess(user: User?) {
         TODO("Not yet implemented")
     }
 

@@ -1,36 +1,38 @@
 package com.example.ensinativa.firebaseauth
 
 import com.example.ensinativa.model.Providers
+import com.example.ensinativa.model.User
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.userProfileChangeRequest
 
 class FirebaseAuthCommons (private val firebaseAuthListener: FirebaseAuthListener, private val firebaseAuth: FirebaseAuth) {
 
     fun getUserState() : Boolean {
         val firebaseUser : FirebaseUser? = firebaseAuth.currentUser
         return if (firebaseUser != null) {
-            firebaseAuthListener.onUserSignedIn()
-
+            firebaseAuthListener.onGetUserSignOn()
             true
         }else{
-            firebaseAuthListener.onUserNotSignedIn()
+            firebaseAuthListener.onGetUserSignOut()
             false
         }
     }
     fun emailPasswordSignIn(email: String, password: String) {
         val task = firebaseAuth.signInWithEmailAndPassword(email,password)
         task.addOnSuccessListener {
-                firebaseAuthListener.onSignInSuccess(email,password)
+                firebaseAuthListener.onEmailPasswordSignInSuccess(email,password)
         }
         task.addOnFailureListener {exception ->
             if(exception is FirebaseAuthInvalidUserException || exception is FirebaseAuthInvalidCredentialsException){
-                firebaseAuthListener.onSignInFailureCredentials(exception)
+                firebaseAuthListener.onEmailPasswordSignInFailureCredentials(exception)
             }else{
-                firebaseAuthListener.onSignInFailure()
+                firebaseAuthListener.onEmailPasswordSignInFailure()
             }
 
         }
@@ -41,13 +43,13 @@ class FirebaseAuthCommons (private val firebaseAuthListener: FirebaseAuthListene
             passwordTextInput.text.toString()
         )
         task.addOnSuccessListener {
-            firebaseAuthListener.onSignUpSuccess()
+            firebaseAuthListener.onEmailPasswordSignUpSuccess()
         }
         task.addOnFailureListener { exception ->
             if (exception is FirebaseAuthUserCollisionException) {
-                firebaseAuthListener.onSignUpFailureDuplicatedCredentials()
+                firebaseAuthListener.onEmailPasswordSignUpFailureDuplicatedCredentials()
             } else {
-                firebaseAuthListener.onSignUpFailure()
+                firebaseAuthListener.onEmailPasswordSignUpFailure()
             }
         }
     }
@@ -56,7 +58,6 @@ class FirebaseAuthCommons (private val firebaseAuthListener: FirebaseAuthListene
         val providersStatus = Providers(false,false)
         if(firebaseUser != null){
             val providers = firebaseUser.providerData
-
             for (profile in providers) {
                 println("Profile.providerID"+profile.providerId)
                 when (profile.providerId) {
@@ -72,18 +73,15 @@ class FirebaseAuthCommons (private val firebaseAuthListener: FirebaseAuthListene
         println("emailPasswordProvider"+providersStatus.emailPasswordProvider.toString()+"googlePasswordProvider"+providersStatus.googleProvider.toString())
         return providersStatus
     }
-    /*private fun saveEmailAndPassword(email: String, password: String) {
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
-            val dataStore = applicationContext.dataStore
-
-            val emailKey = stringPreferencesKey(DATA_STORE_EMAIL_KEY)
-            val passwordKey = stringPreferencesKey(DATA_STORE_PASSWORD_KEY)
-
-            dataStore.edit { preferences ->
-                preferences[emailKey] = email
-                preferences[passwordKey] = password
-            }
+    fun updateUser(user: User){
+        val firebaseUser : FirebaseUser? = firebaseAuth.currentUser
+        if (firebaseUser != null) {
+            firebaseUser.updateProfile(userProfileChangeRequest {
+                displayName = user.displayName
+            })
+            firebaseAuthListener.onUserDataUpdatedSuccess()
+        }else{
+            firebaseAuthListener.onUserDataUpdatedFailure()
         }
-    }*/
+    }
 }

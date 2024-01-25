@@ -29,11 +29,13 @@ import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
 import com.example.ensinativa.firebaseauth.FirebaseAuthListener
 import com.example.ensinativa.firebaseauth.GoogleAuthCommons
 import com.example.ensinativa.firebaseauth.GoogleAuthListener
+import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
+import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
+import com.example.ensinativa.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.lang.Exception
-
 
 private const val DATA_STORE_EMAIL_KEY = "email"
 private const val DATA_STORE_PASSWORD_KEY = "password"
@@ -41,30 +43,41 @@ private val Context.dataStore by preferencesDataStore("user_preferences")
 private lateinit var binding: ActivityLoginBinding
 private var firebaseAuth: FirebaseAuth = Firebase.auth
 
-class LoginActivity : AppCompatActivity(), GoogleAuthListener,FirebaseAuthListener {
+class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListener, FirebaseRTDBListener {
     private var showPassword = false
     private lateinit var rememberMeCheckBox: CheckBox
     private lateinit var emailTextInput: TextInputEditText
     private lateinit var passwordTextInput: TextInputEditText
     private lateinit var passwordErrorMessageTextView: TextView
     private lateinit var googleAuthCommons: GoogleAuthCommons
-    private lateinit var firebaseAuthCommons : FirebaseAuthCommons
+    private lateinit var firebaseAuthCommons: FirebaseAuthCommons
+    private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
 
-    override fun onGoogleSignInSuccess() {
-        startMainActivity()
-    }
-    override fun onGoogleSignInFailure() {
-        Toast.makeText(this, "Something went wrong while trying to link account with Google", Toast.LENGTH_SHORT).show()
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-
     }
-
+    override fun onStart() {
+        super.onStart()
+        emailTextInput = binding.emailTextInput
+        passwordTextInput = binding.passwordTextInput
+        rememberMeCheckBox = binding.rememberMeCheckBox
+        passwordErrorMessageTextView = binding.passwordErrorMessage
+        val showPasswordButton = binding.showPasswordButton
+        val createAccountTextView = binding.createAccountTextView
+        val signInButton = binding.signIn
+        val googleButton = binding.googleLogo
+        googleAuthCommons = GoogleAuthCommons(this, firebaseAuth, this)
+        firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
+        firebaseRTDBCommons = FirebaseRTDBCommons(this)
+        fillEmailPasswordAndCheckboxFromDataStorage(emailTextInput, passwordTextInput, rememberMeCheckBox)
+        configGoogleSignInButton(googleButton, googleAuthCommons)
+        configShowPasswordButton(showPasswordButton, passwordTextInput)
+        configCreateAccountButton(createAccountTextView)
+        configSignInButton(signInButton, firebaseAuthCommons, emailTextInput, passwordTextInput)
+    }
     private fun configGoogleSignInButton(googleButton: ImageView, googleAuthCommons: GoogleAuthCommons) {
         googleButton.setOnClickListener {
             googleAuthCommons.googleSignIn()
@@ -102,7 +115,6 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener,FirebaseAuthListen
         }
     }
 
-
     private fun fillEmailPasswordAndCheckboxFromDataStorage(emailTextInput: TextInputEditText, passwordTextInput: TextInputEditText, rememberMeCheckBox: CheckBox) {
         val scope = CoroutineScope(Dispatchers.Main)
 
@@ -122,8 +134,8 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener,FirebaseAuthListen
             if (!password.isNullOrEmpty()) {
                 passwordTextInput.setText(password)
             }
-            if(email != null && password !=null){
-              rememberMeCheckBox.isChecked = true
+            if (email != null && password != null) {
+                rememberMeCheckBox.isChecked = true
             }
         }
     }
@@ -138,26 +150,7 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener,FirebaseAuthListen
         startActivity(intent, customAnimation.toBundle())
     }
 
-
-    override fun onStart() {
-        super.onStart()
-        emailTextInput = binding.emailTextInput
-        passwordTextInput = binding.passwordTextInput
-        rememberMeCheckBox = binding.rememberMeCheckBox
-        passwordErrorMessageTextView = binding.passwordErrorMessage
-        val showPasswordButton = binding.showPasswordButton
-        val createAccountTextView = binding.createAccountTextView
-        val signInButton = binding.signIn
-        val googleButton = binding.googleLogo
-        googleAuthCommons = GoogleAuthCommons(this, firebaseAuth, this)
-        firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
-        fillEmailPasswordAndCheckboxFromDataStorage(emailTextInput,passwordTextInput,rememberMeCheckBox)
-        configGoogleSignInButton(googleButton, googleAuthCommons)
-        configShowPasswordButton(showPasswordButton,passwordTextInput)
-        configCreateAccountButton(createAccountTextView)
-        configSignInButton(signInButton, firebaseAuthCommons, emailTextInput, passwordTextInput)
-    }
-    private fun configShowPasswordButton(showPasswordButton : Button, passwordTextInput: TextInputEditText){
+    private fun configShowPasswordButton(showPasswordButton: Button, passwordTextInput: TextInputEditText) {
         showPasswordButton.setOnClickListener {
             val selectionStart = passwordTextInput.selectionStart
             val selectionEnd = passwordTextInput.selectionEnd
@@ -173,6 +166,7 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener,FirebaseAuthListen
             passwordTextInput.setSelection(selectionStart, selectionEnd)
         }
     }
+
     private fun saveEmailAndPassword(email: String, password: String) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
@@ -187,51 +181,93 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener,FirebaseAuthListen
             }
         }
     }
+
     private fun configErrorMessageTextView(passwordErrorMessageTextView: TextView, passwordErrorMessage: String) {
         passwordErrorMessageTextView.text = passwordErrorMessage
-        if(passwordErrorMessage!= ""){
+        if (passwordErrorMessage != "") {
             passwordErrorMessageTextView.visibility = View.VISIBLE
-        }else{
+        } else {
             passwordErrorMessageTextView.visibility = View.GONE
         }
     }
 
-    override fun onUserSignedIn() {
+    override fun onGetUserSignOn() {
         startMainActivity()
     }
 
-    override fun onUserNotSignedIn() {
+    override fun onGetUserSignOut() {
         Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
     }
 
-
-
-    override fun onSignInSuccess(email: String, password: String) {
-        if(rememberMeCheckBox.isChecked){
-            saveEmailAndPassword(email,password)
-        }else{
-            saveEmailAndPassword("","")
+    override fun onEmailPasswordSignInSuccess(email: String, password: String) {
+        if (rememberMeCheckBox.isChecked) {
+            saveEmailAndPassword(email, password)
+        } else {
+            saveEmailAndPassword("", "")
         }
-        configErrorMessageTextView(passwordErrorMessageTextView,"")
-        firebaseAuthCommons.getUserState()
-    }
-    override fun onSignInFailureCredentials(exception: Exception) {
-        configErrorMessageTextView(passwordErrorMessageTextView,"The inserted email or password is invalid")
+        configErrorMessageTextView(passwordErrorMessageTextView, "")
+        startMainActivity()
     }
 
-    override fun onSignInFailure() {
-        configErrorMessageTextView(passwordErrorMessageTextView,"")
+    override fun onEmailPasswordSignInFailureCredentials(exception: Exception) {
+        configErrorMessageTextView(passwordErrorMessageTextView, "The inserted email or password is invalid")
+    }
+
+    override fun onEmailPasswordSignInFailure() {
+        configErrorMessageTextView(passwordErrorMessageTextView, "")
         Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onSignUpSuccess() {
+    override fun onEmailPasswordSignUpSuccess() {
     }
 
-    override fun onSignUpFailure() {
+    override fun onEmailPasswordSignUpFailure() {
     }
 
-    override fun onSignUpFailureDuplicatedCredentials() {
+    override fun onEmailPasswordSignUpFailureDuplicatedCredentials() {
     }
 
+    override fun onUserDataUpdatedSuccess() {
+        if (firebaseAuth.currentUser != null) {
+            val user = User(email = firebaseAuth.currentUser!!.email.toString(),
+                displayName = firebaseAuth.currentUser!!.displayName.toString())
+            firebaseRTDBCommons.updateUser(user = user, firebaseAuth)
+        }
+    }
 
+    override fun onUserDataUpdatedFailure() {
+        Toast.makeText(this, "Something went wrong, updating your data", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onUserRTDBDataUpdatedSuccess() {
+        startMainActivity()
+    }
+
+    override fun onUserRTDBDataUpdatedFailure() {
+        Toast.makeText(this, "Something went wrong, retrieving your data", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onUserRTDBDataRetrievedSuccess(user: User) {
+        // Not implemented yet
+    }
+
+    override fun onUserRTDBDataRetrievedFailure() {
+        // Not implemented yet
+    }
+
+    override fun onUserRTDBGoogleDataInsertedSuccess() {
+        // Not implemented yet
+    }
+
+    override fun onUserRTDBGoogleDataInsertedFailure() {
+        Toast.makeText(this, "Failure when inserting google user data", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onGoogleSignInSuccess(user: User?) {
+        firebaseAuthCommons.updateUser(user!!)
+    }
+
+    override fun onGoogleSignInFailure() {
+        Toast.makeText(this, "Something went wrong while trying to link account with Google", Toast.LENGTH_SHORT).show()
+    }
 }
