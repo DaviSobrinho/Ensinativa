@@ -32,4 +32,11 @@
     <string name="default_web_client_id" translatable="false">591395200926-vqe5n8ieucu7ibekq04pe4n2qhck5afm.apps.googleusercontent.com</string>
     <string name="fullname">Fullname</string>
     <string name="display_name">Display name</string>
+    <string name="you_haven_t_earned_an_achievement_yet_solve_requests_to_get_them">You haven\'t earned an achievement yet, solve requests to get them</string>
+    <string name="achievements">Achievements</string>
+    <string name="you_have_no_skills_added_try_to_add_one_by_editing_your_profile">You have no skills added, try to add one by editing your profile</string>
+    <string name="skills">Skills</string>
+    <string name="description_about_person">Description about person</string>
+    <string name="about">About</string>
+    <string name="person_name">Person name</string>
 </resources>

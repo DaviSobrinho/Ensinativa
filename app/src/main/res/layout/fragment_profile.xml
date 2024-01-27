@@ -94,7 +94,7 @@
             android:layout_height="22dp"
             android:maxLines="1"
             android:lines="1"
-            android:text="Person name"
+            android:text=""
             android:textAlignment="center">
         </TextView>
         <ImageView
@@ -114,10 +114,10 @@
             android:layout_marginStart="4dp"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:text="About">
+            android:text="@string/about">
         </TextView>
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/description_textView"
             android:layout_marginEnd="4dp"
             android:maxLines="12"
             android:layout_marginTop="4dp"
@@ -126,7 +126,7 @@
             android:maxHeight="200dp"
             android:textSize="12sp"
             android:layout_height="wrap_content"
-            android:text="Description about person">
+            android:text="@string/description_about_person">
         </TextView>
         <ImageView
             android:layout_marginTop="4dp"
@@ -145,9 +145,23 @@
             android:layout_marginStart="4dp"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:text="Skills">
+            android:text="@string/skills">
+        </TextView>
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/skills"
+            android:layout_marginEnd="4dp"
+            android:maxLines="2"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_width="match_parent"
+            android:maxHeight="200dp"
+            android:textSize="12sp"
+            android:layout_height="wrap_content"
+            android:text="@string/you_have_no_skills_added_try_to_add_one_by_editing_your_profile">
         </TextView>
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tags_recycler_view"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_width="match_parent"
@@ -170,9 +184,23 @@
             android:layout_marginStart="4dp"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:text="Achievements">
+            android:text="@string/achievements">
+        </TextView>
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/achievements_textView"
+            android:layout_marginEnd="4dp"
+            android:maxLines="2"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_width="match_parent"
+            android:maxHeight="200dp"
+            android:textSize="12sp"
+            android:layout_height="wrap_content"
+            android:text="@string/you_haven_t_earned_an_achievement_yet_solve_requests_to_get_them">
         </TextView>
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/achievements_recycler_view"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_width="match_parent"

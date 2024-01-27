@@ -39,6 +39,9 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             user.tags?.let { tags ->
                 userData["tags"] = tags
             }
+            // Inserindo uma lista de 5 elementos de teste manualmente em achievements e tags
+            userData["achievements"] = listOf("Achievement1", "Achievement2", "Achievement3", "Achievement4", "Achievement5")
+            userData["tags"] = listOf("Tag1", "Tag2", "Tag3", "Tag4", "Tag5")
 
             userRef.updateChildren(userData)
                 .addOnSuccessListener {
@@ -73,8 +76,14 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                             if (userData != null) {
                                 // Extrair os campos necessários de userData
                                 val extractedUser = User(
+                                    uid = userData.uid,
                                     displayName = userData.displayName,
-                                    email = userData.email
+                                    email = userData.email,
+                                    description = userData.description,
+                                    about = userData.about,
+                                    // Tratamento das listas
+                                    achievements = userData.achievements?.toList() ?: emptyList(),
+                                    tags = userData.tags?.toList() ?: emptyList()
                                 )
                                 // Chame o método para notificar que os dados foram recuperados com sucesso
                                 firebaseRTDBListener.onUserRTDBDataRetrievedSuccess(extractedUser)
@@ -96,4 +105,5 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             firebaseRTDBListener.onUserRTDBDataRetrievedFailure()
         }
     }
+
 }
