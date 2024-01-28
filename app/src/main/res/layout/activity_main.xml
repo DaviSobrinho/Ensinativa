@@ -19,7 +19,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:src="@drawable/ensinativa_logo"
-            app:tint="@color/azul_5">
+            app:tint="@color/blue5">
         </ImageView>
         <TextView
             app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:textSize="20sp"
-            android:textColor="@color/azul_5"
+            android:textColor="@color/blue5"
             android:text="@string/ensinativa"/>
         <View
             android:background="@drawable/bottom_border"
@@ -52,7 +52,7 @@
             android:layout_height="44dp"
             android:padding="0dp"
             android:background="@color/transaparent"
-            android:foregroundTint="@color/azul_5"
+            android:foregroundTint="@color/blue5"
             android:foreground="@drawable/ic_menu_foreground">
         </Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -84,7 +84,7 @@
         app:itemPaddingTop="20dp"
         app:itemPaddingBottom="20dp"
         app:labelVisibilityMode="unlabeled"
-        app:itemRippleColor="@color/azul_1"
+        app:itemRippleColor="@color/blue1"
         app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
         app:itemIconTint="@color/bottom_menu_colors"
         app:itemTextColor="@color/bottom_menu_colors"

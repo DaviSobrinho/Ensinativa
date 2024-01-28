@@ -21,24 +21,24 @@ class ProfileFragmentTagsAdapter(private val context: Context, tags: List<String
                 when (index) {
                     0 -> {
                         val tag1 =
-                            itemView.findViewById<Button>(R.id.fragmentProfileRecyclerViewTag1)
+                            itemView.findViewById<Button>(R.id.fragmentProfileSkillsRecyclerViewTag1)
                         tag1.text = value
                         tag1.visibility = View.VISIBLE
                         val layout =
-                            itemView.findViewById<LinearLayout>(R.id.fragmentProfileLinearLayout)
+                            itemView.findViewById<LinearLayout>(R.id.fragmentProfileSkillsLinearLayout)
                         layout.visibility = View.VISIBLE
                     }
 
                     1 -> {
                         val tag2 =
-                            itemView.findViewById<Button>(R.id.fragmentProfileRecyclerViewTag2)
+                            itemView.findViewById<Button>(R.id.fragmentProfileSkillsRecyclerViewTag2)
                         tag2.text = value
                         tag2.visibility = View.VISIBLE
                     }
 
                     2 -> {
                         val tag3 =
-                            itemView.findViewById<Button>(R.id.fragmentProfileRecyclerViewTag3)
+                            itemView.findViewById<Button>(R.id.fragmentProfileSkillsRecyclerViewTag3)
                         tag3.text = value
                         tag3.visibility = View.VISIBLE
                     }

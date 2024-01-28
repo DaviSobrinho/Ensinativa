@@ -1,5 +1,6 @@
 package com.example.ensinativa.firebasertdb
 
+import com.example.ensinativa.model.Achievement
 import com.example.ensinativa.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -16,31 +17,41 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
 
             val userData = mutableMapOf<String, Any?>()
 
-            user.displayName?.let { displayName ->
+            user.displayName.let { displayName ->
                 userData["displayName"] = displayName
             }
 
-            user.email?.let { email ->
+            user.email.let { email ->
                 userData["email"] = email
             }
 
-            user.description?.let { description ->
+            user.description.let { description ->
                 userData["description"] = description
             }
 
-            user.about?.let { about ->
+            user.about.let { about ->
                 userData["about"] = about
             }
 
-            user.achievements?.let { achievements ->
+            user.achievements.let { achievements ->
                 userData["achievements"] = achievements
             }
 
-            user.tags?.let { tags ->
+            user.tags.let { tags ->
                 userData["tags"] = tags
             }
             // Inserindo uma lista de 5 elementos de teste manualmente em achievements e tags
-            userData["achievements"] = listOf("Achievement1", "Achievement2", "Achievement3", "Achievement4", "Achievement5")
+            userData["achievements"] = listOf(
+                Achievement(
+                "\"My first request\"", "badge1maderequest", "Earned by creating your first request"),
+                Achievement(
+                    "\"My tenth request\"", "badge10maderequest", "Earned by creating your tenth request"),
+                Achievement(
+                    "\"My hundredth request\"", "badge100maderequest", "Earned by creating your hundredth request"),
+                Achievement(
+                    "\"My first solution\"", "badge1solvedrequest", "Earned by solving your first request"),
+                Achievement(
+                    "\"My hundredth solution\"", "badge100solvedrequest", "Earned by solving your hundredth request"))
             userData["tags"] = listOf("Tag1", "Tag2", "Tag3", "Tag4", "Tag5")
 
             userRef.updateChildren(userData)
@@ -82,8 +93,8 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                                     description = userData.description,
                                     about = userData.about,
                                     // Tratamento das listas
-                                    achievements = userData.achievements?.toList() ?: emptyList(),
-                                    tags = userData.tags?.toList() ?: emptyList()
+                                    achievements = userData.achievements.toList(),
+                                    tags = userData.tags.toList()
                                 )
                                 // Chame o método para notificar que os dados foram recuperados com sucesso
                                 firebaseRTDBListener.onUserRTDBDataRetrievedSuccess(extractedUser)

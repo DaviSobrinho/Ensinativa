@@ -6,6 +6,6 @@ data class User (
     var email : String = "",
     var description : String = "",
     var about : String = "",
-    var achievements : List<String> = emptyList(),
+    var achievements : List<Achievement> = emptyList(),
     var tags : List<String> = emptyList()
 )

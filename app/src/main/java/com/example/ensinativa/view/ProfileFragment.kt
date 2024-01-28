@@ -12,25 +12,26 @@ import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
 import com.example.ensinativa.firebaseauth.FirebaseAuthListener
 import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
+import com.example.ensinativa.firebasestorage.FirebaseStorageListener
+import com.example.ensinativa.model.Achievement
 import com.example.ensinativa.model.User
+import com.example.ensinativa.viewmodel.adapters.ProfileFragmentAchievementsAdapter
 import com.example.ensinativa.viewmodel.adapters.ProfileFragmentTagsAdapter
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.database.database
 import java.lang.Exception
 
 private lateinit var binding: FragmentProfileBinding
 private var firebaseAuth: FirebaseAuth = Firebase.auth
 
 
-class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener {
+class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,FirebaseStorageListener {
     private lateinit var firebaseAuthCommons : FirebaseAuthCommons
     private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
     private lateinit var displayName: TextView
     private lateinit var user: User
-
-    private var param1: String? = null
-    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +52,11 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener {
         firebaseRTDBCommons = FirebaseRTDBCommons(this)
         firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
         displayName = binding.displayName
-        binding.edit.setOnClickListener{configProfile()
+        binding.edit.setOnClickListener{
+            val database = Firebase.database
+            val myRef = database.getReference("achievements")
+            myRef.setValue("Hello, World!")
+            configProfile()
         }
         configProfile()
     }
@@ -61,24 +66,43 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener {
         }
     }
 
-
-
     override fun onUserRTDBDataRetrievedSuccess(userModel: User) {
         user = userModel
         displayName.text = user.displayName
         configTags(user.tags)
+        configAchievements(user.achievements)
     }
+
+    private fun configAchievements(achievements: List<Achievement>) {
+        if(achievements.isEmpty()){
+            binding.achievementsTextView.visibility = View.VISIBLE
+        }else{
+            binding.achievementsTextView.visibility = View.GONE
+            configureAchievementsRecyclerView(achievements)
+        }
+    }
+
+
+    private fun configureAchievementsRecyclerView(achievements: List<Achievement>) {
+        val recyclerView = binding.achievementsRecyclerView
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = layoutManager
+        val adapter = ProfileFragmentAchievementsAdapter(requireContext(),
+            achievements,
+            this,
+            firebaseAuth)
+        recyclerView.adapter = adapter
+    }
+
     fun configTags(tags : List<String>){
         if(tags.isEmpty()){
-            configNoTagsTextView(tags)
+            binding.skillsTextView.visibility = View.VISIBLE
         }else{
+            binding.skillsTextView.visibility = View.GONE
             configureTagsRecyclerView(tags)
         }
     }
-    fun configNoTagsTextView(tags : List<String>){
-        val textView = binding.skills
-        textView.visibility = View.VISIBLE
-    }
+
     private fun configureTagsRecyclerView(tags: List<String>) {
         val recyclerView = binding.tagsRecyclerView
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

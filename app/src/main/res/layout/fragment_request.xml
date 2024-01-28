@@ -34,35 +34,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="80dp">
+            android:layout_height="48dp">
 
             <Button
-                android:id="@+id/myRequestsButton"
+                android:id="@+id/createRequestButton"
                 android:padding="2dp"
                 android:lines="1"
                 android:textSize="16sp"
-                android:textColor="@color/cinza_7"
+                android:textColor="@color/gray7"
                 android:background="@drawable/button_roundedtopleft5dp_background_selected"
                 app:backgroundTint="@color/transaparent"
                 app:backgroundTintMode="src_atop"
                 app:cornerRadius="0dp"
-                android:text="My requests"
+                android:text="@string/create_request"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
             </Button>
 
             <Button
-                android:id="@+id/createRequestButton"
+                android:id="@+id/myRequestsButton"
                 android:lines="1"
                 android:padding="2dp"
                 android:textSize="16sp"
-                android:textColor="@color/cinza_7"
+                android:textColor="@color/gray7"
                 android:background="@drawable/button_roundedtopright5dp_background"
                 app:backgroundTint="@color/transaparent"
                 app:backgroundTintMode="src_atop"
                 app:cornerRadius="0dp"
-                android:text="Create request"
+                android:text="@string/my_requests"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -72,15 +72,9 @@
             android:id="@+id/viewSwitcher"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="48dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent">
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-            </androidx.recyclerview.widget.RecyclerView>
             <ScrollView
                 android:layout_marginBottom="2dp"
                 android:layout_width="match_parent"
@@ -106,7 +100,7 @@
                         <com.google.android.material.textfield.TextInputLayout
                             app:boxBackgroundColor="@color/white"
                             android:layout_width="match_parent"
-                            android:layout_height="80dp">
+                            android:layout_height="60dp">
                             <com.google.android.material.textfield.TextInputEditText
                                 android:textSize="12sp"
                                 android:inputType="none"
@@ -114,12 +108,12 @@
                                 android:layout_height="match_parent"
                                 android:hint="Request title"
                                 android:text="Request title"
-                                android:textColor="@color/cinza_7"/>
+                                android:textColor="@color/gray7"/>
                         </com.google.android.material.textfield.TextInputLayout>
                         <com.google.android.material.textfield.TextInputLayout
                             app:boxBackgroundColor="@color/white"
                             android:layout_width="match_parent"
-                            android:layout_height="80dp"
+                            android:layout_height="60dp"
                             android:layout_marginTop="12dp">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -129,7 +123,7 @@
                                 android:layout_height="match_parent"
                                 android:hint="Description"
                                 android:text="Request description"
-                                android:textColor="@color/cinza_7" />
+                                android:textColor="@color/gray7" />
                         </com.google.android.material.textfield.TextInputLayout>
                         <LinearLayout
                             android:layout_marginTop="12dp"
@@ -140,7 +134,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                                 <Button
-
                                     android:paddingStart="4dp"
                                     android:paddingEnd="4dp"
                                     android:textAlignment="center"
@@ -152,7 +145,7 @@
                                     app:cornerRadius="50dp"
                                     app:backgroundTint="@color/transaparent"
                                     app:backgroundTintMode="src_atop"
-                                    android:textColor="@color/cinza_7"
+                                    android:textColor="@color/gray7"
                                     android:textSize="12sp"
                                     android:background="@drawable/material_button_30dp_border_background"
                                     android:layout_width="wrap_content"
@@ -175,7 +168,7 @@
                                     app:backgroundTint="@color/transaparent"
                                     app:backgroundTintMode="src_atop"
                                     android:padding="0dp"
-                                    android:textColor="@color/cinza_7"
+                                    android:textColor="@color/gray7"
                                     android:textSize="12sp"
                                     android:background="@drawable/material_button_30dp_border_background"
                                     android:layout_marginStart="12dp"
@@ -186,8 +179,10 @@
                         </LinearLayout>
 
                         <Button
+                            app:cornerRadius="50dp"
+                            android:id="@+id/insertImageOfProblem"
                             android:layout_width="200dp"
-                            android:layout_height="199dp"
+                            android:layout_height="200dp"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="12dp"
                             android:background="@drawable/material_button_5dp_border_background"
@@ -195,9 +190,9 @@
                             app:backgroundTint="@color/transaparent"
                             app:backgroundTintMode="src_atop"
                             android:textSize="16sp"
-                            android:textColor="@color/cinza_7"
+                            android:textColor="@color/gray7"
                             android:contentDescription="@string/problem_image"
-                            android:foregroundTint="@color/cinza7_50_100"
+                            android:foregroundTint="@color/grey7_50_to_100_transparency_gradient"
                             android:foreground="@drawable/ic_image_add_foreground" />
                         <Button
                             android:layout_marginBottom="20dp"
@@ -205,12 +200,12 @@
                             android:layout_gravity="center"
                             android:orientation="horizontal"
                             android:layout_width="160dp"
-                            android:layout_height="60dp"
-                            android:background="@drawable/material_button_30dp_border_background"
+                            android:layout_height="40dp"
+                            android:background="@drawable/material_button_5dp_border_green_background"
                             app:backgroundTint="@color/transaparent"
                             app:backgroundTintMode="src_atop"
                             android:text="@string/confirm_request"
-                            android:textColor="@color/cinza_7"
+                            android:textColor="@color/white"
                             android:lines="1"
                             android:textSize="16sp"
                             android:padding="2dp"
@@ -223,6 +218,12 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </ScrollView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+            </androidx.recyclerview.widget.RecyclerView>
 
 
         </ViewSwitcher>

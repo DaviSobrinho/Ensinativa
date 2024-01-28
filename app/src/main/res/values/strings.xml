@@ -39,4 +39,6 @@
     <string name="description_about_person">Description about person</string>
     <string name="about">About</string>
     <string name="person_name">Person name</string>
+    <string name="my_requests">My requests</string>
+    <string name="create_request">Create request</string>
 </resources>

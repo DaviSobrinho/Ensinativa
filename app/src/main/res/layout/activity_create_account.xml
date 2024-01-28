@@ -27,7 +27,7 @@
                     android:background="@drawable/material_button_rounded_border_background"
                     app:backgroundTint="@color/transaparent"
                     app:backgroundTintMode="src_atop"
-                    android:foregroundTint="@color/cinza_5"
+                    android:foregroundTint="@color/gray5"
                     android:foreground="@drawable/ic_arrow_left_foreground"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
@@ -41,9 +41,9 @@
                     android:layout_width="160dp"
                     android:layout_height="160dp"
                     app:srcCompat="@drawable/ensinativa_logo"
-                    app:tint="@color/azul_5" />
+                    app:tint="@color/blue5" />
                 <TextView
-                    android:textColor="@color/azul_5"
+                    android:textColor="@color/blue5"
                     android:layout_width="200dp"
                     android:layout_height="40dp"
                     android:text="@string/ensinativa"
@@ -71,14 +71,14 @@
                     android:textSize="12sp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textColor="@color/cinza_7">
+                    android:textColor="@color/gray7">
                 </com.google.android.material.textfield.TextInputEditText>
             </com.google.android.material.textfield.TextInputLayout>
             <TextView
                 android:id="@+id/displayNameErrorMessage"
                 android:padding="0dp"
                 android:layout_gravity="center"
-                android:textColor="@color/vermelho_4"
+                android:textColor="@color/red4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -108,7 +108,7 @@
                     android:textSize="12sp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textColor="@color/cinza_7"
+                    android:textColor="@color/gray7"
                     android:inputType="textEmailAddress">
                 </com.google.android.material.textfield.TextInputEditText>
             </com.google.android.material.textfield.TextInputLayout>
@@ -116,7 +116,7 @@
                 android:id="@+id/emailErrorMessage"
                 android:padding="0dp"
                 android:layout_gravity="center"
-                android:textColor="@color/vermelho_4"
+                android:textColor="@color/red4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
@@ -148,14 +148,14 @@
                     android:textSize="12sp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textColor="@color/cinza_7">
+                    android:textColor="@color/gray7">
                 </com.google.android.material.textfield.TextInputEditText>
             </com.google.android.material.textfield.TextInputLayout>
             <TextView
                 android:id="@+id/passwordErrorMessage"
                 android:padding="0dp"
                 android:layout_gravity="center"
-                android:textColor="@color/vermelho_4"
+                android:textColor="@color/red4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"

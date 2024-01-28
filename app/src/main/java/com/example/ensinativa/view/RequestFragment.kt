@@ -1,43 +1,51 @@
 package com.example.ensinativa.view
 
+import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.InsetDrawable
+import android.graphics.drawable.LayerDrawable
+import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import com.example.ensinativa.R
-import com.example.ensinativa.databinding.FragmentHomeBinding
 import com.example.ensinativa.databinding.FragmentRequestBinding
+import java.io.IOException
+import java.io.InputStream
+
 
 // TODO: Rename parameter arguments, choose names that match
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 var page = 1
+
+private val PICK_IMAGE_REQUEST = 1
+private val CAMERA_REQUEST = 2
 
 private lateinit var binding: FragmentRequestBinding
 
-/**
- * A simple [Fragment] subclass.
- * Use the [RequestFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-
 class RequestFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -46,6 +54,12 @@ class RequestFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentRequestBinding.inflate(inflater, container,false)
+
+        setSwitcher()
+        binding.insertImageOfProblem.setOnClickListener{
+            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
+        }
         return binding.root
     }
 
@@ -57,7 +71,6 @@ class RequestFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        setSwitcher()
     }
     private fun setSwitcher(){
         binding.viewSwitcher.setInAnimation(AnimationUtils.loadAnimation(requireContext(),android.R.anim.slide_in_left))
@@ -85,23 +98,64 @@ class RequestFragment : Fragment() {
             }
         }
     }
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RequestFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RequestFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                PICK_IMAGE_REQUEST -> {
+                    val selectedImageUri = data?.data
+                    // Altere o background do botão com a imagem selecionada
+                    selectedImageUri?.let {
+                        val drawable = BitmapDrawable(resources, getBitmapFromUri(it))
+                        binding.insertImageOfProblem.background = getBorderedBackgroundDrawable(drawable)
+                        binding.insertImageOfProblem.clipToOutline = true
+                        binding.insertImageOfProblem.foreground = null
+                        binding.insertImageOfProblem.text = ""
+                        binding.insertImageOfProblem.contentDescription = ""
+                    }
+                }
+                CAMERA_REQUEST -> {
+                    // Handle camera capture result
+                    // Você pode lidar com a imagem capturada aqui, se necessário
                 }
             }
+        }
     }
+    private fun getBitmapFromUri(uri: Uri): Bitmap? {
+        return try {
+            val inputStream = requireActivity().contentResolver.openInputStream(uri)
+            BitmapFactory.decodeStream(inputStream)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+    // Função para criar um Drawable com bordas e raio de canto
+    private fun getBorderedBackgroundDrawable(drawable: Drawable): Drawable {
+        val borderColor = ContextCompat.getColor(requireContext(), R.color.gray5)
+        val borderWidth = 2 // Largura das bordas em dp
+        val cornerRadius = 5 // Raio de canto em dp
+
+        // Shape for the gray border
+        val borderShape = GradientDrawable()
+        borderShape.shape = GradientDrawable.RECTANGLE
+        borderShape.setStroke(convertDpToPixel(borderWidth.toFloat()), borderColor)
+        borderShape.cornerRadius = convertDpToPixel(cornerRadius.toFloat()).toFloat()
+        borderShape.setColor(Color.TRANSPARENT)
+
+
+        // LayerDrawable to stack the border on top of the background drawable
+        val layerDrawable = LayerDrawable(arrayOf(borderShape, drawable))
+
+        layerDrawable.setLayerInset(1, 0, 0, 0, 0) // No inset for the background drawable
+
+        return layerDrawable
+    }
+
+
+    private fun convertDpToPixel(dp: Float): Int {
+        val scale = resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
+    }
+
 }
