@@ -203,6 +203,14 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         startActivity(intent, customAnimation.toBundle())
     }
 
+    override fun onRequestRTDBDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
+
     override fun onUserRTDBDataUpdatedSuccess() {
         startMainActivity()
     }

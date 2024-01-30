@@ -1,6 +1,8 @@
 package com.example.ensinativa.model
 
 data class Request (
+    val creatorUID : String = "",
+    val imageSrc: String = "",
     var title : String = "",
     var description : String = "",
     var tag1 : String = "",

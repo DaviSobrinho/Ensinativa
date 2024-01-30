@@ -102,44 +102,44 @@
                             android:layout_width="match_parent"
                             android:layout_height="60dp">
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/requestTitleTextInput"
                                 android:textSize="12sp"
                                 android:inputType="none"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:hint="Request title"
-                                android:text="Request title"
                                 android:textColor="@color/gray7"/>
                         </com.google.android.material.textfield.TextInputLayout>
                         <com.google.android.material.textfield.TextInputLayout
                             app:boxBackgroundColor="@color/white"
                             android:layout_width="match_parent"
-                            android:layout_height="60dp"
+                            android:layout_height="80dp"
                             android:layout_marginTop="12dp">
 
                             <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/requestDescriptionTextInput"
                                 android:textSize="12sp"
                                 android:inputType="none"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:hint="Description"
-                                android:text="Request description"
                                 android:textColor="@color/gray7" />
                         </com.google.android.material.textfield.TextInputLayout>
                         <LinearLayout
+                            android:gravity="center"
+                            android:layout_gravity="center"
                             android:layout_marginTop="12dp"
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
-                            <GridLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
                                 <Button
+                                    android:maxWidth="100dp"
+                                    android:text="Select tag 1"
                                     android:paddingStart="4dp"
                                     android:paddingEnd="4dp"
                                     android:textAlignment="center"
                                     android:lines="1"
                                     android:maxLines="1"
-                                    android:text="Tag 1"
                                     android:padding="0dp"
                                     android:id="@+id/tag1"
                                     app:cornerRadius="50dp"
@@ -151,16 +151,12 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="32dp">
                                 </Button>
-                            </GridLayout>
-
-                            <GridLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
                                 <Button
+                                    android:maxWidth="100dp"
                                     android:textAlignment="center"
                                     android:lines="1"
                                     android:maxLines="1"
-                                    android:text="Tag 2"
+                                    android:text="Select tag 2"
                                     android:paddingStart="4dp"
                                     android:paddingEnd="4dp"
                                     android:id="@+id/tag2"
@@ -175,9 +171,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="32dp">
                                 </Button>
-                            </GridLayout>
-                        </LinearLayout>
 
+                        </LinearLayout>
                         <Button
                             app:cornerRadius="50dp"
                             android:id="@+id/insertImageOfProblem"
@@ -186,7 +181,7 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="12dp"
                             android:background="@drawable/material_button_5dp_border_background"
-                            android:text="@string/insert_image_of_problem"
+                            android:text="@string/click_here_to_add_an_image_of_your_problem"
                             app:backgroundTint="@color/transaparent"
                             app:backgroundTintMode="src_atop"
                             android:textSize="16sp"
@@ -194,7 +189,23 @@
                             android:contentDescription="@string/problem_image"
                             android:foregroundTint="@color/grey7_50_to_100_transparency_gradient"
                             android:foreground="@drawable/ic_image_add_foreground" />
+
+
+                        <TextView
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:id="@+id/skills_textView"
+                            android:layout_marginEnd="4dp"
+                            android:maxLines="2"
+                            android:layout_marginStart="4dp"
+                            android:layout_width="200dp"
+                            android:maxHeight="200dp"
+                            android:textSize="12sp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/image_of_problem">
+                        </TextView>
                         <Button
+                            android:id="@+id/confirmRequestButton"
                             android:layout_marginBottom="20dp"
                             android:layout_marginTop="12dp"
                             android:layout_gravity="center"

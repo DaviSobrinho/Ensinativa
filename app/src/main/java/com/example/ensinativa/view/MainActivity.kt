@@ -19,8 +19,13 @@ import com.example.ensinativa.viewmodel.ViewPagerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.appCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.initialize
 import java.lang.Exception
 
 private lateinit var firebaseAuth: FirebaseAuth
@@ -39,7 +44,7 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         super.onCreate(savedInstanceState)
         renderView()
         configViewPager()
-
+        configAppCheck()
 
     }
     public override fun onStart() {
@@ -55,6 +60,18 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         val view = binding.root
         setContentView(view)
     }
+    private fun configAppCheck(){
+        FirebaseApp.initializeApp(this)
+
+        // Configurar o App Check com o DebugAppCheckProvider para ambiente de desenvolvimento
+        println("Configurando debug")
+        FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+            DebugAppCheckProviderFactory.getInstance()
+        )
+
+        println(DebugAppCheckProviderFactory.getInstance())
+    }
+
 
     private fun configMenuButton(menuButton: Button) {
         menuButton.setOnClickListener{

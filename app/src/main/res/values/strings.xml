@@ -41,4 +41,20 @@
     <string name="person_name">Person name</string>
     <string name="my_requests">My requests</string>
     <string name="create_request">Create request</string>
+    <string name="click_here_to_add_an_image_of_your_problem">Click here to add an image of your problem</string>
+    <string name="image_of_problem">Image of problem</string>
+    <string name="add_tag1">Add tag1 +</string>
+    <string name="add_tag2">Add tag2 +</string>
+    <string name="tag_1">Tag 1</string>
+    <string name="tag_error_message">Tag error message</string>
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
 </resources>

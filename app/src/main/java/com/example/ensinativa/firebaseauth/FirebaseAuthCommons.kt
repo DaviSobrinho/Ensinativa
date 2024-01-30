@@ -24,8 +24,10 @@ class FirebaseAuthCommons (private val firebaseAuthListener: FirebaseAuthListene
         }
     }
     fun emailPasswordSignIn(email: String, password: String) {
+        println("CurrentUser"+firebaseAuth.currentUser)
         val task = firebaseAuth.signInWithEmailAndPassword(email,password)
         task.addOnSuccessListener {
+            println("CurrentUser2"+firebaseAuth.currentUser)
                 firebaseAuthListener.onEmailPasswordSignInSuccess(email,password)
         }
         task.addOnFailureListener {exception ->

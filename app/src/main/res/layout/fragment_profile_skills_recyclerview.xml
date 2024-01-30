@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <Button
-
+                android:maxWidth="100dp"
                 android:paddingStart="4dp"
                 android:paddingEnd="4dp"
                 android:textAlignment="center"
@@ -43,6 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <Button
+                android:maxWidth="100dp"
                 android:textAlignment="center"
                 android:lines="1"
                 android:maxLines="1"
@@ -66,6 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <Button
+                android:maxWidth="100dp"
                 android:textAlignment="center"
                 android:lines="1"
                 android:maxLines="1"

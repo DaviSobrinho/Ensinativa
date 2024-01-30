@@ -1,6 +1,8 @@
 package com.example.ensinativa.firebasertdb
 
 import com.example.ensinativa.model.Achievement
+import com.example.ensinativa.model.Request
+import com.example.ensinativa.model.RequestImage
 import com.example.ensinativa.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -114,6 +116,54 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             }
         } else {
             firebaseRTDBListener.onUserRTDBDataRetrievedFailure()
+        }
+    }
+
+    fun updateRequest(request: Request, firebaseAuth: FirebaseAuth) {
+        val currentUserId = firebaseAuth.currentUser?.uid
+        currentUserId?.let {
+            val database = FirebaseDatabase.getInstance()
+            val usersRef = database.getReference("users")
+            val userRef = usersRef.child(it)
+
+            val requestData = mutableMapOf<String, Any?>()
+
+            request.creatorUID.let { creatorUID ->
+                requestData["creatorUID"] = creatorUID
+            }
+
+            request.description.let { description ->
+                requestData["description"] = description
+            }
+
+            request.title.let { title ->
+                requestData["title"] = title
+            }
+
+            request.imageSrc.let {imageSrc ->
+                requestData["imageSrc"] = imageSrc
+            }
+
+            request.tag1.let { tag1 ->
+                requestData["tag1"] = tag1
+            }
+
+            request.tag2.let { tag2 ->
+                requestData["tag2"] = tag2
+            }
+
+            userRef.updateChildren(requestData)
+                .addOnSuccessListener {
+                    // Sucesso ao atualizar dados no Realtime Database
+                    firebaseRTDBListener.onRequestRTDBDataUpdatedSuccess()
+                }
+                .addOnFailureListener {
+                    // Falha ao atualizar dados no Realtime Database
+                    firebaseRTDBListener.onRequestRTDBDataUpdatedFailure()
+                }
+        } ?: run {
+            // Usuário não autenticado
+            firebaseRTDBListener.onRequestRTDBDataUpdatedFailure()
         }
     }
 

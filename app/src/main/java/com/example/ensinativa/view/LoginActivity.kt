@@ -32,6 +32,10 @@ import com.example.ensinativa.firebaseauth.GoogleAuthListener
 import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.model.User
+import com.google.firebase.appcheck.appCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
+import com.google.firebase.initialize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -237,6 +241,14 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
 
     override fun onUserDataUpdatedFailure() {
         Toast.makeText(this, "Something went wrong, updating your data", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onRequestRTDBDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
     }
 
     override fun onUserRTDBDataUpdatedSuccess() {

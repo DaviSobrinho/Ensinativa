@@ -21,6 +21,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.database.database
+import com.google.firebase.storage.StorageReference
 import java.lang.Exception
 
 private lateinit var binding: FragmentProfileBinding
@@ -112,6 +113,13 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
 
     }
 
+    override fun onRequestRTDBDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
 
 
     override fun onUserRTDBDataUpdatedSuccess() {
@@ -157,6 +165,14 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
     }
 
     override fun onUserDataUpdatedFailure() {
+    }
+
+    override fun onFileInsertedConflict() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onFileInsertedSuccess(fileReference: StorageReference) {
+        TODO("Not yet implemented")
     }
 
 }
