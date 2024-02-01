@@ -15,20 +15,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ScrollView
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.ensinativa.R
 import com.example.ensinativa.databinding.FragmentRequestBinding
+import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
+import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
+import com.example.ensinativa.model.Request
+import com.example.ensinativa.model.RequestDescriptionValidation
+import com.example.ensinativa.model.RequestTagValidation
+import com.example.ensinativa.model.RequestTitleValidation
+import com.example.ensinativa.model.User
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.nio.ByteBuffer
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -42,11 +53,22 @@ private val CAMERA_REQUEST = 2
 
 private lateinit var binding: FragmentRequestBinding
 
-class RequestFragment : Fragment(), FirebaseStorageListener {
+class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListener {
 
     private lateinit var firebaseStorageCommons: FirebaseStorageCommons
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
     private lateinit var requestImageByteArray: ByteArray
+    private lateinit var titleTextInputEditText: TextInputEditText
+    private lateinit var descriptionTextInputEditText: TextInputEditText
+    private lateinit var tag1: Button
+    private lateinit var tag2: Button
+    private lateinit var imageButton: Button
+    private lateinit var titleErrorMessageTextView: TextView
+    private lateinit var descriptionErrorMessageTextView: TextView
+    private lateinit var tagsErrorMessageTextView: TextView
+    private lateinit var imageErrorMessageTextView: TextView
+    private var imageSelected: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -60,11 +82,22 @@ class RequestFragment : Fragment(), FirebaseStorageListener {
         binding = FragmentRequestBinding.inflate(inflater, container,false)
         firebaseAuth = Firebase.auth
         firebaseStorageCommons = FirebaseStorageCommons(this,firebaseAuth)
+        firebaseRTDBCommons = FirebaseRTDBCommons(this)
+        titleTextInputEditText = binding.requestTitleTextInput
+        descriptionTextInputEditText = binding.requestDescriptionTextInput
+        tag1 = binding.tag1
+        tag2 = binding.tag2
+        imageButton = binding.insertImageOfProblem
+        titleErrorMessageTextView = binding.requestTitleErrorMessage
+        descriptionErrorMessageTextView = binding.requestDescriptionErrorMessage
+        tagsErrorMessageTextView = binding.requestTagsErrorMessage
+        imageErrorMessageTextView = binding.requestImageErrorMessage
 
         configSwitcher()
         configInsertImageButton()
         configConfirmRequestButton()
         configSelectTagButton()
+
         return binding.root
     }
 
@@ -80,16 +113,83 @@ class RequestFragment : Fragment(), FirebaseStorageListener {
 
     }
     fun configConfirmRequestButton(){
+
+
         binding.confirmRequestButton.setOnClickListener{
+            val validatedTitle = validateTitle(titleTextInputEditText.text.toString())
+            val validatedDescription = validateDescription(descriptionTextInputEditText.text.toString())
+            val validatedTags = validateTags(tag1,tag2)
+            configErrorMessageTextView(titleErrorMessageTextView,validatedTitle.errorMessage)
+            configErrorMessageTextView(tagsErrorMessageTextView,validatedTags.errorMessage)
+            configErrorMessageTextView(descriptionErrorMessageTextView,validatedDescription.errorMessage)
             binding.confirmRequestButton.startAnimation(AnimationUtils.loadAnimation(
                 requireContext(),
                 androidx.appcompat.R.anim.abc_fade_in
             ))
-            firebaseStorageCommons.insertFile("requests","0",".png",requestImageByteArray)
+            if (validatedTitle.valid && validatedDescription.valid && validatedTags.valid && imageSelected) {
+                firebaseStorageCommons.insertFile("requests","0",".png",requestImageByteArray)
+            }else{
+                if(validatedTitle.valid && validatedDescription.valid && validatedTags.valid && !imageSelected){
+                    val time = Calendar.getInstance().time
+                    val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm")
+                    val current = formatter.format(time)
+                    firebaseRTDBCommons.createRequest(
+                        Request(
+                            firebaseAuth.currentUser!!.uid,
+                            "",
+                            titleTextInputEditText.text.toString(),
+                            descriptionTextInputEditText.text.toString(),
+                            tag1.text.toString(),
+                            tag2.text.toString(), current.toString(),false),firebaseAuth)
+                }
+            }
         }
     }
+
+    private fun validateTags(tag1: Button, tag2: Button): RequestTagValidation {
+        val validatedTags = RequestTagValidation("",true)
+        if(tag1.text.toString().isBlank() || tag1.text.toString() == getString(R.string.select_tag_1)){
+            validatedTags.errorMessage = "The request must have 2 tags, please select them"
+            validatedTags.valid = false
+        }else{
+            if(tag2.text.toString().isBlank() || tag2.text.toString() == getString(R.string.select_tag_2)){
+                validatedTags.errorMessage = "The request must have 2 tags, please select them"
+                validatedTags.valid = false
+            }else{
+                if(tag1.text.toString() == tag2.text.toString()){
+                    validatedTags.errorMessage = "The tags must be different"
+                    validatedTags.valid = false
+                }
+            }
+        }
+        return validatedTags
+    }
+
+    private fun validateDescription(description: String): RequestDescriptionValidation {
+        val validatedDescription = RequestDescriptionValidation("",true)
+        if(description.isBlank()){
+            validatedDescription.errorMessage = "The request must have a description"
+            validatedDescription.valid = false
+        }
+        return validatedDescription
+    }
+
+    private fun validateTitle(title: String): RequestTitleValidation {
+        val validatedTitle = RequestTitleValidation("",true)
+        if(title.isBlank()){
+            validatedTitle.errorMessage = "The request must have a title"
+            validatedTitle.valid = false
+        }else{
+            if(title.length < 3){
+                validatedTitle.errorMessage = "The title must have at least 3 characters"
+                validatedTitle.valid = false
+            }
+        }
+        return validatedTitle
+    }
+
     fun configInsertImageButton(){
-        binding.insertImageOfProblem.setOnClickListener{
+        imageButton.setOnClickListener{
             val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
         }
@@ -130,11 +230,12 @@ class RequestFragment : Fragment(), FirebaseStorageListener {
                     selectedImageUri?.let {
                         val drawable = BitmapDrawable(resources, getBitmapFromUri(it))
                         requestImageByteArray = convertBitmapToByteArray(getBitmapFromUri(it)!!)
-                        binding.insertImageOfProblem.background = getBorderedBackgroundDrawable(drawable)
-                        binding.insertImageOfProblem.clipToOutline = true
-                        binding.insertImageOfProblem.foreground = null
-                        binding.insertImageOfProblem.text = ""
-                        binding.insertImageOfProblem.contentDescription = ""
+                        imageButton.background = getBorderedBackgroundDrawable(drawable)
+                        imageButton.clipToOutline = true
+                        imageButton.foreground = null
+                        imageButton.text = ""
+                        imageButton.contentDescription = ""
+                        imageSelected = true
                     }
                 }
                 CAMERA_REQUEST -> {
@@ -153,7 +254,6 @@ class RequestFragment : Fragment(), FirebaseStorageListener {
             null
         }
     }
-    // Função para criar um Drawable com bordas e raio de canto
     private fun getBorderedBackgroundDrawable(drawable: Drawable): Drawable {
         val cornerRadius = 5
         val borderShape = GradientDrawable()
@@ -178,25 +278,44 @@ class RequestFragment : Fragment(), FirebaseStorageListener {
         return (dp * scale + 0.5f).toInt()
     }
 
-    override fun onFileInsertedConflict() {
-        Toast.makeText(requireContext(), "Something wnet wrong when uploading the image of problem", Toast.LENGTH_SHORT).show()
+    private fun configErrorMessageTextView(textView: TextView, errorMessage: String) {
+        textView.text = errorMessage
+        if(errorMessage != ""){
+            textView.visibility = View.VISIBLE
+        }else{
+            textView.visibility = View.GONE
+        }
     }
+
+    override fun onFileInsertedConflict() {
+        Toast.makeText(requireContext(), "Something wnet wrong when creating your request", Toast.LENGTH_SHORT).show()
+    }
+
 
     override fun onFileInsertedSuccess(fileReference: StorageReference) {
-
-        Toast.makeText(requireContext(), "The image of problem was inserted successfully", Toast.LENGTH_SHORT).show()
+        val time = Calendar.getInstance().time
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm")
+        val current = formatter.format(time)
+        firebaseRTDBCommons.createRequest(
+            Request(
+                firebaseAuth.currentUser!!.uid,
+                fileReference.name,
+                titleTextInputEditText.text.toString(),
+                descriptionTextInputEditText.text.toString(),
+                tag1.text.toString(),
+                tag2.text.toString(),current.toString(),false),firebaseAuth)
     }
     fun configSelectTagButton(){
-        binding.tag1.setOnClickListener(){
-            binding.tag1.startAnimation(AnimationUtils.loadAnimation
+        tag1.setOnClickListener(){
+            tag1.startAnimation(AnimationUtils.loadAnimation
                 (requireContext(),androidx.appcompat.R.anim.abc_tooltip_enter))
             val fragmentAddTagBinding = SelectTagDialogFragment(1)
             if (childFragmentManager.fragments.isEmpty()) {
                 fragmentAddTagBinding.show(childFragmentManager, "CustomFragment")
             }
         }
-        binding.tag2.setOnClickListener(){
-            binding.tag2.startAnimation(AnimationUtils.loadAnimation
+        tag2.setOnClickListener(){
+            tag2.startAnimation(AnimationUtils.loadAnimation
                 (requireContext(),androidx.appcompat.R.anim.abc_tooltip_enter))
             val fragmentAddTagBinding = SelectTagDialogFragment(2)
             if (childFragmentManager.fragments.isEmpty()) {
@@ -206,13 +325,53 @@ class RequestFragment : Fragment(), FirebaseStorageListener {
     }
     fun insertTag(tagNumber : Int, tag: String){
         if(tagNumber == 1){
-            binding.tag1.text = tag
+            tag1.text = tag
         }else{
             if(tagNumber == 2){
-                binding.tag2.text = tag
+                tag2.text = tag
             }
         }
     }
 
+    override fun onRequestRTDBDataUpdatedSuccess() {
+        showMenuNameSnackbar(requireView(),"Your request was created successfully")
+    }
+
+    override fun onRequestRTDBDataUpdatedFailure() {
+        showMenuNameSnackbar(requireView(),"Something went wrong when creating your request")
+    }
+
+    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<Request>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestListRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserRTDBDataUpdatedSuccess() {
+    }
+
+    override fun onUserRTDBDataUpdatedFailure() {
+
+    }
+
+    override fun onUserRTDBDataRetrievedSuccess(user: User) {
+    }
+
+    override fun onUserRTDBDataRetrievedFailure() {
+    }
+
+    override fun onUserRTDBGoogleDataInsertedSuccess() {
+    }
+
+    override fun onUserRTDBGoogleDataInsertedFailure() {
+    }
+    private fun showMenuNameSnackbar(view: View, message : String) {
+        val snackbar = Snackbar.make(view, "$message", Snackbar.LENGTH_SHORT)
+        snackbar.setAction("OK") {
+        }
+        snackbar.show()
+    }
 
 }

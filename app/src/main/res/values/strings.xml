@@ -47,6 +47,15 @@
     <string name="add_tag2">Add tag2 +</string>
     <string name="tag_1">Tag 1</string>
     <string name="tag_error_message">Tag error message</string>
+    <string name="request_title_error_message">Request title error message</string>
+    <string name="request_description_error_message">Request description error message</string>
+    <string name="request_tags_error_message">Request tags error message</string>
+    <string name="request_image_error_message">Request Image Error Message</string>
+    <string name="tag_2">Tag 2</string>
+    <string name="no_image_of_problem_added">No image of problem added</string>
+    <string name="select_tag_2">Select tag 2</string>
+    <string name="select_tag_1">Select tag 1</string>
+    <string name="requests">Requests</string>
     <string-array name="planets_array">
         <item>Mercury</item>
         <item>Venus</item>

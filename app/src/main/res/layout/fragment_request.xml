@@ -110,6 +110,23 @@
                                 android:hint="Request title"
                                 android:textColor="@color/gray7"/>
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:layout_marginTop="4dp"
+                            android:id="@+id/requestTitleErrorMessage"
+                            android:padding="0dp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/red4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/request_title_error_message"
+                            android:gravity="center"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent">
+                        </TextView>
                         <com.google.android.material.textfield.TextInputLayout
                             app:boxBackgroundColor="@color/white"
                             android:layout_width="match_parent"
@@ -125,6 +142,22 @@
                                 android:hint="Description"
                                 android:textColor="@color/gray7" />
                         </com.google.android.material.textfield.TextInputLayout>
+                        <TextView
+                            android:layout_marginTop="4dp"
+                            android:id="@+id/requestDescriptionErrorMessage"
+                            android:padding="0dp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/red4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/request_description_error_message"
+                            android:gravity="center"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent">
+                        </TextView>
                         <LinearLayout
                             android:gravity="center"
                             android:layout_gravity="center"
@@ -133,48 +166,65 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                                 <Button
+                                    android:paddingTop="0dp"
+                                    android:paddingBottom="0dp"
                                     android:maxWidth="100dp"
-                                    android:text="Select tag 1"
-                                    android:paddingStart="4dp"
-                                    android:paddingEnd="4dp"
+                                    android:text="@string/select_tag_1"
+                                    android:paddingStart="2dp"
+                                    android:paddingEnd="2dp"
                                     android:textAlignment="center"
-                                    android:lines="1"
-                                    android:maxLines="1"
+                                    android:maxLines="2"
                                     android:padding="0dp"
                                     android:id="@+id/tag1"
                                     app:cornerRadius="50dp"
                                     app:backgroundTint="@color/transaparent"
                                     app:backgroundTintMode="src_atop"
                                     android:textColor="@color/gray7"
-                                    android:textSize="12sp"
+                                    android:textSize="11sp"
                                     android:background="@drawable/material_button_30dp_border_background"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="32dp">
+                                    android:layout_width="100dp"
+                                    android:layout_height="40dp">
                                 </Button>
                                 <Button
+                                    android:paddingBottom="0dp"
+                                    android:paddingTop="0dp"
                                     android:maxWidth="100dp"
                                     android:textAlignment="center"
-                                    android:lines="1"
-                                    android:maxLines="1"
-                                    android:text="Select tag 2"
-                                    android:paddingStart="4dp"
-                                    android:paddingEnd="4dp"
+                                    android:maxLines="2"
+                                    android:text="@string/select_tag_2"
+                                    android:paddingStart="1dp"
+                                    android:paddingEnd="1dp"
                                     android:id="@+id/tag2"
                                     app:cornerRadius="50dp"
                                     app:backgroundTint="@color/transaparent"
                                     app:backgroundTintMode="src_atop"
                                     android:padding="0dp"
                                     android:textColor="@color/gray7"
-                                    android:textSize="12sp"
+                                    android:textSize="11sp"
                                     android:background="@drawable/material_button_30dp_border_background"
                                     android:layout_marginStart="12dp"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="32dp">
+                                    android:layout_width="100dp"
+                                    android:layout_height="40dp">
                                 </Button>
 
                         </LinearLayout>
+                        <TextView
+                            android:layout_marginTop="4dp"
+                            android:id="@+id/requestTagsErrorMessage"
+                            android:padding="0dp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/red4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/request_tags_error_message"
+                            android:gravity="center"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent">
+                        </TextView>
                         <Button
-                            app:cornerRadius="50dp"
                             android:id="@+id/insertImageOfProblem"
                             android:layout_width="200dp"
                             android:layout_height="200dp"
@@ -203,6 +253,22 @@
                             android:textSize="12sp"
                             android:layout_height="wrap_content"
                             android:text="@string/image_of_problem">
+                        </TextView>
+                        <TextView
+                            android:layout_marginTop="4dp"
+                            android:id="@+id/requestImageErrorMessage"
+                            android:padding="0dp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/red4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/request_image_error_message"
+                            android:gravity="center"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent">
                         </TextView>
                         <Button
                             android:id="@+id/confirmRequestButton"

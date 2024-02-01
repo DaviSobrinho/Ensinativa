@@ -2,7 +2,6 @@ package com.example.ensinativa.firebasertdb
 
 import com.example.ensinativa.model.Achievement
 import com.example.ensinativa.model.Request
-import com.example.ensinativa.model.RequestImage
 import com.example.ensinativa.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -119,40 +118,25 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
         }
     }
 
-    fun updateRequest(request: Request, firebaseAuth: FirebaseAuth) {
+    fun createRequest(request: Request, firebaseAuth: FirebaseAuth) {
         val currentUserId = firebaseAuth.currentUser?.uid
         currentUserId?.let {
             val database = FirebaseDatabase.getInstance()
-            val usersRef = database.getReference("users")
-            val userRef = usersRef.child(it)
+            val requestsRef = database.getReference("requests")
+            val newRequestRef = requestsRef.push()
 
             val requestData = mutableMapOf<String, Any?>()
 
-            request.creatorUID.let { creatorUID ->
-                requestData["creatorUID"] = creatorUID
-            }
+            requestData["creatorUID"] = it
+            requestData["description"] = request.description
+            requestData["title"] = request.title
+            requestData["imageSrc"] = request.imageSrc
+            requestData["tag1"] = request.tag1
+            requestData["tag2"] = request.tag2
+            requestData["createdDate"] = request.createdDate
+            requestData["solved"] = request.solved
 
-            request.description.let { description ->
-                requestData["description"] = description
-            }
-
-            request.title.let { title ->
-                requestData["title"] = title
-            }
-
-            request.imageSrc.let {imageSrc ->
-                requestData["imageSrc"] = imageSrc
-            }
-
-            request.tag1.let { tag1 ->
-                requestData["tag1"] = tag1
-            }
-
-            request.tag2.let { tag2 ->
-                requestData["tag2"] = tag2
-            }
-
-            userRef.updateChildren(requestData)
+            newRequestRef.updateChildren(requestData)
                 .addOnSuccessListener {
                     // Sucesso ao atualizar dados no Realtime Database
                     firebaseRTDBListener.onRequestRTDBDataUpdatedSuccess()
@@ -166,5 +150,49 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             firebaseRTDBListener.onRequestRTDBDataUpdatedFailure()
         }
     }
+
+    fun getRandomRequests(firebaseAuth: FirebaseAuth) {
+        if (firebaseAuth.currentUser != null) {
+            val uid = firebaseAuth.uid
+            uid?.let {
+                val database = FirebaseDatabase.getInstance()
+                val requestsRef = database.getReference("requests")
+
+                // Consulta para obter todas as requests não resolvidas
+                requestsRef.orderByChild("solved").equalTo(false).get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val result = task.result
+                            val allRequests: MutableList<Request> = mutableListOf()
+
+                            result?.children?.forEach { data ->
+                                val requestData = data.getValue(Request::class.java)
+                                if (requestData != null && requestData.creatorUID != uid) {
+                                    allRequests.add(requestData)
+                                }
+                            }
+
+                            // Embaralhar a lista
+                            allRequests.shuffle()
+
+                            // Limitar a 10 resultados
+                            val randomRequests = allRequests.take(10)
+
+                            // Chame o método para notificar que os dados foram recuperados com sucesso
+                            firebaseRTDBListener.onRequestListRTDBDataRetrievedSuccess(randomRequests)
+                        } else {
+
+
+                            // Lidar com falha na leitura do RTDB
+                            firebaseRTDBListener.onRequestListRTDBDataRetrievedFailure()
+                        }
+                    }
+            }
+        } else {
+
+            firebaseRTDBListener.onRequestListRTDBDataRetrievedFailure()
+        }
+    }
+
 
 }

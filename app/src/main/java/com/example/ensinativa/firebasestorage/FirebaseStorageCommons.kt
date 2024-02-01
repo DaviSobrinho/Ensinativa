@@ -21,12 +21,8 @@ class FirebaseStorageCommons(private val firebaseStorageListener: FirebaseStorag
     }
 
     private fun checkFileExistence(fileReference: StorageReference, attempt: Int, imageByteArray: ByteArray, fileName: String,path: String,format: String) {
-        fileReference.metadata
-            .addOnSuccessListener { metadata ->
-                println("Attempt"+attempt)
-                println("File Reference 1"+fileReference)
-                println(fileReference)
-                println("Chegou ate aqui 1")
+        fileReference.downloadUrl
+            .addOnSuccessListener {
                 // O arquivo já existe, tentar com um novo nome
                 val newFileName = generateNewFileName(fileName, attempt)
                 val newFileReference = getFileReference(firebaseAuth, path, newFileName, format)
@@ -34,24 +30,15 @@ class FirebaseStorageCommons(private val firebaseStorageListener: FirebaseStorag
             }
             .addOnFailureListener {
 
-                println("File Reference 2"+fileReference)
-                println(fileReference)
-                println("Chegou ate aqui 2")
                 // O arquivo não existe, então podemos proceder com o upload
                 fileReference.putBytes(imageByteArray)
                     .addOnSuccessListener { taskSnapshot ->
 
-                        println("File Reference 3"+fileReference)
-                        println(fileReference)
-                        println("Chegou ate aqui 3")
                         // Sucesso no upload
                         firebaseStorageListener.onFileInsertedSuccess(fileReference)
                     }
                     .addOnFailureListener { exception ->
 
-                        println("File Reference 4"+fileReference)
-                        println(fileReference)
-                        println("Chegou ate aqui 4")
                         // Falha no upload
                         firebaseStorageListener.onFileInsertedConflict()
                     }

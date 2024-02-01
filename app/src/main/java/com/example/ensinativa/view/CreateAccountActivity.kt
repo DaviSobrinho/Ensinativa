@@ -17,6 +17,7 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.model.EmailValidation
 import com.example.ensinativa.model.PasswordValidation
+import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.User
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -208,6 +209,14 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
     }
 
     override fun onRequestRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<Request>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestListRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
     }
 

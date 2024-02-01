@@ -31,6 +31,7 @@ import com.example.ensinativa.firebaseauth.GoogleAuthCommons
 import com.example.ensinativa.firebaseauth.GoogleAuthListener
 import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
+import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.User
 import com.google.firebase.appcheck.appCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
@@ -248,6 +249,14 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
     }
 
     override fun onRequestRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<Request>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestListRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
     }
 

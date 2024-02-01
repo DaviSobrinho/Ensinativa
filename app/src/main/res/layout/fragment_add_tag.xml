@@ -37,21 +37,24 @@
             android:layout_height="40dp">
         </Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.textfield.TextInputLayout
-        app:boxBackgroundColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="12dp"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp">
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="24dp"
+        android:orientation="vertical"
+        app:boxBackgroundColor="@color/white">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/fragmentAddTagTextInputEditText"
-            android:textSize="12sp"
-            android:inputType="none"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="Insert or select a tag to the problem"
-            android:textColor="@color/gray7" />
+            android:inputType="none"
+            android:textColor="@color/gray7"
+            android:textSize="12sp" />
     </com.google.android.material.textfield.TextInputLayout>
     <ListView
         android:divider="@null"
@@ -80,7 +83,9 @@
     </TextView>
     <LinearLayout
         android:layout_gravity="center"
-        android:layout_width="340dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_marginBottom="20dp"
@@ -103,10 +108,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="20dp">
+            android:layout_marginEnd="10dp">
         </Button>
         <Button
             android:layout_weight="1"
+            android:layout_marginStart="10dp"
             android:id="@+id/confirmTagSelection"
             android:layout_gravity="center"
             android:orientation="horizontal"

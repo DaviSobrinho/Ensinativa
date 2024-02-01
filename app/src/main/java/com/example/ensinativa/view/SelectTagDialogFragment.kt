@@ -19,10 +19,12 @@ import android.widget.Button
 import androidx.fragment.app.DialogFragment
 import com.example.ensinativa.R
 import com.example.ensinativa.databinding.FragmentAddTagBinding
+import com.example.ensinativa.model.TagsList
 
 
 private var _binding: FragmentAddTagBinding? = null
 private val binding get() = _binding!!
+private lateinit var arrayList: List<String>
 
 class SelectTagDialogFragment(private var tagNumber : Int) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -34,7 +36,7 @@ class SelectTagDialogFragment(private var tagNumber : Int) : DialogFragment() {
     override fun onStart() {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         super.onStart()
-        val width = (resources.displayMetrics.widthPixels * 0.96).toInt()
+        val width = (resources.displayMetrics.widthPixels * 0.8).toInt()
         val height = (resources.displayMetrics.heightPixels * 0.96).toInt()
         dialog!!.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
         binding.tagTitle.text = ("Tag $tagNumber")
@@ -49,26 +51,8 @@ class SelectTagDialogFragment(private var tagNumber : Int) : DialogFragment() {
         _binding = null
     }
     private fun configListView(){
-        val arrayList = ArrayList<String>()
-        arrayList.add("First")
-        arrayList.add("Seecond")
-        arrayList.add("Third")
-        arrayList.add("Fourthd")
-        arrayList.add("Tenth")
-        arrayList.add("Oxi")
-        arrayList.add("Oxi")
-        arrayList.add("Teste")
-        arrayList.add("Oxi")
-        arrayList.add("1")
-        arrayList.add("2")
-        arrayList.add("3")
-        arrayList.add("4")
-        arrayList.add("5")
-        arrayList.add("6")
-        arrayList.add("6")
-        arrayList.add("7")
-        arrayList.add("9")
-        arrayList.add("0")
+        val tagsList = TagsList("Tags")
+        arrayList = tagsList.main()
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.list_view_layout,R.id.listViewItem,arrayList)
         binding.fragmentAddTagListView.adapter = arrayAdapter
         binding.fragmentAddTagTextInputEditText.addTextChangedListener(object : TextWatcher{
@@ -119,23 +103,36 @@ class SelectTagDialogFragment(private var tagNumber : Int) : DialogFragment() {
         }
     }
 
-    private fun configConfirmButton(button: Button){
-        button.setOnClickListener() {
-            if(!binding.fragmentAddTagTextInputEditText.text.isNullOrBlank()){
-                val tag = binding.fragmentAddTagTextInputEditText.text.toString()
-                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                if (!imm.isActive) {
-                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+    private fun configConfirmButton(button: Button) {
+        button.setOnClickListener {
+            val userInput = binding.fragmentAddTagTextInputEditText.text.toString().trim()
+
+            // Verificar se a entrada não está vazia
+            if (userInput.isNotBlank()) {
+                val matchingTag = arrayList.find { it.equals(userInput, ignoreCase = true) }
+
+                // Verificar se a tag corresponde a algum item no arrayList (ignorando maiúsculas e minúsculas)
+                if (matchingTag != null) {
+                    val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    if (!imm.isActive) {
+                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+                    }
+
+                    if (dialog?.isShowing == true) {
+                        // Se houver correspondência, inserir a tag
+                        (parentFragment as RequestFragment).insertTag(tagNumber, matchingTag)
+                        dialog?.dismiss()
+                    }
+                } else {
+                    // Se não houver correspondência, exibir mensagem de erro
+                    binding.tagErrorMessage.text = "Para confirmar a seleção da tag, você deve selecionar uma tag válida"
+                    binding.tagErrorMessage.visibility = View.VISIBLE
                 }
-                if (dialog?.isShowing == true) {
-                    (parentFragment as RequestFragment).insertTag(tagNumber, tag)
-                    dialog?.dismiss()
-                }
-            }else{
-                binding.tagErrorMessage.text = "To confirm tag selection, you must first select a tag"
+            } else {
+                // Se a entrada estiver vazia, exibir mensagem de erro
+                binding.tagErrorMessage.text = "Para confirmar a seleção da tag, você deve escrever ou selecionar uma tag"
                 binding.tagErrorMessage.visibility = View.VISIBLE
             }
-
         }
     }
 

@@ -14,6 +14,7 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.Achievement
+import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.User
 import com.example.ensinativa.viewmodel.adapters.ProfileFragmentAchievementsAdapter
 import com.example.ensinativa.viewmodel.adapters.ProfileFragmentTagsAdapter
@@ -118,6 +119,14 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
     }
 
     override fun onRequestRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<Request>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestListRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
     }
 
