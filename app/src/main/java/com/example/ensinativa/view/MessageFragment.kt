@@ -5,61 +5,138 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.ensinativa.R
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.ensinativa.databinding.FragmentMessageBinding
+import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
+import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
+import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
+import com.example.ensinativa.firebasestorage.FirebaseStorageListener
+import com.example.ensinativa.model.Chat
+import com.example.ensinativa.model.Request
+import com.example.ensinativa.model.RequestWithHash
+import com.example.ensinativa.model.User
+import com.example.ensinativa.viewmodel.adapters.MessageFragmentChatsListAdapter
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.storage.StorageReference
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 private var firebaseAuth: FirebaseAuth = Firebase.auth
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MessageFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MessageFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+private lateinit var binding: FragmentMessageBinding
+
+class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener {
+
+
+    private lateinit var firebaseStorageCommons: FirebaseStorageCommons
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_message, container, false)
+        binding = FragmentMessageBinding.inflate(inflater, container,false)
+        firebaseAuth = FirebaseAuth.getInstance()
+        firebaseStorageCommons = FirebaseStorageCommons(this,firebaseAuth)
+        firebaseRTDBCommons = FirebaseRTDBCommons(this)
+        configChats()
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MessageFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MessageFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun configChats() {
+        firebaseRTDBCommons.getMyChats(firebaseAuth)
+    }
+
+    private fun autoLoadMessageFromRequest(){
+        if((activity as MainActivity).startRequestFromRequest){
+            (activity as MainActivity).startRequestFromRequest = false
+            println("Verdadeiro")
+        }
+    }
+
+    override fun onMultipleUsersRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
+    }
+
+    override fun onChatListRTDBDataRetrievedFailure() {
+        Toast.makeText(requireContext(), "ERRO ao recuperar lista de chats", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>) {
+        println(chatList.size)
+        inflateChatList(chatList)
+    }
+    private fun inflateChatList(chatList: List<Chat>) {
+        val recyclerView = binding.chatListRecyclerView
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = layoutManager
+        val adapter = MessageFragmentChatsListAdapter(requireContext(),this,firebaseAuth,chatList,this)
+        recyclerView.adapter = adapter
+
+    }
+    override fun onChatRTDBDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestRTDBDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestListRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserRTDBDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserRTDBDataRetrievedSuccess(user: User) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserRTDBGoogleDataInsertedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserRTDBGoogleDataInsertedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onFileInsertedConflict() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onFileInsertedSuccess(fileReference: StorageReference) {
+        TODO("Not yet implemented")
     }
 }

@@ -1,12 +1,20 @@
 package com.example.ensinativa.firebasertdb
 
+import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.Request
+import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 
 interface FirebaseRTDBListener {
+    fun onMultipleUsersRTDBDataRetrievedFailure()
+    fun onMultipleUsersRTDBDataRetrievedSuccess(userList :List <User>)
+    fun onChatListRTDBDataRetrievedFailure()
+    fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>)
+    fun onChatRTDBDataUpdatedSuccess()
+    fun onChatRTDBDataUpdatedFailure()
     fun onRequestRTDBDataUpdatedSuccess()
     fun onRequestRTDBDataUpdatedFailure()
-    fun onRequestListRTDBDataRetrievedSuccess(requestList: List<Request>)
+    fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>)
     fun onRequestListRTDBDataRetrievedFailure()
     fun onUserRTDBDataUpdatedSuccess()
     fun onUserRTDBDataUpdatedFailure()

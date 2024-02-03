@@ -15,9 +15,11 @@ import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
 import com.example.ensinativa.firebaseauth.FirebaseAuthListener
 import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
+import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.EmailValidation
 import com.example.ensinativa.model.PasswordValidation
 import com.example.ensinativa.model.Request
+import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -108,7 +110,7 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
     }
 
     private fun configUserAccount( displayName: String, email: String){
-        val user = User(displayName = displayName, email = email)
+        val user = User(displayName = displayName, email = email, uid = firebaseAuth.currentUser!!.uid)
         firebaseRTDBCommons.updateUser(user, firebaseAuth)
     }
 
@@ -204,6 +206,30 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         startActivity(intent, customAnimation.toBundle())
     }
 
+    override fun onMultipleUsersRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatListRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
+
     override fun onRequestRTDBDataUpdatedSuccess() {
         TODO("Not yet implemented")
     }
@@ -212,7 +238,7 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         TODO("Not yet implemented")
     }
 
-    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<Request>) {
+    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
         TODO("Not yet implemented")
     }
 

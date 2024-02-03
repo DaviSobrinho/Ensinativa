@@ -56,6 +56,8 @@
     <string name="select_tag_2">Select tag 2</string>
     <string name="select_tag_1">Select tag 1</string>
     <string name="requests">Requests</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
     <string-array name="planets_array">
         <item>Mercury</item>
         <item>Venus</item>

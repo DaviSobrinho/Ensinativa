@@ -14,7 +14,9 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.Achievement
+import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.Request
+import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.example.ensinativa.viewmodel.adapters.ProfileFragmentAchievementsAdapter
 import com.example.ensinativa.viewmodel.adapters.ProfileFragmentTagsAdapter
@@ -101,17 +103,41 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
             binding.skillsTextView.visibility = View.VISIBLE
         }else{
             binding.skillsTextView.visibility = View.GONE
-            configureTagsRecyclerView(tags)
+            configTagsRecyclerView(tags)
         }
     }
 
-    private fun configureTagsRecyclerView(tags: List<String>) {
+    private fun configTagsRecyclerView(tags: List<String>) {
         val recyclerView = binding.tagsRecyclerView
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
         val adapter = ProfileFragmentTagsAdapter(requireContext(), tags)
         recyclerView.adapter = adapter
 
+    }
+
+    override fun onMultipleUsersRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatListRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
     }
 
     override fun onRequestRTDBDataUpdatedSuccess() {
@@ -122,7 +148,7 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
         TODO("Not yet implemented")
     }
 
-    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<Request>) {
+    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
         TODO("Not yet implemented")
     }
 

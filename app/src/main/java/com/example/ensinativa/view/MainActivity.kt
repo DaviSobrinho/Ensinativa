@@ -14,18 +14,17 @@ import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
 import com.example.ensinativa.firebaseauth.FirebaseAuthListener
 import com.example.ensinativa.firebaseauth.GoogleAuthCommons
 import com.example.ensinativa.firebaseauth.GoogleAuthListener
+import com.example.ensinativa.model.Request
+import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.example.ensinativa.viewmodel.ViewPagerAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
-import com.google.firebase.appcheck.appCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
-import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.initialize
 import java.lang.Exception
 
 private lateinit var firebaseAuth: FirebaseAuth
@@ -38,6 +37,8 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
     private var facebookAuthLoggedIn = false
     private lateinit var googleAuthCommons: GoogleAuthCommons
     private lateinit var firebaseAuthCommons : FirebaseAuthCommons
+    var startRequestFromRequest = false
+    private lateinit var request: Request
 
     var fragmentArrayList : ArrayList<Fragment> = ArrayList<Fragment>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +97,7 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         fragmentArrayList.add(HomeFragment())
         fragmentArrayList.add(MessageFragment())
         fragmentArrayList.add(RequestFragment())
-        fragmentArrayList.add(MessageFragment())
+        fragmentArrayList.add(NotificationsFragment())
         fragmentArrayList.add(ProfileFragment())
         val adapterViewPager = ViewPagerAdapter(this,fragmentArrayList)
         mainPager.adapter = adapterViewPager
@@ -135,7 +136,10 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
             }
         })
     }
-
+    fun callMessageFragment(index: Int, request: RequestWithHash){
+        startRequestFromRequest = true
+        mainPager.setCurrentItem(index, true)
+    }
     override fun onGetUserSignOn() {
 
     }

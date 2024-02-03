@@ -31,7 +31,9 @@ import com.example.ensinativa.firebaseauth.GoogleAuthCommons
 import com.example.ensinativa.firebaseauth.GoogleAuthListener
 import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
+import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.Request
+import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.google.firebase.appcheck.appCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
@@ -235,13 +237,38 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
     override fun onUserDataUpdatedSuccess() {
         if (firebaseAuth.currentUser != null) {
             val user = User(email = firebaseAuth.currentUser!!.email.toString(),
-                displayName = firebaseAuth.currentUser!!.displayName.toString())
+                displayName = firebaseAuth.currentUser!!.displayName.toString(),
+                uid = firebaseAuth.currentUser!!.uid)
             firebaseRTDBCommons.updateUser(user = user, firebaseAuth)
         }
     }
 
     override fun onUserDataUpdatedFailure() {
         Toast.makeText(this, "Something went wrong, updating your data", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onMultipleUsersRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatListRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
     }
 
     override fun onRequestRTDBDataUpdatedSuccess() {
@@ -252,7 +279,7 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         TODO("Not yet implemented")
     }
 
-    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<Request>) {
+    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
         TODO("Not yet implemented")
     }
 

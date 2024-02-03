@@ -25,10 +25,12 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
+import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestDescriptionValidation
 import com.example.ensinativa.model.RequestTagValidation
 import com.example.ensinativa.model.RequestTitleValidation
+import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -135,12 +137,13 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
                     val current = formatter.format(time)
                     firebaseRTDBCommons.createRequest(
                         Request(
+                            firebaseAuth.currentUser!!.displayName!!,
                             firebaseAuth.currentUser!!.uid,
                             "",
                             titleTextInputEditText.text.toString(),
                             descriptionTextInputEditText.text.toString(),
                             tag1.text.toString(),
-                            tag2.text.toString(), current.toString(),false),firebaseAuth)
+                            tag2.text.toString(), current.toString(),false,""),firebaseAuth)
                 }
             }
         }
@@ -188,7 +191,7 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         return validatedTitle
     }
 
-    fun configInsertImageButton(){
+    private fun configInsertImageButton(){
         imageButton.setOnClickListener{
             val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST)
@@ -267,7 +270,7 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
 
         return layerDrawable
     }
-    fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray {
+    private fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
         return stream.toByteArray()
@@ -298,12 +301,13 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         val current = formatter.format(time)
         firebaseRTDBCommons.createRequest(
             Request(
+                firebaseAuth.currentUser!!.displayName!!,
                 firebaseAuth.currentUser!!.uid,
                 fileReference.name,
                 titleTextInputEditText.text.toString(),
                 descriptionTextInputEditText.text.toString(),
                 tag1.text.toString(),
-                tag2.text.toString(),current.toString(),false),firebaseAuth)
+                tag2.text.toString(),current.toString(),false,""),firebaseAuth)
     }
     fun configSelectTagButton(){
         tag1.setOnClickListener(){
@@ -333,6 +337,30 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         }
     }
 
+    override fun onMultipleUsersRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatListRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataUpdatedSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataUpdatedFailure() {
+        TODO("Not yet implemented")
+    }
+
     override fun onRequestRTDBDataUpdatedSuccess() {
         showMenuNameSnackbar(requireView(),"Your request was created successfully")
     }
@@ -341,7 +369,7 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         showMenuNameSnackbar(requireView(),"Something went wrong when creating your request")
     }
 
-    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<Request>) {
+    override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
         TODO("Not yet implemented")
     }
 
