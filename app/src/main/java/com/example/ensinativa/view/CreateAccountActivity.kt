@@ -16,6 +16,7 @@ import com.example.ensinativa.firebaseauth.FirebaseAuthListener
 import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.model.Chat
+import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.EmailValidation
 import com.example.ensinativa.model.PasswordValidation
 import com.example.ensinativa.model.Request
@@ -218,9 +219,18 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         TODO("Not yet implemented")
     }
 
-    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>) {
+    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
         TODO("Not yet implemented")
     }
+
+    override fun onChatRTDBDataRetrievedSuccess(chat: Chat) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
 
     override fun onChatRTDBDataUpdatedSuccess() {
         TODO("Not yet implemented")

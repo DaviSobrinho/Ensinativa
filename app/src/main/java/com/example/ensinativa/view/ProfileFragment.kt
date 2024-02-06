@@ -15,6 +15,7 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.Achievement
 import com.example.ensinativa.model.Chat
+import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
@@ -128,7 +129,15 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
         TODO("Not yet implemented")
     }
 
-    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>) {
+    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataRetrievedSuccess(chat: Chat) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
     }
 

@@ -26,6 +26,7 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.Chat
+import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestDescriptionValidation
 import com.example.ensinativa.model.RequestTagValidation
@@ -349,9 +350,18 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         TODO("Not yet implemented")
     }
 
-    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>) {
+    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
         TODO("Not yet implemented")
     }
+
+    override fun onChatRTDBDataRetrievedSuccess(chat: Chat) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
 
     override fun onChatRTDBDataUpdatedSuccess() {
         TODO("Not yet implemented")

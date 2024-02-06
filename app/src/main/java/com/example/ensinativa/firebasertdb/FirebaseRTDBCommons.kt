@@ -1,9 +1,9 @@
 package com.example.ensinativa.firebasertdb
 
-import android.widget.Toast
 import com.example.ensinativa.model.Achievement
 import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatMember
+import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Message
 import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
@@ -312,31 +312,29 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
         }
     }
 
-    fun getMyChats(firebaseAuth: FirebaseAuth) {
+    fun getMyChatsWithHash(firebaseAuth: FirebaseAuth) {
         if (firebaseAuth.currentUser != null) {
             val uid = firebaseAuth.currentUser!!.uid
             uid?.let {
                 val database = FirebaseDatabase.getInstance()
                 val chatsRef = database.getReference("chats")
-
                 // Consulta para obter todos os chats onde o usuário é um membro
                 val queries = (0 until 2).map { index ->
                     chatsRef.orderByChild("chatMembers/$index/userUID").equalTo(uid).get()
                 }
-
                 Tasks.whenAllComplete(queries)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            val allChats: MutableList<Chat> = mutableListOf()
+                            val allChatsWithHash: MutableList<ChatWithHash> = mutableListOf()
                             task.result?.forEach { result ->
                                 if (result.isSuccessful) {
                                     val snapshot = result.result as DataSnapshot
                                     snapshot.children.forEach { data ->
-                                        println(data.value)
                                         val chatData = mapToChat(data.value as Map<String, Any>)
-                                        println(data.value)
+                                        val hash = data.key // Obtém o hash da chave do chat
                                         if (chatData != null) {
-                                            allChats.add(chatData)
+                                            val chatWithHash = ChatWithHash(chatData, hash!!)
+                                            allChatsWithHash.add(chatWithHash)
                                         }
                                     }
                                 } else {
@@ -347,8 +345,7 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                             }
 
                             // Chame o método para notificar que os dados foram recuperados com sucesso
-                            firebaseRTDBListener.onChatListRTDBDataRetrievedSuccess(allChats)
-                            println("EIE")
+                            firebaseRTDBListener.onChatListRTDBDataRetrievedSuccess(allChatsWithHash)
                         } else {
                             // Lidar com falha na leitura do RTDB
                             firebaseRTDBListener.onChatListRTDBDataRetrievedFailure()
@@ -358,9 +355,38 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             }
         } else {
             firebaseRTDBListener.onChatListRTDBDataRetrievedFailure()
-            println("ixi")
         }
     }
+
+    fun getMyChatByHash(firebaseAuth: FirebaseAuth, hash: String) {
+        if (firebaseAuth.currentUser != null) {
+            val database = FirebaseDatabase.getInstance()
+            val chatsRef = database.getReference("chats")
+            chatsRef.child(hash).get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val dataSnapshot = task.result
+                    if (dataSnapshot.exists()) {
+                        val chatData = dataSnapshot.value as Map<String, Any>?
+                        if (chatData != null) {
+                            val chat = mapToChat(chatData)
+                            firebaseRTDBListener.onChatRTDBDataRetrievedSuccess(chat)
+                        } else {
+                            firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
+                        }
+                    } else {
+                        firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
+                    }
+                } else {
+                    firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
+                }
+            }
+        } else {
+            firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
+        }
+    }
+
+
+
     fun mapToChat(jsonData: Map<String, Any>): Chat {
         val chatMembersData = jsonData["chatMembers"] as List<Map<String, Any>>?
         val chatMembers = chatMembersData?.map { memberData ->
@@ -371,15 +397,13 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             )
         } ?: emptyList()
 
-        val messagesData = jsonData["messages"] as Map<String, Any>?
-        val messages = messagesData?.let {
-            listOf(
-                Message(
-                    creatorUID = it["creatorUID"] as String,
-                    receiverUID = it["receiverUID"] as String,
-                    value = it["value"] as String,
-                    dateTime = it["dateTime"] as String
-                )
+        val messagesData = jsonData["messages"] as List<Map<String, Any>>?
+        val messages = messagesData?.map { messageData ->
+            Message(
+                creatorUID = messageData["creatorUID"] as String,
+                receiverUID = messageData["receiverUID"] as String,
+                value = messageData["value"] as String,
+                dateTime = messageData["dateTime"] as String
             )
         } ?: emptyList()
 

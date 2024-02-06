@@ -26,7 +26,7 @@ class ProfileFragmentAchievementsAdapter(private val context: Context, achieveme
     private var achievementsLastIndex = achievements.lastIndex
 
 
-    class ViewHolder(private var view: View, private val firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth, private var context: Context) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(private var view: View, firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth, private var context: Context) : RecyclerView.ViewHolder(view) {
         val firebaseStorageCommons = FirebaseStorageCommons(firebaseStorageListener, firebaseAuth)
         fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
             Glide.with(button.context)

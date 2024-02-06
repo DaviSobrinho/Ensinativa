@@ -1,6 +1,7 @@
 package com.example.ensinativa.firebasertdb
 
 import com.example.ensinativa.model.Chat
+import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
@@ -9,7 +10,9 @@ interface FirebaseRTDBListener {
     fun onMultipleUsersRTDBDataRetrievedFailure()
     fun onMultipleUsersRTDBDataRetrievedSuccess(userList :List <User>)
     fun onChatListRTDBDataRetrievedFailure()
-    fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>)
+    fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>)
+    fun onChatRTDBDataRetrievedSuccess(chat: Chat)
+    fun onChatRTDBDataRetrievedFailure()
     fun onChatRTDBDataUpdatedSuccess()
     fun onChatRTDBDataUpdatedFailure()
     fun onRequestRTDBDataUpdatedSuccess()

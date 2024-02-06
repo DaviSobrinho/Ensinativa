@@ -58,6 +58,8 @@
     <string name="requests">Requests</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
+    <string name="text_your_message_here">Text your message here</string>
+    <string name="message_content">Message content</string>
     <string-array name="planets_array">
         <item>Mercury</item>
         <item>Venus</item>

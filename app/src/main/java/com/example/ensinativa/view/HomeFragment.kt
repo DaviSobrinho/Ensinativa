@@ -26,11 +26,13 @@ import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatMember
+import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Message
 import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -111,7 +113,7 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
                 acceptedRequest = requestsList[requestIndex]
                 firebaseRTDBCommons.getUsersDataByUids(firebaseAuth, listOf(firebaseAuth.currentUser!!.uid, acceptedRequest!!.request.creatorUID))
             }else{
-                Toast.makeText(requireContext(), "Awaiting to load other request", Toast.LENGTH_SHORT).show()
+                showMenuNameSnackbar(requireView(), "Waiting for another request to be loaded")
             }
 
         }
@@ -137,7 +139,8 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     }
 
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
-        "error getting users involved in request"
+        showMenuNameSnackbar(requireView(), "Something went wrong when retrieving the users informations")
+        acceptedRequest = null
     }
 
     override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
@@ -161,15 +164,27 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     override fun onChatListRTDBDataRetrievedFailure() {
     }
 
-    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>) {
+    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataRetrievedSuccess(chat: Chat) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataRetrievedFailure() {
+        TODO("Not yet implemented")
     }
 
     override fun onChatRTDBDataUpdatedSuccess() {
-        changeToMessageFragment(acceptedRequest!!)
         acceptedRequest = null
+        showMenuNameSnackbar(requireView(), "Request accepted successfully")
+        changeToMessageFragment(acceptedRequest!!)
     }
 
     override fun onChatRTDBDataUpdatedFailure() {
+        acceptedRequest = null
+        showMenuNameSnackbar(requireView(),"Something went wrong when accepting the request")
     }
 
     override fun onRequestRTDBDataUpdatedSuccess() {
@@ -195,6 +210,7 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     }
 
     override fun onRequestListRTDBDataRetrievedFailure() {
+        showMenuNameSnackbar(requireView(), "Something went wrong when loading the request list")
     }
 
     override fun onUserRTDBDataUpdatedSuccess() {
@@ -267,5 +283,11 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     }
     private fun changeToMessageFragment(request: RequestWithHash) {
         (activity as MainActivity).callMessageFragment(1,request)
+    }
+    private fun showMenuNameSnackbar(view: View, message : String) {
+        val snackbar = Snackbar.make(view, "$message", Snackbar.LENGTH_SHORT)
+        snackbar.setAction("OK") {
+        }
+        snackbar.show()
     }
 }

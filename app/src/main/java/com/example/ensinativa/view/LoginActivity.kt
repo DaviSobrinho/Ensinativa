@@ -32,6 +32,7 @@ import com.example.ensinativa.firebaseauth.GoogleAuthListener
 import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.model.Chat
+import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
@@ -259,7 +260,15 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         TODO("Not yet implemented")
     }
 
-    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<Chat>) {
+    override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataRetrievedSuccess(chat: Chat) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onChatRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
     }
 
