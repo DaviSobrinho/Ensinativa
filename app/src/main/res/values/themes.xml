@@ -24,4 +24,21 @@
         <item name="android:fontFamily">@font/poppins</item>
         <item name="android:textStyle">normal</item>
     </style>
+    <style name="ThemeOverlay.Ensinativa.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
+        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+    </style>
+    <style name="FullScreenDialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowAnimationStyle">@style/FullScreenDialogAnimation</item>
+    </style>
+
+    <style name="FullScreenDialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
+        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
+
+    </style>
 </resources>

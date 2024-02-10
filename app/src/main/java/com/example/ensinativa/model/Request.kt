@@ -1,7 +1,5 @@
 package com.example.ensinativa.model
 
-import com.google.firebase.storage.StorageReference
-
 data class Request (
     val creatorDisplayName : String = "",
     val creatorUID : String = "",

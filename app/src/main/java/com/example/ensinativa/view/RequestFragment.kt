@@ -27,6 +27,7 @@ import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatWithHash
+import com.example.ensinativa.model.Message
 import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestDescriptionValidation
 import com.example.ensinativa.model.RequestTagValidation
@@ -43,6 +44,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.TimeZone
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -292,14 +294,14 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     }
 
     override fun onFileInsertedConflict() {
-        Toast.makeText(requireContext(), "Something wnet wrong when creating your request", Toast.LENGTH_SHORT).show()
+        showMenuNameSnackbar(requireView(),"Something wnet wrong when creating your request")
     }
 
 
     override fun onFileInsertedSuccess(fileReference: StorageReference) {
-        val time = Calendar.getInstance().time
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm")
-        val current = formatter.format(time)
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        formatter.timeZone = TimeZone.getTimeZone("America/Sao_Paulo") // Define o fuso horário para Brasília
+        val current = formatter.format(Calendar.getInstance().time)
         firebaseRTDBCommons.createRequest(
             Request(
                 firebaseAuth.currentUser!!.displayName!!,
@@ -338,6 +340,10 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         }
     }
 
+    override fun onMessageArrived() {
+        TODO("Not yet implemented")
+    }
+
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
     }
@@ -354,9 +360,10 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         TODO("Not yet implemented")
     }
 
-    override fun onChatRTDBDataRetrievedSuccess(chat: Chat) {
+    override fun onChatRTDBDataRetrievedSuccess(chat: ChatWithHash) {
         TODO("Not yet implemented")
     }
+
 
     override fun onChatRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
@@ -405,6 +412,23 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
 
     override fun onUserRTDBGoogleDataInsertedFailure() {
     }
+
+    override fun onMessageAddedSuccess(chatWithHash: ChatWithHash) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageAddedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageReceived(messageData: Message) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onNewChatAdded(chatHash: String) {
+        TODO("Not yet implemented")
+    }
+
     private fun showMenuNameSnackbar(view: View, message : String) {
         val snackbar = Snackbar.make(view, "$message", Snackbar.LENGTH_SHORT)
         snackbar.setAction("OK") {

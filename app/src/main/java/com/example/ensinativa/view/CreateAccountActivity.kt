@@ -18,6 +18,7 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.EmailValidation
+import com.example.ensinativa.model.Message
 import com.example.ensinativa.model.PasswordValidation
 import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
@@ -207,6 +208,10 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         startActivity(intent, customAnimation.toBundle())
     }
 
+    override fun onMessageArrived() {
+        TODO("Not yet implemented")
+    }
+
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
     }
@@ -223,9 +228,10 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         TODO("Not yet implemented")
     }
 
-    override fun onChatRTDBDataRetrievedSuccess(chat: Chat) {
+    override fun onChatRTDBDataRetrievedSuccess(chat: ChatWithHash) {
         TODO("Not yet implemented")
     }
+
 
     override fun onChatRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
@@ -277,6 +283,22 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
     }
 
     override fun onUserRTDBGoogleDataInsertedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageAddedSuccess(chatWithHash: ChatWithHash) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageAddedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageReceived(messageData: Message) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onNewChatAdded(chatHash: String) {
         TODO("Not yet implemented")
     }
 

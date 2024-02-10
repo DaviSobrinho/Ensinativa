@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -25,14 +26,20 @@ import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatWithHash
+import com.example.ensinativa.model.Message
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
+import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
 import com.example.ensinativa.viewmodel.adapters.MessageFragmentChatAdapter
 import com.example.ensinativa.viewmodel.adapters.MessageFragmentChatsListAdapter
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.storage.StorageReference
+import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.TimeZone
 
 
 private var firebaseAuth: FirebaseAuth = Firebase.auth
@@ -45,6 +52,7 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
     private lateinit var firebaseStorageCommons: FirebaseStorageCommons
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
+    private var currentChat: ChatWithHash = ChatWithHash(Chat(),"")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,9 +67,18 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
         firebaseStorageCommons = FirebaseStorageCommons(this,firebaseAuth)
         firebaseRTDBCommons = FirebaseRTDBCommons(this)
         configChats()
+        configChatsListeners()
         return binding.root
     }
-
+    private fun configChatsListeners(){
+        firebaseRTDBCommons.setupNewChatListener(firebaseAuth,this)
+        firebaseRTDBCommons.setupChatListenersForUser(firebaseAuth,
+            firebaseAuth.currentUser!!.uid,this)
+    }
+    override fun onResume() {
+        super.onResume()
+        configChats()
+    }
     private fun configChats() {
         firebaseRTDBCommons.getMyChatsWithHash(firebaseAuth)
     }
@@ -71,6 +88,11 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
             (activity as MainActivity).startRequestFromRequest = false
             println("Verdadeiro")
         }
+    }
+
+    override fun onMessageArrived() {
+        configChats()
+
     }
 
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
@@ -85,13 +107,14 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
     }
 
     override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
-
-        println(chatList.size)
         configChatsAdapters(chatList)
+        if (currentChat.hash != ""){
+            firebaseRTDBCommons.getMyChatByHash(firebaseAuth,currentChat.hash)
+        }
     }
 
-    override fun onChatRTDBDataRetrievedSuccess(chat: Chat) {
-        TODO("Not yet implemented")
+    override fun onChatRTDBDataRetrievedSuccess(chat: ChatWithHash) {
+        configChatAdapter(chat)
     }
 
     override fun onChatRTDBDataRetrievedFailure() {
@@ -102,7 +125,8 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
         val recyclerView = binding.chatListRecyclerView
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
-        val adapter = MessageFragmentChatsListAdapter(requireContext(),this,firebaseAuth,chatList,this,binding.messagesViewSwitcher,binding.messagesBackButton,this)
+        val adapter = MessageFragmentChatsListAdapter(requireContext(),this,firebaseAuth,chatList,this,binding.messagesViewSwitcher,binding.messagesBackButton,this,childFragmentManager)
+        adapter.refreshChatList(chatList)
         recyclerView.adapter = adapter
 
     }
@@ -110,20 +134,20 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
         val adapter = MessageFragmentChatAdapter(requireContext(),this,firebaseAuth,chat)
         adapter.refreshChat(chat)
         val recyclerView = binding.messagesRecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+        currentChat = chat
+        recyclerView.scrollToPosition(adapter.itemCount - 1)
     }
 
     fun configChatContent(chat: ChatWithHash) {
-        println(chat.chat.requestID)
         if (chat.chat.requestID.isNotBlank()) {
             val chatTitle = binding.messagesChatTitle
             val chatImage = binding.messagesChatImage
             val chatDescription = binding.messagesChatDescription
             val tag1 = binding.messagesTag1
             val tag2 = binding.messagesTag2
-            val textInput = binding.messageTextInput
-            textInput.setText("")
             chatTitle.text = chat.chat.title
             chatDescription.text = chat.chat.description
             tag1.text = chat.chat.tag1
@@ -137,17 +161,55 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
                         ""
                     )
                 )
+            }else{
+                chatImage.background = AppCompatResources.getDrawable(requireContext(),R.drawable.material_button_5dp_border_background)
+                chatImage.foreground = AppCompatResources.getDrawable(requireContext(),R.drawable.ic_image_foreground)
+                chatImage.setOnClickListener{
+                }
             }
         }
+        configChatTextInput(chat)
+    }
+    fun configChatTextInput(chat: ChatWithHash){
+
+        val textInput = binding.messageTextInput
+        val sendButton = binding.messagesChatSendButton
+        sendButton.setOnClickListener(){
+            if(textInput.text!!.isNotBlank()){
+                var sender = ""
+                var receiver = ""
+                if(chat.chat.chatMembers[0].userUID == firebaseAuth.currentUser!!.uid){
+                    sender = chat.chat.chatMembers[0].userUID
+                    receiver = chat.chat.chatMembers[1].userUID
+                }else{
+                    sender = chat.chat.chatMembers[1].userUID
+                    receiver = chat.chat.chatMembers[0].userUID
+                }
+
+                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                formatter.timeZone = TimeZone.getTimeZone("America/Sao_Paulo") // Define o fuso horário para Brasília
+                val current = formatter.format(Calendar.getInstance().time)
+                firebaseRTDBCommons.addMessageToChatByHash(firebaseAuth, chat, Message(sender, receiver, textInput.text.toString(), current))
+                textInput.setText("")
+            }
+        }
+        textInput.setText("")
     }
     fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
-        Glide.with(button.context)
+        Glide.get(requireContext()).registry.append(StorageReference::class.java, InputStream::class.java, StorageReferenceModelLoader.Factory())
+
+        Glide.with(requireContext())
             .load(storageReference)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
                 }
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    button.setOnClickListener {
+                        if (childFragmentManager.fragments.isEmpty()) {
+                            ShowImageFragment(storageReference).show(childFragmentManager, "CustomFragment")
+                        }
+                    }
                     button.background = getBorderedBackgroundDrawable(resource)
                     button.clipToOutline = true
                     button.foreground = null
@@ -211,7 +273,7 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
     }
 
     override fun onUserRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+
     }
 
     override fun onUserRTDBGoogleDataInsertedSuccess() {
@@ -220,6 +282,24 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
 
     override fun onUserRTDBGoogleDataInsertedFailure() {
         TODO("Not yet implemented")
+    }
+
+    override fun onMessageAddedSuccess(chat: ChatWithHash) {
+        configChats()
+    }
+
+    override fun onMessageAddedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageReceived(messageData: Message) {
+        configChats()
+    }
+
+    override fun onNewChatAdded(chatHash: String) {
+        firebaseRTDBCommons.setupChatListenersForUser(firebaseAuth,
+            firebaseAuth.currentUser!!.uid,this)
+        configChats()
     }
 
     override fun onFileInsertedConflict() {

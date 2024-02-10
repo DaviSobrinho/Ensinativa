@@ -10,6 +10,7 @@
     android:layout_height="wrap_content"
     android:background="@color/transaparent">
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginTop="12dp"
         android:id="@+id/fragmentMessageChatLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +25,7 @@
             android:id="@+id/fragmentMessageChatDisplayName1"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="2dp"
-            android:layout_marginEnd="62dp"
+            android:layout_marginEnd="122dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_width="match_parent"
@@ -57,7 +58,7 @@
             android:layout_marginEnd="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_width="60dp"
+            android:layout_width="120dp"
             android:layout_height="24dp"
             android:text="Time">
 
@@ -79,7 +80,7 @@
             android:id="@+id/fragmentMessageChatDisplayName2"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="2dp"
-            android:layout_marginEnd="62dp"
+            android:layout_marginEnd="122dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_width="match_parent"
@@ -112,7 +113,7 @@
             android:layout_marginEnd="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_width="60dp"
+            android:layout_width="120dp"
             android:layout_height="24dp"
             android:text="Time">
 

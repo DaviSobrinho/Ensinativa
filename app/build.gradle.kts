@@ -37,6 +37,9 @@ android {
     viewBinding {
         enable = true
     }
+    buildFeatures {
+        viewBinding = true
+    }
 
 }
 dependencies {
@@ -62,6 +65,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     implementation("com.firebaseui:firebase-ui-storage:7.2.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
 }
 apply(plugin = ("com.google.gms.google-services"))
 

@@ -33,6 +33,7 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatWithHash
+import com.example.ensinativa.model.Message
 import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
@@ -248,6 +249,10 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         Toast.makeText(this, "Something went wrong, updating your data", Toast.LENGTH_SHORT).show()
     }
 
+    override fun onMessageArrived() {
+        TODO("Not yet implemented")
+    }
+
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
     }
@@ -264,9 +269,10 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         TODO("Not yet implemented")
     }
 
-    override fun onChatRTDBDataRetrievedSuccess(chat: Chat) {
+    override fun onChatRTDBDataRetrievedSuccess(chat: ChatWithHash) {
         TODO("Not yet implemented")
     }
+
 
     override fun onChatRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
@@ -318,6 +324,22 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
 
     override fun onUserRTDBGoogleDataInsertedFailure() {
         Toast.makeText(this, "Failure when inserting google user data", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onMessageAddedSuccess(chatWithHash: ChatWithHash) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageAddedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageReceived(messageData: Message) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onNewChatAdded(chatHash: String) {
+        TODO("Not yet implemented")
     }
 
     override fun onGoogleSignInSuccess(user: User?) {

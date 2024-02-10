@@ -43,18 +43,21 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
     var fragmentArrayList : ArrayList<Fragment> = ArrayList<Fragment>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        renderView()
-        configViewPager()
         configAppCheck()
-
-    }
-    public override fun onStart() {
-        super.onStart()
         FirebaseApp.initializeApp(this);
         firebaseAuth = Firebase.auth
         googleAuthCommons = GoogleAuthCommons(this, firebaseAuth, this)
         firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
+        if(firebaseAuth.currentUser == null){
+            startLoginActivity()
+        }
+        renderView()
+        configViewPager()
         configMenuButton(binding.menuButton)
+    }
+    public override fun onStart() {
+        super.onStart()
+
     }
     private fun renderView(){
         binding = ActivityMainBinding.inflate(layoutInflater)

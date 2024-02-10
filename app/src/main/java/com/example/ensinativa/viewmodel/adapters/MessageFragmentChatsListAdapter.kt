@@ -11,7 +11,9 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import android.widget.ViewSwitcher
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -22,15 +24,21 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.ChatWithHash
+import com.example.ensinativa.view.HomeFragment
 import com.example.ensinativa.view.MessageFragment
+import com.example.ensinativa.view.ShowImageFragment
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageReference
 
-class MessageFragmentChatsListAdapter(private val context: Context, private val firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth, chats: List<ChatWithHash>, private val firebaseRTDBListener: FirebaseRTDBListener, val viewSwitcher: ViewSwitcher, val materialButton: MaterialButton, val messageFragment: MessageFragment) : RecyclerView.Adapter<MessageFragmentChatsListAdapter.ViewHolder>() {
-    private val chats = chats.toMutableList()
+class MessageFragmentChatsListAdapter(private val context: Context, private val firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth, chats: List<ChatWithHash>, private val firebaseRTDBListener: FirebaseRTDBListener, val viewSwitcher: ViewSwitcher, val materialButton: MaterialButton, val messageFragment: MessageFragment, private val fragmentManager: FragmentManager) : RecyclerView.Adapter<MessageFragmentChatsListAdapter.ViewHolder>() {
+    private var chats = chats.toMutableList()
     val firebaseStorageCommons = FirebaseStorageCommons(firebaseStorageListener, firebaseAuth)
-    class ViewHolder(val view: View, firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth,val context: Context, val viewSwitcher: ViewSwitcher, val materialButton: MaterialButton,val messageFragmentChatsListAdapter : MessageFragmentChatsListAdapter ) : RecyclerView.ViewHolder(view) {
+
+    init {
+        refreshChatList(chats)
+    }
+    class ViewHolder(val view: View, firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth,val context: Context, val viewSwitcher: ViewSwitcher, val materialButton: MaterialButton,val messageFragmentChatsListAdapter : MessageFragmentChatsListAdapter,val messageFragment: MessageFragment) : RecyclerView.ViewHolder(view) {
 
 
 
@@ -42,13 +50,13 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
                 val title = itemView.findViewById<TextView>(R.id.fragmentMessageChatsRequestTitle)
                 val description = itemView.findViewById<TextView>(R.id.fragmentMessageChatsRequestDescription)
                 val tags = itemView.findViewById<TextView>(R.id.fragmentMessageChatsRequestTags)
-                val image = itemView.findViewById<Button>(R.id.fragmentMessageChatsRequestImage)
+                val button = itemView.findViewById<Button>(R.id.fragmentMessageChatsRequestImage)
                 title.text = chat.chat.title
                 description.text = chat.chat.description
                 tags.text = chat.chat.tag1 + "/" + chat.chat.tag2
                 if (chat.chat.imageSrc.isNotBlank()) {
                     messageFragmentChatsListAdapter.loadImageIntoButton(
-                        image, messageFragmentChatsListAdapter.firebaseStorageCommons.getFileReference(
+                        button, messageFragmentChatsListAdapter.firebaseStorageCommons.getFileReference(
                             firebaseAuth,
                             "requests",
                             chat.chat.imageSrc,
@@ -94,7 +102,7 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
                     requestLayout.visibility = View.GONE
                 }
                 personalLayout.setOnClickListener{
-                    messageFragmentChatsListAdapter.configConstraintLayoutOnClick(requestLayout, chat,itemView)
+                    messageFragmentChatsListAdapter.configConstraintLayoutOnClick(personalLayout, chat,itemView)
                 }
             }
         }
@@ -104,7 +112,7 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.fragment_message_chats_recyclerview, parent, false)
         configSwitcher()
-        return ViewHolder(view, firebaseStorageListener, firebaseAuth, context, viewSwitcher, materialButton,this)
+        return ViewHolder(view, firebaseStorageListener, firebaseAuth, context, viewSwitcher, materialButton,this,messageFragment)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -114,11 +122,22 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
 
     override fun getItemCount(): Int = chats.size
 
-    fun refresh(chats: List<ChatWithHash>) {
+    fun refreshChatList(chatList: List<ChatWithHash>) {
         this.chats.clear()
-        this.chats.addAll(chats)
+        this.chats.addAll(chatList)
+        sortChatsByLastMessageDateTime()
         notifyDataSetChanged()
     }
+
+    private fun sortChatsByLastMessageDateTime() {
+        chats.sortByDescending { chat ->
+            chat.chat.messages.maxByOrNull { message ->
+                message.dateTime
+            }?.dateTime ?: ""
+        }
+    }
+
+
     var page = 1
     private fun configSwitcher(){
         viewSwitcher.setInAnimation(AnimationUtils.loadAnimation(context,android.R.anim.slide_in_left))
@@ -160,7 +179,11 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
                 override fun onLoadCleared(placeholder: Drawable?) {
                 }
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-
+                    button.setOnClickListener {
+                        if (fragmentManager.fragments.isEmpty()) {
+                            ShowImageFragment(storageReference).show(fragmentManager, "CustomFragment")
+                        }
+                    }
                     button.background = getBorderedBackgroundDrawable(resource)
                     button.clipToOutline = true
                     button.foreground = null

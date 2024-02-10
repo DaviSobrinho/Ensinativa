@@ -82,10 +82,14 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
         acceptButton = binding.acceptRequestButton
         requestCard = binding.cardLayout
         missingRequestsTextView = binding.missingRequestsTextView
-        loadRequests()
         configCancelButton()
         configAcceptButton()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loadRequests()
     }
     private fun loadRequests(){
         firebaseRTDBCommons.getRandomRequestsWithHash(firebaseAuth)
@@ -130,12 +134,18 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
             val storageReference = firebaseStorageCommons.getFileReference(firebaseAuth,"requests",currentRequest.request.imageSrc,"")
             loadImageIntoButton(imageButton,storageReference)
         }else{
+            imageButton.setOnClickListener {
+            }
             imageButton.setBackgroundResource(R.drawable.material_button_5dp_border_background)
             imageButton.clipToOutline = true
             imageButton.foreground = ContextCompat.getDrawable(requireContext(), R.drawable.ic_image_foreground)
             imageButton.text = "No image of problem added"
             imageButton.contentDescription = ""
         }
+    }
+
+    override fun onMessageArrived() {
+        TODO("Not yet implemented")
     }
 
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
@@ -168,18 +178,19 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
         TODO("Not yet implemented")
     }
 
-    override fun onChatRTDBDataRetrievedSuccess(chat: Chat) {
+    override fun onChatRTDBDataRetrievedSuccess(chat: ChatWithHash) {
         TODO("Not yet implemented")
     }
+
 
     override fun onChatRTDBDataRetrievedFailure() {
         TODO("Not yet implemented")
     }
 
     override fun onChatRTDBDataUpdatedSuccess() {
-        acceptedRequest = null
         showMenuNameSnackbar(requireView(), "Request accepted successfully")
         changeToMessageFragment(acceptedRequest!!)
+        acceptedRequest = null
     }
 
     override fun onChatRTDBDataUpdatedFailure() {
@@ -237,6 +248,22 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
         TODO("Not yet implemented")
     }
 
+    override fun onMessageAddedSuccess(chatWithHash: ChatWithHash) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageAddedFailure() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onMessageReceived(messageData: Message) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onNewChatAdded(chatHash: String) {
+        TODO("Not yet implemented")
+    }
+
     override fun onFileInsertedConflict() {
         TODO("Not yet implemented")
     }
@@ -259,6 +286,13 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
                     button.foreground = null
                     button.text = ""
                     button.contentDescription = ""
+                    button.setOnClickListener {
+                        button.startAnimation(AnimationUtils.loadAnimation
+                            (requireContext(),androidx.appcompat.R.anim.abc_tooltip_enter))
+                        if (childFragmentManager.fragments.isEmpty()) {
+                            ShowImageFragment(storageReference).show(childFragmentManager, "CustomFragment")
+                        }
+                    }
                 }
             })
     }
