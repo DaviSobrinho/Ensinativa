@@ -17,15 +17,15 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.ensinativa.R
 import com.example.ensinativa.databinding.FragmentRequestBinding
 import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
-import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Message
 import com.example.ensinativa.model.Request
@@ -34,6 +34,7 @@ import com.example.ensinativa.model.RequestTagValidation
 import com.example.ensinativa.model.RequestTitleValidation
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
+import com.example.ensinativa.viewmodel.adapters.RequestFragmentRequestListAdapter
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
@@ -62,7 +63,7 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
 
     private lateinit var firebaseStorageCommons: FirebaseStorageCommons
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
+    lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
     private lateinit var requestImageByteArray: ByteArray
     private lateinit var titleTextInputEditText: TextInputEditText
     private lateinit var descriptionTextInputEditText: TextInputEditText
@@ -73,6 +74,8 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     private lateinit var descriptionErrorMessageTextView: TextView
     private lateinit var tagsErrorMessageTextView: TextView
     private lateinit var imageErrorMessageTextView: TextView
+    private lateinit var missingRequestsMessageTextView : TextView
+    private lateinit var fragmentRequestMyRequestsRecyclerView : RecyclerView
     private var imageSelected: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,12 +100,14 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         descriptionErrorMessageTextView = binding.requestDescriptionErrorMessage
         tagsErrorMessageTextView = binding.requestTagsErrorMessage
         imageErrorMessageTextView = binding.requestImageErrorMessage
+        missingRequestsMessageTextView = binding.fragmentRequestsMyRequestMissingRequestsMessageTextView
+        fragmentRequestMyRequestsRecyclerView = binding.fragmentRequestsMyRequestRecyclerView
 
         configSwitcher()
         configInsertImageButton()
         configConfirmRequestButton()
         configSelectTagButton()
-
+        configMyRequests()
         return binding.root
     }
 
@@ -205,26 +210,39 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         binding.viewSwitcher.setOutAnimation(AnimationUtils.loadAnimation(requireContext(),android.R.anim.slide_out_right))
         binding.myRequestsButton.setOnClickListener{
             if(page == 1){
+                configMyRequests()
+                binding.myRequestsButton.setBackgroundResource(R.drawable.button_roundedtopright5dp_background_selected)
+                binding.createRequestButton.setBackgroundResource(R.drawable.button_roundedtopleft5dp_background)
                 binding.myRequestsButton.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_in))
-            }else{
-                binding.myRequestsButton.setBackgroundResource(R.drawable.button_roundedtopleft5dp_background_selected)
-                binding.createRequestButton.setBackgroundResource(R.drawable.button_roundedtopright5dp_background)
-                binding.myRequestsButton.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_in))
-                page = 1
-                binding.viewSwitcher.showPrevious()
-            }
-        }
-        binding.createRequestButton.setOnClickListener{
-            if(page == 1){
-                binding.myRequestsButton.setBackgroundResource(R.drawable.button_roundedtopleft5dp_background)
-                binding.createRequestButton.setBackgroundResource(R.drawable.button_roundedtopright5dp_background_selected)
-                binding.createRequestButton.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_in))
                 binding.viewSwitcher.showNext()
                 page = 2
             }else{
+                binding.myRequestsButton.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_in))
+            }
+        }
+        binding.createRequestButton.setOnClickListener{
+            if(page == 2){
+                binding.myRequestsButton.setBackgroundResource(R.drawable.button_roundedtopright5dp_background)
+                binding.createRequestButton.setBackgroundResource(R.drawable.button_roundedtopleft5dp_background_selected)
+                binding.createRequestButton.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_in))
+                binding.viewSwitcher.showPrevious()
+                page = 1
+            }else{
                 binding.createRequestButton.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_in))
             }
         }
+    }
+    fun configMyRequests(){
+        firebaseRTDBCommons.getRequestsWithHashByUID(firebaseAuth, firebaseAuth.currentUser!!.uid)
+    }
+    fun configMyRequestsAdapter(requestList: List<RequestWithHash>){
+        val recyclerView = binding.fragmentRequestsMyRequestRecyclerView
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = layoutManager
+        val adapter = RequestFragmentRequestListAdapter(requireContext(),this,firebaseAuth,this,childFragmentManager,requestList)
+        adapter.refreshRequestList(requestList)
+        recyclerView.adapter = adapter
+
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -340,6 +358,16 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         }
     }
 
+    override fun onRequestDeleteSuccess() {
+        configMyRequests()
+        showMenuNameSnackbar(requireView(),"The request was deleted successfully")
+    }
+
+    override fun onRequestDeleteFailure() {
+        configMyRequests()
+        showMenuNameSnackbar(requireView(),"Something went wrong when trying to delete the request")
+    }
+
     override fun onMessageArrived() {
         TODO("Not yet implemented")
     }
@@ -387,7 +415,14 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     }
 
     override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
-        TODO("Not yet implemented")
+        configMyRequestsAdapter(requestList)
+        if(requestList.isEmpty()){
+            missingRequestsMessageTextView.visibility = View.VISIBLE
+            fragmentRequestMyRequestsRecyclerView.visibility = View.GONE
+        }else{
+            missingRequestsMessageTextView.visibility = View.GONE
+            fragmentRequestMyRequestsRecyclerView.visibility = View.VISIBLE
+        }
     }
 
     override fun onRequestListRTDBDataRetrievedFailure() {

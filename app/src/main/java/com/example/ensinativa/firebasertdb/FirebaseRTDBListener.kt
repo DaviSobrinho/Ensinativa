@@ -7,6 +7,8 @@ import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 
 interface FirebaseRTDBListener {
+    fun onRequestDeleteSuccess()
+    fun onRequestDeleteFailure()
     fun onMessageArrived()
     fun onMultipleUsersRTDBDataRetrievedFailure()
     fun onMultipleUsersRTDBDataRetrievedSuccess(userList :List <User>)
@@ -30,4 +32,5 @@ interface FirebaseRTDBListener {
     fun onMessageAddedFailure()
     fun onMessageReceived(messageData: Message)
     fun onNewChatAdded(chatHash: String)
+
 }

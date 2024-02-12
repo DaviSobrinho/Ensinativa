@@ -90,6 +90,14 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
         }
     }
 
+    override fun onRequestDeleteSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestDeleteFailure() {
+        TODO("Not yet implemented")
+    }
+
     override fun onMessageArrived() {
         configChats()
 

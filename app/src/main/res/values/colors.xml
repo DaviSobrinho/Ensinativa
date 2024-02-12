@@ -67,6 +67,7 @@
     <!-- Transparent -->
     <color name="transaparent">#00FFFFFF</color>
     <color name="grey7_50_to_100_transparency_gradient">#80424242</color>
+    <color name="green5_70_transparency">#B343A047</color>
     <color name="transparent50white">#80FFFFFF</color>
 
     <!-- Miscellaneous -->

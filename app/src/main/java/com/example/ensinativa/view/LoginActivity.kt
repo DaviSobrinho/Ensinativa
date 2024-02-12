@@ -249,6 +249,14 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         Toast.makeText(this, "Something went wrong, updating your data", Toast.LENGTH_SHORT).show()
     }
 
+    override fun onRequestDeleteSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestDeleteFailure() {
+        TODO("Not yet implemented")
+    }
+
     override fun onMessageArrived() {
         TODO("Not yet implemented")
     }

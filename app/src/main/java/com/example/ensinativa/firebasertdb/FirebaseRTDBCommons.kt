@@ -1,6 +1,5 @@
 package com.example.ensinativa.firebasertdb
 
-import android.widget.Toast
 import com.example.ensinativa.model.Achievement
 import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatMember
@@ -269,6 +268,75 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                             // Chame o método para notificar que os dados foram recuperados com sucesso
                             firebaseRTDBListener.onRequestListRTDBDataRetrievedSuccess(
                                 randomRequestsWithHash
+                            )
+                        } else {
+                            // Lidar com falha na leitura do RTDB
+                            firebaseRTDBListener.onRequestListRTDBDataRetrievedFailure()
+                        }
+                    }
+            }
+        } else {
+            firebaseRTDBListener.onRequestListRTDBDataRetrievedFailure()
+        }
+    }
+    fun deleteRequestByHash(firebaseAuth: FirebaseAuth, hash: String){
+        if (firebaseAuth.currentUser != null) {
+            val uid = firebaseAuth.uid
+            uid?.let {
+                println("Aqui")
+                val database = FirebaseDatabase.getInstance()
+                val requestsRef = database.getReference("requests")
+                println(hash)
+                // Consulta para obter todas as requests com o UID passado
+                requestsRef.child(hash).setValue(null)
+                    .addOnCompleteListener { task ->
+                        println("Ali")
+                        if (task.isSuccessful) {
+                            firebaseRTDBListener.onRequestDeleteSuccess(
+                            )
+                        } else {
+                            println(task.exception)
+                            // Lidar com falha na leitura do RTDB
+                            firebaseRTDBListener.onRequestDeleteFailure()
+                        }
+                    }
+            }
+        } else {
+            println("Oxi")
+            firebaseRTDBListener.onRequestDeleteFailure()
+        }
+    }
+    fun getRequestsWithHashByUID(firebaseAuth: FirebaseAuth, creatorUID : String) {
+        val creatorUID = creatorUID
+        if (firebaseAuth.currentUser != null) {
+            val uid = firebaseAuth.uid
+            uid?.let {
+                val database = FirebaseDatabase.getInstance()
+                val requestsRef = database.getReference("requests")
+                println(creatorUID)
+
+                // Consulta para obter todas as requests com o UID passado
+                requestsRef.orderByChild("creatorUID").equalTo(creatorUID).get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val result = task.result
+                            val allRequests: MutableList<RequestWithHash> = mutableListOf()
+                            result?.children?.forEach { data ->
+                                val requestData = data.getValue(Request::class.java)
+                                val requestHash = data.key // Obter o hash da request
+
+                                if (requestData != null && requestData.creatorUID == uid) {
+                                    val requestWithHash = RequestWithHash(
+                                        requestData,
+                                        requestHash!!
+                                    )
+                                    allRequests.add(requestWithHash)
+                                }
+                            }
+
+                            // Chame o método para notificar que os dados foram recuperados com sucesso
+                            firebaseRTDBListener.onRequestListRTDBDataRetrievedSuccess(
+                                allRequests
                             )
                         } else {
                             // Lidar com falha na leitura do RTDB

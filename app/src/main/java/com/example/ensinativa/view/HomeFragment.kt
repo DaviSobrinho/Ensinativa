@@ -144,6 +144,14 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
         }
     }
 
+    override fun onRequestDeleteSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestDeleteFailure() {
+        TODO("Not yet implemented")
+    }
+
     override fun onMessageArrived() {
         TODO("Not yet implemented")
     }
