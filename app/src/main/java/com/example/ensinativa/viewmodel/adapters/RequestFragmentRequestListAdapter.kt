@@ -27,9 +27,11 @@ import com.example.ensinativa.view.DeleteRequestFragment
 import com.example.ensinativa.view.MessageFragment
 import com.example.ensinativa.view.RequestFragment
 import com.example.ensinativa.view.ShowImageFragment
+import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageReference
+import java.io.InputStream
 
 class RequestFragmentRequestListAdapter(private val context: Context, private val firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth, val requestFragment: RequestFragment, private val fragmentManager: FragmentManager, requestList: List<RequestWithHash>) : RecyclerView.Adapter<RequestFragmentRequestListAdapter.ViewHolder>() {
     private var requests = requestList.toMutableList()
@@ -132,9 +134,9 @@ class RequestFragmentRequestListAdapter(private val context: Context, private va
     }
 
 
-    var page = 1
-
     fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
+        Glide.get(context).registry.append(StorageReference::class.java, InputStream::class.java, StorageReferenceModelLoader.Factory())
+
         Glide.with(button.context)
             .load(storageReference)
             .diskCacheStrategy(DiskCacheStrategy.ALL)

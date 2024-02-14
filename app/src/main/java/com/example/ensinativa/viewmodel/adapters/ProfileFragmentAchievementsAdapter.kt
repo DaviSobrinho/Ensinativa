@@ -17,9 +17,11 @@ import com.example.ensinativa.R
 import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.Achievement
+import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageReference
+import java.io.InputStream
 
 class ProfileFragmentAchievementsAdapter(private val context: Context, achievements: List<Achievement>, private val firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth) : RecyclerView.Adapter<ProfileFragmentAchievementsAdapter.ViewHolder>() {
     private val achievements = achievements.toMutableList()
@@ -29,6 +31,8 @@ class ProfileFragmentAchievementsAdapter(private val context: Context, achieveme
     class ViewHolder(private var view: View, firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth, private var context: Context) : RecyclerView.ViewHolder(view) {
         val firebaseStorageCommons = FirebaseStorageCommons(firebaseStorageListener, firebaseAuth)
         fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
+            Glide.get(context).registry.append(StorageReference::class.java, InputStream::class.java, StorageReferenceModelLoader.Factory())
+
             Glide.with(button.context)
                 .load(storageReference)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

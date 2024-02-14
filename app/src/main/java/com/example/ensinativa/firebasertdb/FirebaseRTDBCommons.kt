@@ -335,17 +335,17 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                             }
 
                             // Chame o método para notificar que os dados foram recuperados com sucesso
-                            firebaseRTDBListener.onRequestListRTDBDataRetrievedSuccess(
+                            firebaseRTDBListener.onRequestsWithHashListDataRetrievedSuccess(
                                 allRequests
                             )
                         } else {
                             // Lidar com falha na leitura do RTDB
-                            firebaseRTDBListener.onRequestListRTDBDataRetrievedFailure()
+                            firebaseRTDBListener.onRequestsWithHashListDataRetrievedFailure()
                         }
                     }
             }
         } else {
-            firebaseRTDBListener.onRequestListRTDBDataRetrievedFailure()
+            firebaseRTDBListener.onRequestsWithHashListDataRetrievedFailure()
         }
     }
 

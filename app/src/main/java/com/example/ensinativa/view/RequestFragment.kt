@@ -358,6 +358,21 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         }
     }
 
+    override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
+        configMyRequestsAdapter(requestList)
+        if(requestList.isEmpty()){
+            missingRequestsMessageTextView.visibility = View.VISIBLE
+            fragmentRequestMyRequestsRecyclerView.visibility = View.GONE
+        }else{
+            missingRequestsMessageTextView.visibility = View.GONE
+            fragmentRequestMyRequestsRecyclerView.visibility = View.VISIBLE
+        }
+    }
+
+    override fun onRequestsWithHashListDataRetrievedFailure() {
+        showMenuNameSnackbar(requireView(),"Something went wrong when retrieving your requests")
+    }
+
     override fun onRequestDeleteSuccess() {
         configMyRequests()
         showMenuNameSnackbar(requireView(),"The request was deleted successfully")
@@ -415,18 +430,10 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     }
 
     override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
-        configMyRequestsAdapter(requestList)
-        if(requestList.isEmpty()){
-            missingRequestsMessageTextView.visibility = View.VISIBLE
-            fragmentRequestMyRequestsRecyclerView.visibility = View.GONE
-        }else{
-            missingRequestsMessageTextView.visibility = View.GONE
-            fragmentRequestMyRequestsRecyclerView.visibility = View.VISIBLE
-        }
+
     }
 
     override fun onRequestListRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
     }
 
     override fun onUserRTDBDataUpdatedSuccess() {

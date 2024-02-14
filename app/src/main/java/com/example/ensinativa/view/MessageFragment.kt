@@ -70,6 +70,10 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
         configChatsListeners()
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
     private fun configChatsListeners(){
         firebaseRTDBCommons.setupNewChatListener(firebaseAuth,this)
         firebaseRTDBCommons.setupChatListenersForUser(firebaseAuth,
@@ -88,6 +92,14 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
             (activity as MainActivity).startRequestFromRequest = false
             println("Verdadeiro")
         }
+    }
+
+    override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestsWithHashListDataRetrievedFailure() {
+        TODO("Not yet implemented")
     }
 
     override fun onRequestDeleteSuccess() {

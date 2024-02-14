@@ -27,9 +27,11 @@ import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.view.HomeFragment
 import com.example.ensinativa.view.MessageFragment
 import com.example.ensinativa.view.ShowImageFragment
+import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageReference
+import java.io.InputStream
 
 class MessageFragmentChatsListAdapter(private val context: Context, private val firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth, chats: List<ChatWithHash>, private val firebaseRTDBListener: FirebaseRTDBListener, val viewSwitcher: ViewSwitcher, val materialButton: MaterialButton, val messageFragment: MessageFragment, private val fragmentManager: FragmentManager) : RecyclerView.Adapter<MessageFragmentChatsListAdapter.ViewHolder>() {
     private var chats = chats.toMutableList()
@@ -172,6 +174,9 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
         }
     }
     fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
+
+        Glide.get(context).registry.append(StorageReference::class.java, InputStream::class.java, StorageReferenceModelLoader.Factory())
+
         Glide.with(button.context)
             .load(storageReference)
             .diskCacheStrategy(DiskCacheStrategy.ALL)

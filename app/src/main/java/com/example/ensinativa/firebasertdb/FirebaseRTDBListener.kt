@@ -7,6 +7,9 @@ import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 
 interface FirebaseRTDBListener {
+    fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>)
+    fun onRequestsWithHashListDataRetrievedFailure()
+
     fun onRequestDeleteSuccess()
     fun onRequestDeleteFailure()
     fun onMessageArrived()

@@ -13,9 +13,9 @@
         android:title="Requests"
         android:icon="@drawable/ic_add_foreground"/>
     <item
-        android:id="@+id/notifications"
-        android:title="Notifications"
-        android:icon="@drawable/ic_bell_foreground"/>
+        android:id="@+id/news"
+        android:title="News"
+        android:icon="@drawable/ic_news_foreground"/>
     <item
         android:id="@+id/profile"
         android:title="Profile"

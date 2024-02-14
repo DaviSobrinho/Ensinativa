@@ -118,6 +118,14 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
 
     }
 
+    override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestsWithHashListDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
     override fun onRequestDeleteSuccess() {
         TODO("Not yet implemented")
     }

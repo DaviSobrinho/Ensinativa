@@ -208,6 +208,14 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         startActivity(intent, customAnimation.toBundle())
     }
 
+    override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestsWithHashListDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
     override fun onRequestDeleteSuccess() {
         TODO("Not yet implemented")
     }

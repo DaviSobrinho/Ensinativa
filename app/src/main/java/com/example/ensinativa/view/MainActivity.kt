@@ -100,11 +100,12 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         fragmentArrayList.add(HomeFragment())
         fragmentArrayList.add(MessageFragment())
         fragmentArrayList.add(RequestFragment())
-        fragmentArrayList.add(NotificationsFragment())
+        fragmentArrayList.add(NewsFragment())
         fragmentArrayList.add(ProfileFragment())
         val adapterViewPager = ViewPagerAdapter(this,fragmentArrayList)
+        adapterViewPager.getItemId(0)
         mainPager.adapter = adapterViewPager
-
+        mainPager.offscreenPageLimit = 4
         mainPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             @Override
             override fun onPageSelected(position: Int) {
@@ -112,7 +113,7 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
                     0 -> binding.bottomNav.selectedItemId = (R.id.home)
                     1 -> binding.bottomNav.selectedItemId = (R.id.messages)
                     2 -> binding.bottomNav.selectedItemId = (R.id.requests)
-                    3 -> binding.bottomNav.selectedItemId = (R.id.notifications)
+                    3 -> binding.bottomNav.selectedItemId = (R.id.news)
                     4 -> binding.bottomNav.selectedItemId = (R.id.profile)
 
                 }
@@ -132,12 +133,17 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
                     R.id.home -> mainPager.currentItem = 0
                     R.id.messages -> mainPager.currentItem = 1
                     R.id.requests -> mainPager.currentItem = 2
-                    R.id.notifications -> mainPager.currentItem = 3
+                    R.id.news -> mainPager.currentItem = 3
                     R.id.profile -> mainPager.currentItem = 4
                 }
                 return true
             }
         })
+    }
+    private fun setContextToAllFragments(adapterViewPager : ViewPagerAdapter) {
+        for (i in 0 until adapterViewPager.itemCount) {
+            mainPager.setCurrentItem(i, true)
+        }
     }
     fun callMessageFragment(index: Int, request: RequestWithHash){
         startRequestFromRequest = true

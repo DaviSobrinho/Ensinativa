@@ -144,6 +144,14 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
         }
     }
 
+    override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRequestsWithHashListDataRetrievedFailure() {
+        TODO("Not yet implemented")
+    }
+
     override fun onRequestDeleteSuccess() {
         TODO("Not yet implemented")
     }
@@ -281,7 +289,6 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     }
     fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
         Glide.get(requireContext()).registry.append(StorageReference::class.java, InputStream::class.java, StorageReferenceModelLoader.Factory())
-
         Glide.with(requireContext())
             .load(storageReference)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
