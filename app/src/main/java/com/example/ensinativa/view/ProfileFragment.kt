@@ -1,10 +1,12 @@
 package com.example.ensinativa.view
 
+import ProfileFragmentTagsAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ensinativa.databinding.FragmentProfileBinding
@@ -14,18 +16,16 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.Achievement
-import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Message
-import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.example.ensinativa.viewmodel.adapters.ProfileFragmentAchievementsAdapter
-import com.example.ensinativa.viewmodel.adapters.ProfileFragmentTagsAdapter
+
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.database.database
 import com.google.firebase.storage.StorageReference
 import java.lang.Exception
 
@@ -35,9 +35,10 @@ private var firebaseAuth: FirebaseAuth = Firebase.auth
 
 class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,FirebaseStorageListener {
     private lateinit var firebaseAuthCommons : FirebaseAuthCommons
-    private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
+    lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
     private lateinit var displayName: TextView
-    private lateinit var user: User
+    lateinit var user: User
+    private var skillsEditMode : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,17 +59,19 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
         firebaseRTDBCommons = FirebaseRTDBCommons(this)
         firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
         displayName = binding.displayName
-        binding.edit.setOnClickListener{
-            val database = Firebase.database
-            val myRef = database.getReference("achievements")
-            myRef.setValue("Hello, World!")
-            configProfile()
-        }
         configProfile()
+        configTagsEditModeButton()
     }
     private fun configProfile(){
         if(firebaseAuth.currentUser!= null){
             firebaseRTDBCommons.getUserData(firebaseAuth)
+        }
+    }
+    private fun configTagsEditModeButton(){
+        binding.editSkills.setOnClickListener{
+            binding.editSkills.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_in))
+            skillsEditMode = !skillsEditMode
+            configProfile()
         }
     }
 
@@ -103,17 +106,18 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
     fun configTags(tags : List<String>){
         if(tags.isEmpty()){
             binding.skillsTextView.visibility = View.VISIBLE
+            configTagsRecyclerView(tags,skillsEditMode)
         }else{
             binding.skillsTextView.visibility = View.GONE
-            configTagsRecyclerView(tags)
+            configTagsRecyclerView(tags,skillsEditMode)
         }
     }
 
-    private fun configTagsRecyclerView(tags: List<String>) {
+    private fun configTagsRecyclerView(tags: List<String>,editMode : Boolean) {
         val recyclerView = binding.tagsRecyclerView
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
-        val adapter = ProfileFragmentTagsAdapter(requireContext(), tags)
+        val adapter = ProfileFragmentTagsAdapter(requireContext(), tags,editMode,childFragmentManager,this)
         recyclerView.adapter = adapter
 
     }
@@ -189,9 +193,13 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
 
 
     override fun onUserRTDBDataUpdatedSuccess() {
+        showMenuNameSnackbar(requireView(),"User data updated successfully")
+        configProfile()
     }
 
     override fun onUserRTDBDataUpdatedFailure() {
+        showMenuNameSnackbar(requireView(),"Something went wrong when updating user data")
+        configProfile()
     }
     override fun onUserRTDBDataRetrievedFailure() {
 
@@ -256,5 +264,10 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
     override fun onFileInsertedSuccess(fileReference: StorageReference) {
         TODO("Not yet implemented")
     }
-
+    private fun showMenuNameSnackbar(view: View, message : String) {
+        val snackbar = Snackbar.make(view, "$message", Snackbar.LENGTH_SHORT)
+        snackbar.setAction("OK") {
+        }
+        snackbar.show()
+    }
 }

@@ -10,7 +10,6 @@
         android:textSize="12sp"
         app:backgroundTint="@color/transaparent"
         app:backgroundTintMode="add"
-        android:text="sadasd"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:textAlignment="gravity"

@@ -20,6 +20,8 @@ import com.google.firebase.database.ValueEventListener
 class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListener) {
 
     fun updateUser(user: User, firebaseAuth: FirebaseAuth) {
+        println("aa")
+        println(user.tags)
         val currentUserId = firebaseAuth.currentUser?.uid
 
         currentUserId?.let {
@@ -35,13 +37,14 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
 
             userData["description"] = user.description
 
-            userData["about"] = user.about
+            userData["achievements"] = user.achievements
 
             userData["achievements"] = user.achievements
 
             userData["tags"] = user.tags
 
-            userData["achievements"] = listOf(
+            userData["imageSrc"] = user.imageSrc
+            /*userData["achievements"] = listOf(
                 Achievement(
                     "\"My first request\"",
                     "badge1maderequest",
@@ -67,9 +70,8 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                     "badge100solvedrequest",
                     "Earned by solving your hundredth request"
                 )
-            )
-            userData["tags"] = listOf("Tag1", "Tag2", "Tag3", "Tag4", "Tag5")
-            userData["imageSrc"] = user.imageSrc
+            )*/
+            //userData["tags"] = listOf("Tag1", "Tag2", "Tag3", "Tag4", "Tag5")
 
             userRef.updateChildren(userData)
                 .addOnSuccessListener {
@@ -108,8 +110,6 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                                     displayName = userData.displayName,
                                     email = userData.email,
                                     description = userData.description,
-                                    about = userData.about,
-                                    // Tratamento das listas
                                     achievements = userData.achievements.toList(),
                                     tags = userData.tags.toList(),
                                     imageSrc = userData.imageSrc

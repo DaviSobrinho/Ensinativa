@@ -152,7 +152,7 @@
                 <Button
                     android:paddingTop="0dp"
                     android:paddingBottom="0dp"
-                    android:maxWidth="100dp"
+                    android:maxWidth="120dp"
                     android:text="@string/tag_1"
                     android:paddingStart="2dp"
                     android:paddingEnd="2dp"
@@ -166,13 +166,13 @@
                     android:textColor="@color/gray7"
                     android:textSize="11sp"
                     android:background="@drawable/material_button_30dp_border_background"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp">
                 </Button>
                 <Button
                     android:paddingTop="0dp"
                     android:paddingBottom="0dp"
-                    android:maxWidth="100dp"
+                    android:maxWidth="120dp"
                     android:textAlignment="center"
                     android:maxLines="2"
                     android:text="@string/tag_2"
@@ -187,7 +187,7 @@
                     android:textSize="11sp"
                     android:background="@drawable/material_button_30dp_border_background"
                     android:layout_marginStart="12dp"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp">
                 </Button>
 

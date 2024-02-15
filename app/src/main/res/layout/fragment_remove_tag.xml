@@ -5,26 +5,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="424dp">
+    android:layout_height="wrap_content">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/tagsTitle"
-            android:textColor="@color/blue5"
-            android:gravity="center"
-            android:textAlignment="center"
+            android:id="@+id/fragmentRemoveTagTitle"
+            android:textAlignment="textStart"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:textSize="28sp"
+            android:textSize="18sp"
+
+            android:layout_marginEnd="52dp"
             android:layout_marginTop="10dp"
             android:layout_marginStart="24dp"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tags">
+            android:text="Are you sure you want to remove this tag">
         </TextView>
         <Button
-            android:id="@+id/fragmentAddTagQuitButton"
+            android:id="@+id/fragmentRemoveTagQuitButton"
             app:backgroundTint="@color/transaparent"
             app:backgroundTintMode="src_in"
             android:background="@color/transaparent"
@@ -38,33 +38,7 @@
         </Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="24dp"
-        android:orientation="vertical"
-        app:boxBackgroundColor="@color/white">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragmentAddTagTextInputEditText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="Insert or select a tag to your profile"
-            android:inputType="none"
-            android:textColor="@color/gray7"
-            android:textSize="12sp" />
-    </com.google.android.material.textfield.TextInputLayout>
-    <ListView
-        android:divider="@null"
-        android:visibility="visible"
-        android:id="@+id/fragmentAddTagListView"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp">
-    </ListView>
     <TextView
         android:layout_marginTop="4dp"
         android:id="@+id/tagErrorMessage"
@@ -92,7 +66,7 @@
         android:layout_marginTop="24dp">
         <Button
             android:layout_weight="1"
-            android:id="@+id/cancelTagSelection"
+            android:id="@+id/fragmentRemoveTagCancelRemove"
             android:layout_gravity="center"
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -100,7 +74,7 @@
             android:background="@drawable/material_button_5dp_border_red_background"
             app:backgroundTint="@color/transaparent"
             app:backgroundTintMode="src_atop"
-            android:text="Cancel selection"
+            android:text="Cancel"
             android:textColor="@color/white"
             android:lines="1"
             android:textSize="16sp"
@@ -113,7 +87,7 @@
         <Button
             android:layout_weight="1"
             android:layout_marginStart="10dp"
-            android:id="@+id/confirmTagSelection"
+            android:id="@+id/fragmentRemoveTagConfirmRemove"
             android:layout_gravity="center"
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -121,7 +95,7 @@
             android:background="@drawable/material_button_5dp_border_green_background"
             app:backgroundTint="@color/transaparent"
             app:backgroundTintMode="src_atop"
-            android:text="Confirm selection"
+            android:text="Remove"
             android:textColor="@color/white"
             android:lines="1"
             android:textSize="16sp"

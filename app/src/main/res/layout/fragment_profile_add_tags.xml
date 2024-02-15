@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
         <TextView
-            android:id="@+id/tagTitle"
+            android:id="@+id/tagsTitle"
             android:textColor="@color/blue5"
             android:gravity="center"
             android:textAlignment="center"
@@ -21,10 +21,10 @@
             android:layout_marginStart="24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tag_1">
+            android:text="Tags">
         </TextView>
         <Button
-            android:id="@+id/fragmentAddTagQuitButton"
+            android:id="@+id/quitButton"
             app:backgroundTint="@color/transaparent"
             app:backgroundTintMode="src_in"
             android:background="@color/transaparent"
@@ -48,18 +48,18 @@
         app:boxBackgroundColor="@color/white">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragmentAddTagTextInputEditText"
+            android:id="@+id/tagsTextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Insert or select a tag to the problem"
+            android:hint="Insert or select a tag to your profile"
             android:inputType="none"
             android:textColor="@color/gray7"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
     </com.google.android.material.textfield.TextInputLayout>
     <ListView
         android:divider="@null"
         android:visibility="visible"
-        android:id="@+id/fragmentAddTagListView"
+        android:id="@+id/tagsListView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginStart="24dp"
@@ -67,7 +67,7 @@
     </ListView>
     <TextView
         android:layout_marginTop="4dp"
-        android:id="@+id/tagErrorMessage"
+        android:id="@+id/tagsErrorMessage"
         android:padding="0dp"
         android:layout_gravity="center"
         android:textColor="@color/red4"
