@@ -26,6 +26,7 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
+import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Message
 import com.example.ensinativa.model.Request
@@ -311,7 +312,7 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         }
     }
 
-    override fun onFileInsertedConflict() {
+    override fun onFileInsertedFailure() {
         showMenuNameSnackbar(requireView(),"Something wnet wrong when creating your request")
     }
 
@@ -356,6 +357,14 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
                 tag2.text = tag
             }
         }
+    }
+
+    override fun onCreateChatVerifiedDuplicatesSuccess(chat: Chat, duplicated: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCreateChatVerifiedDuplicatesFailure() {
+        TODO("Not yet implemented")
     }
 
     override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {

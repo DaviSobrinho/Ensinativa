@@ -157,7 +157,8 @@ class ProfileFragmentTagsAdapter(private val context: Context, tags: List<String
                         profileFragment.user.description,
                         profileFragment.user.achievements,
                         newTags.distinct(),
-                        profileFragment.user.imageSrc
+                        profileFragment.user.imageSrc,
+                        profileFragment.user.rating
                     ), profileFragment
                 ).show(fragmentManager, "CustomFragment")
             }

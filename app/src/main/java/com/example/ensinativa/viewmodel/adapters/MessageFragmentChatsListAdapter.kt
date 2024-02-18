@@ -11,7 +11,6 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import android.widget.ViewSwitcher
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,9 +23,8 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.ChatWithHash
-import com.example.ensinativa.view.HomeFragment
 import com.example.ensinativa.view.MessageFragment
-import com.example.ensinativa.view.ShowImageFragment
+import com.example.ensinativa.view.ShowImageDialogFragment
 import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
@@ -186,7 +184,7 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                     button.setOnClickListener {
                         if (fragmentManager.fragments.isEmpty()) {
-                            ShowImageFragment(storageReference).show(fragmentManager, "CustomFragment")
+                            ShowImageDialogFragment(storageReference).show(fragmentManager, "CustomFragment")
                         }
                     }
                     button.background = getBorderedBackgroundDrawable(resource)

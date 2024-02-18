@@ -14,6 +14,7 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.datastore.preferences.preferencesDataStore
@@ -67,6 +68,12 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         binding = ActivityLoginBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        val backButtonCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                moveTaskToBack(true)
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, backButtonCallback)
     }
     override fun onStart() {
         super.onStart()
@@ -157,6 +164,7 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         )
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent, customAnimation.toBundle())
+        finish()
     }
 
     private fun configShowPasswordButton(showPasswordButton: Button, passwordTextInput: TextInputEditText) {
@@ -247,6 +255,14 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
 
     override fun onUserDataUpdatedFailure() {
         Toast.makeText(this, "Something went wrong, updating your data", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onCreateChatVerifiedDuplicatesSuccess(chat: Chat, duplicated: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCreateChatVerifiedDuplicatesFailure() {
+        TODO("Not yet implemented")
     }
 
     override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {

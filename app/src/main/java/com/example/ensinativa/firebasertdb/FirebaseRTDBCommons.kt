@@ -1,6 +1,5 @@
 package com.example.ensinativa.firebasertdb
 
-import com.example.ensinativa.model.Achievement
 import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatMember
 import com.example.ensinativa.model.ChatWithHash
@@ -44,6 +43,8 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             userData["tags"] = user.tags
 
             userData["imageSrc"] = user.imageSrc
+
+            userData["rating"] = user.rating
             /*userData["achievements"] = listOf(
                 Achievement(
                     "\"My first request\"",
@@ -367,7 +368,6 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             chatData["imageSrc"] = chat.imageSrc
             chatData["tag1"] = chat.tag1
             chatData["tag2"] = chat.tag2
-
             newRequestRef.updateChildren(chatData)
                 .addOnSuccessListener {
                     // Sucesso ao atualizar dados no Realtime Database
@@ -380,6 +380,53 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
         } ?: run {
             // Usuário não autenticado
             firebaseRTDBListener.onChatRTDBDataUpdatedFailure()
+        }
+    }
+    fun verifyDuplicatedChat(chat : Chat, firebaseAuth: FirebaseAuth){
+        if (firebaseAuth.currentUser != null) {
+            val uid = firebaseAuth.currentUser!!.uid
+            uid?.let {
+                val database = FirebaseDatabase.getInstance()
+                val chatsRef = database.getReference("chats")
+                // Consulta para obter todos os chats onde o usuário é um membro
+                val queries = (0 until 2).map { index ->
+                    chatsRef.orderByChild("chatMembers/$index/userUID").equalTo(uid).get()
+                }
+                Tasks.whenAllComplete(queries)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            var duplicated = false
+                            task.result?.forEach { result ->
+                                if (result.isSuccessful) {
+                                    val snapshot = result.result as DataSnapshot
+                                    snapshot.children.forEach { data ->
+                                        val chatData = mapToChat(data.value as Map<String, Any>)
+                                        if(chat.requestID == chatData.requestID){
+                                            if(chat.chatMembers[0] == chatData.chatMembers[0] &&
+                                                chat.chatMembers[1] == chatData.chatMembers[1]){
+                                                duplicated = true
+                                            }else{
+                                                if(chat.chatMembers[0] == chatData.chatMembers[1] &&
+                                                    chat.chatMembers[1] == chatData.chatMembers[0]){
+
+                                                    duplicated = true
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                } else {
+                                    firebaseRTDBListener.onCreateChatVerifiedDuplicatesFailure()
+                                }
+                            }
+                            firebaseRTDBListener.onCreateChatVerifiedDuplicatesSuccess(chat,duplicated)
+                        } else {
+                            firebaseRTDBListener.onCreateChatVerifiedDuplicatesFailure()
+                        }
+                    }
+            }
+        } else {
+            firebaseRTDBListener.onCreateChatVerifiedDuplicatesFailure()
         }
     }
 
@@ -452,29 +499,50 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
         }
     }
 
-    fun getMyChatByHash(firebaseAuth: FirebaseAuth, hash: String) {
+    fun getMyChatByHash(firebaseAuth: FirebaseAuth,hash: String) {
+        val hash = hash
         if (firebaseAuth.currentUser != null) {
-            val database = FirebaseDatabase.getInstance()
-            val chatsRef = database.getReference("chats")
-            chatsRef.child(hash).get().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val dataSnapshot = task.result
-                    if (dataSnapshot.exists()) {
-                        val chatData = dataSnapshot.value as Map<String, Any>?
-                        if (chatData != null) {
-                            val chat = mapToChat(chatData)
-                            firebaseRTDBListener.onChatRTDBDataRetrievedSuccess(ChatWithHash(chat,
-                                dataSnapshot.key.toString()
-                            ))
+            val uid = firebaseAuth.currentUser!!.uid
+            uid?.let {
+                val database = FirebaseDatabase.getInstance()
+                val chatsRef = database.getReference("chats")
+                // Consulta para obter todos os chats onde o usuário é um membro
+                val queries = (0 until 2).map { index ->
+                    chatsRef.orderByChild("chatMembers/$index/userUID").equalTo(uid).get()
+                }
+                Tasks.whenAllComplete(queries)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            var chatWithHash: ChatWithHash = ChatWithHash(Chat(),"")
+                            task.result?.forEach { result ->
+                                if (result.isSuccessful) {
+                                    val snapshot = result.result as DataSnapshot
+                                    snapshot.children.forEach { data ->
+                                        val chatData = mapToChat(data.value as Map<String, Any>)
+                                        val key = data.key // Obtém o hash da chave do chat
+                                        if (chatData != null) {
+                                            if(key == hash){
+                                                chatWithHash = ChatWithHash(chatData,hash)
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    // Lidar com falha na leitura do RTDB
+                                    firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
+                                    println(result.exception)
+                                }
+                            }
+                            if(chatWithHash.hash != ""){
+                                // Chame o método para notificar que os dados foram recuperados com sucesso
+                                firebaseRTDBListener.onChatRTDBDataRetrievedSuccess(chatWithHash)
+                            }else{
+                                firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
+                            }
                         } else {
+                            // Lidar com falha na leitura do RTDB
                             firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
                         }
-                    } else {
-                        firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
                     }
-                } else {
-                    firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
-                }
             }
         } else {
             firebaseRTDBListener.onChatRTDBDataRetrievedFailure()

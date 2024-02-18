@@ -7,5 +7,6 @@ data class User (
     var description : String = "",
     var achievements : List<Achievement> = emptyList(),
     var tags : List<String> = emptyList(),
-    val imageSrc : String = ""
+    var imageSrc : String = "",
+    var rating : Double = 0.0
 )

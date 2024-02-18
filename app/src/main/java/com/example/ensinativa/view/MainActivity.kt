@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Button
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -54,6 +56,12 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         renderView()
         configViewPager()
         configMenuButton(binding.menuButton)
+        val backButtonCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                moveTaskToBack(true)
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, backButtonCallback)
     }
     public override fun onStart() {
         super.onStart()
@@ -82,14 +90,14 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
             val providers = firebaseAuthCommons.getProviders()
             emailPasswordAuthLoggedIn = providers.emailPasswordProvider
             googleAuthLoggedIn = providers.googleProvider
-            if(emailPasswordAuthLoggedIn){
+            if(firebaseAuth.currentUser != null){
                 firebaseAuth.signOut()
             }
             if(googleAuthLoggedIn){
                 googleAuthCommons.googleSignOut()
             }
             if(facebookAuthLoggedIn){
-                //Missing facebook auth
+                //
             }
             startLoginActivity()
         }
@@ -204,5 +212,6 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         )
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent, customAnimation.toBundle())
+        finish()
     }
 }

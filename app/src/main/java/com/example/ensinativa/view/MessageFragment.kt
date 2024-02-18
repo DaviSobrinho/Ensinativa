@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +31,7 @@ import com.example.ensinativa.model.User
 import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
 import com.example.ensinativa.viewmodel.adapters.MessageFragmentChatAdapter
 import com.example.ensinativa.viewmodel.adapters.MessageFragmentChatsListAdapter
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -87,11 +87,13 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
         firebaseRTDBCommons.getMyChatsWithHash(firebaseAuth)
     }
 
-    private fun autoLoadMessageFromRequest(){
-        if((activity as MainActivity).startRequestFromRequest){
-            (activity as MainActivity).startRequestFromRequest = false
-            println("Verdadeiro")
-        }
+
+    override fun onCreateChatVerifiedDuplicatesSuccess(chat: Chat, duplicated: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCreateChatVerifiedDuplicatesFailure() {
+        TODO("Not yet implemented")
     }
 
     override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
@@ -116,14 +118,14 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
     }
 
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
     }
 
     override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
+
     }
 
     override fun onChatListRTDBDataRetrievedFailure() {
-        Toast.makeText(requireContext(), "ERRO ao recuperar lista de chats", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Something went wrong when retrieving your chats", Toast.LENGTH_SHORT).show()
     }
 
     override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
@@ -138,7 +140,7 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
     }
 
     override fun onChatRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        showMenuNameSnackbar(requireView(),"Something went wrong when retrieving your messaages")
     }
 
     private fun configChatsAdapters(chatList: List<ChatWithHash>) {
@@ -227,7 +229,7 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                     button.setOnClickListener {
                         if (childFragmentManager.fragments.isEmpty()) {
-                            ShowImageFragment(storageReference).show(childFragmentManager, "CustomFragment")
+                            ShowImageDialogFragment(storageReference).show(childFragmentManager, "CustomFragment")
                         }
                     }
                     button.background = getBorderedBackgroundDrawable(resource)
@@ -309,7 +311,7 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
     }
 
     override fun onMessageAddedFailure() {
-        TODO("Not yet implemented")
+        showMenuNameSnackbar(requireView(),"Something went wrong when sending your message")
     }
 
     override fun onMessageReceived(messageData: Message) {
@@ -322,13 +324,18 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
         configChats()
     }
 
-    override fun onFileInsertedConflict() {
+    override fun onFileInsertedFailure() {
         TODO("Not yet implemented")
     }
 
     override fun onFileInsertedSuccess(fileReference: StorageReference) {
         TODO("Not yet implemented")
     }
-
+    private fun showMenuNameSnackbar(view: View, message : String) {
+        val snackbar = Snackbar.make(view, "$message", Snackbar.LENGTH_SHORT)
+        snackbar.setAction("OK") {
+        }
+        snackbar.show()
+    }
 
 }

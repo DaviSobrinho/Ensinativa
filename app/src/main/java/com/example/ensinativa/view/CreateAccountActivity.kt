@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ensinativa.databinding.ActivityCreateAccountBinding
 import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
@@ -52,6 +53,15 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         val view = binding.root
         setContentView(view)
 
+        val backButtonCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val customAnimation = ActivityOptions.makeCustomAnimation(this@CreateAccountActivity, R.anim.slide_in_left, R.anim.slide_out_right)
+                val intent = Intent(this@CreateAccountActivity, LoginActivity::class.java)
+                startActivity(intent, customAnimation.toBundle())
+                finish()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, backButtonCallback)
     }
 
     private fun configErrorMessageTextView(textView: TextView, errorMessage: String) {
@@ -140,6 +150,7 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
             val customAnimation = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_left, R.anim.slide_out_right)
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent, customAnimation.toBundle())
+            finish()
         }
     }
 
@@ -206,6 +217,15 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         )
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent, customAnimation.toBundle())
+        finish()
+    }
+
+    override fun onCreateChatVerifiedDuplicatesSuccess(chat: Chat, duplicated: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCreateChatVerifiedDuplicatesFailure() {
+        TODO("Not yet implemented")
     }
 
     override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {

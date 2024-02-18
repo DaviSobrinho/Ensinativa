@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
-import android.widget.ViewSwitcher
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,14 +20,11 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.ensinativa.R
 import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
-import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.view.DeleteRequestFragment
-import com.example.ensinativa.view.MessageFragment
 import com.example.ensinativa.view.RequestFragment
-import com.example.ensinativa.view.ShowImageFragment
+import com.example.ensinativa.view.ShowImageDialogFragment
 import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
-import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageReference
 import java.io.InputStream
@@ -146,7 +142,7 @@ class RequestFragmentRequestListAdapter(private val context: Context, private va
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                     button.setOnClickListener {
                         if (fragmentManager.fragments.isEmpty()) {
-                            ShowImageFragment(storageReference).show(fragmentManager, "CustomFragment")
+                            ShowImageDialogFragment(storageReference).show(fragmentManager, "CustomFragment")
                         }
                     }
                     button.background = getBorderedBackgroundDrawable(resource)

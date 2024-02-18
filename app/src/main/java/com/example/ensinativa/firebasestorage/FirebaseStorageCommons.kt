@@ -1,11 +1,9 @@
 package com.example.ensinativa.firebasestorage
 
-import android.graphics.Bitmap
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.storage
-import java.nio.ByteBuffer
 
 class FirebaseStorageCommons(private val firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth) {
     val storage = Firebase.storage
@@ -40,7 +38,7 @@ class FirebaseStorageCommons(private val firebaseStorageListener: FirebaseStorag
                     .addOnFailureListener { exception ->
 
                         // Falha no upload
-                        firebaseStorageListener.onFileInsertedConflict()
+                        firebaseStorageListener.onFileInsertedFailure()
                     }
             }
     }

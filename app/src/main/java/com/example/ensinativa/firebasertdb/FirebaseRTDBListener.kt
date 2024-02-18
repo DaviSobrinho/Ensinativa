@@ -1,5 +1,6 @@
 package com.example.ensinativa.firebasertdb
 
+import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Message
 import com.example.ensinativa.model.Request
@@ -7,6 +8,8 @@ import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 
 interface FirebaseRTDBListener {
+    fun onCreateChatVerifiedDuplicatesSuccess(chat: Chat,duplicated : Boolean)
+    fun onCreateChatVerifiedDuplicatesFailure()
     fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>)
     fun onRequestsWithHashListDataRetrievedFailure()
 

@@ -37,7 +37,6 @@ class MessageFragmentChatAdapter(private val context: Context, private val fireb
             val displayDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
 
             if (message.creatorUID == firebaseAuth.currentUser!!.uid) {
-                // Lógica para exibir a mensagem enviada pelo usuário atual
                 val messageLayout1 = itemView.findViewById<ConstraintLayout>(R.id.fragmentMessageChatLayout1)
                 val messageDisplayName2 = itemView.findViewById<TextView>(R.id.fragmentMessageChatDisplayName2)
                 val messageTime2 = itemView.findViewById<TextView>(R.id.fragmentMessageChatTime2)
@@ -53,7 +52,6 @@ class MessageFragmentChatAdapter(private val context: Context, private val fireb
                     messageDisplayName2.text = chat.chat.chatMembers[1].displayName
                 }
             } else {
-                // Lógica para exibir mensagens de outros usuários
                 val messageLayout2 = itemView.findViewById<ConstraintLayout>(R.id.fragmentMessageChatLayout2)
                 val messageDisplayName1 = itemView.findViewById<TextView>(R.id.fragmentMessageChatDisplayName1)
                 val messageTime1 = itemView.findViewById<TextView>(R.id.fragmentMessageChatTime1)

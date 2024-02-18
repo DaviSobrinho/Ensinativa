@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -28,7 +27,6 @@ import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatMember
 import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Message
-import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
@@ -144,6 +142,34 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
         }
     }
 
+    override fun onCreateChatVerifiedDuplicatesSuccess(chat: Chat,duplicated: Boolean) {
+        if(!duplicated){
+            firebaseRTDBCommons.createChat(
+                Chat(
+                    listOf
+                        (ChatMember(
+                        chat.chatMembers[0].userUID,chat.chatMembers[0].imageSrc,chat.chatMembers[0].displayName),
+                        ChatMember(chat.chatMembers[1].userUID,chat.chatMembers[1].imageSrc,chat.chatMembers[1].displayName)),
+                    acceptedRequest!!.request.imageSrc,
+                    emptyList(),
+                    acceptedRequest!!.hash,
+                    acceptedRequest!!.request.title,
+                    acceptedRequest!!.request.description,
+                    acceptedRequest!!.request.tag1,
+                    acceptedRequest!!.request.tag2,
+                    false
+                ),firebaseAuth)
+        }else{
+            showMenuNameSnackbar(requireView(),"You already accepted this request, try to find it in your message list")
+            acceptedRequest = null
+        }
+    }
+
+    override fun onCreateChatVerifiedDuplicatesFailure() {
+        showMenuNameSnackbar(requireView(),"Something went wrong when accepting the request")
+        acceptedRequest = null
+    }
+
     override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
         TODO("Not yet implemented")
     }
@@ -170,21 +196,20 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     }
 
     override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
-        firebaseRTDBCommons.createChat(
-            Chat(
-                listOf
-                    (ChatMember(
-                        userList[0].uid,userList[0].imageSrc,userList[0].displayName),
-                    ChatMember( userList[1].uid,userList[1].imageSrc,userList[1].displayName)),
-                acceptedRequest!!.request.imageSrc,
-                emptyList(),
-                acceptedRequest!!.hash,
-                acceptedRequest!!.request.title,
-                acceptedRequest!!.request.description,
-                acceptedRequest!!.request.tag1,
-                acceptedRequest!!.request.tag2,
-                false
-            ),firebaseAuth)
+        firebaseRTDBCommons.verifyDuplicatedChat(Chat(
+            listOf
+                (ChatMember(
+                userList[0].uid,userList[0].imageSrc,userList[0].displayName),
+                ChatMember( userList[1].uid,userList[1].imageSrc,userList[1].displayName)),
+            acceptedRequest!!.request.imageSrc,
+            emptyList(),
+            acceptedRequest!!.hash,
+            acceptedRequest!!.request.title,
+            acceptedRequest!!.request.description,
+            acceptedRequest!!.request.tag1,
+            acceptedRequest!!.request.tag2,
+            false
+        ),firebaseAuth)
     }
 
     override fun onChatListRTDBDataRetrievedFailure() {
@@ -210,8 +235,8 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     }
 
     override fun onChatRTDBDataUpdatedFailure() {
-        acceptedRequest = null
         showMenuNameSnackbar(requireView(),"Something went wrong when accepting the request")
+        acceptedRequest = null
     }
 
     override fun onRequestRTDBDataUpdatedSuccess() {
@@ -280,7 +305,7 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
         TODO("Not yet implemented")
     }
 
-    override fun onFileInsertedConflict() {
+    override fun onFileInsertedFailure() {
         TODO("Not yet implemented")
     }
 
@@ -305,7 +330,7 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
                         button.startAnimation(AnimationUtils.loadAnimation
                             (requireContext(),androidx.appcompat.R.anim.abc_tooltip_enter))
                         if (childFragmentManager.fragments.isEmpty()) {
-                            ShowImageFragment(storageReference).show(childFragmentManager, "CustomFragment")
+                            ShowImageDialogFragment(storageReference).show(childFragmentManager, "CustomFragment")
                         }
                     }
                 }

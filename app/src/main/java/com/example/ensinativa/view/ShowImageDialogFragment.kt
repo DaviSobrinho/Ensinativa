@@ -8,43 +8,28 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
-import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.ensinativa.R
 import com.example.ensinativa.databinding.FragmentZoomInImageBinding
 import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageReference
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
 import java.io.InputStream
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 
 private var _binding: FragmentZoomInImageBinding? = null
 private val binding get() = _binding!!
 
-class ShowImageFragment(private val storageReference: StorageReference) : DialogFragment() {
+class ShowImageDialogFragment(private val storageReference: StorageReference) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = FragmentZoomInImageBinding.inflate(LayoutInflater.from(context))
         return AlertDialog.Builder(requireActivity())

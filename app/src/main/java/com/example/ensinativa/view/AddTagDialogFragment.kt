@@ -137,7 +137,8 @@ class AddTagDialogFragment(var user: User,val profileFragment : ProfileFragment)
                                 profileFragment.user.description,
                                 profileFragment.user.achievements,
                                 newTags.distinct(),
-                                profileFragment.user.imageSrc
+                                profileFragment.user.imageSrc,
+                                profileFragment.user.rating
                             )
                         )
                         profileFragment.firebaseRTDBCommons.updateUser(updatedUser,firebaseAuth)

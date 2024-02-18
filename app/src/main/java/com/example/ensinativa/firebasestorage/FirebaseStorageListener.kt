@@ -2,7 +2,7 @@ package com.example.ensinativa.firebasestorage
 import com.google.firebase.storage.StorageReference
 
 interface FirebaseStorageListener {
-    fun onFileInsertedConflict()
+    fun onFileInsertedFailure()
     fun onFileInsertedSuccess(fileReference : StorageReference)
 
 }
