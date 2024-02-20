@@ -19,8 +19,6 @@ import com.google.firebase.database.ValueEventListener
 class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListener) {
 
     fun updateUser(user: User, firebaseAuth: FirebaseAuth) {
-        println("aa")
-        println(user.tags)
         val currentUserId = firebaseAuth.currentUser?.uid
 
         currentUserId?.let {
@@ -45,46 +43,15 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             userData["imageSrc"] = user.imageSrc
 
             userData["rating"] = user.rating
-            /*userData["achievements"] = listOf(
-                Achievement(
-                    "\"My first request\"",
-                    "badge1maderequest",
-                    "Earned by creating your first request"
-                ),
-                Achievement(
-                    "\"My tenth request\"",
-                    "badge10maderequest",
-                    "Earned by creating your tenth request"
-                ),
-                Achievement(
-                    "\"My hundredth request\"",
-                    "badge100maderequest",
-                    "Earned by creating your hundredth request"
-                ),
-                Achievement(
-                    "\"My first solution\"",
-                    "badge1solvedrequest",
-                    "Earned by solving your first request"
-                ),
-                Achievement(
-                    "\"My hundredth solution\"",
-                    "badge100solvedrequest",
-                    "Earned by solving your hundredth request"
-                )
-            )*/
-            //userData["tags"] = listOf("Tag1", "Tag2", "Tag3", "Tag4", "Tag5")
 
             userRef.updateChildren(userData)
                 .addOnSuccessListener {
-                    // Sucesso ao atualizar dados no Realtime Database
                     firebaseRTDBListener.onUserRTDBDataUpdatedSuccess()
                 }
                 .addOnFailureListener {
-                    // Falha ao atualizar dados no Realtime Database
                     firebaseRTDBListener.onUserRTDBDataUpdatedFailure()
                 }
         } ?: run {
-            // Usuário não autenticado
             firebaseRTDBListener.onUserRTDBDataUpdatedFailure()
         }
     }
@@ -103,9 +70,7 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                         if (dataSnapshot != null && dataSnapshot.exists()) {
                             val userData = dataSnapshot.getValue(User::class.java)
 
-                            // Aqui você pode utilizar os dados do usuário (userData)
                             if (userData != null) {
-                                // Extrair os campos necessários de userData
                                 val extractedUser = User(
                                     uid = userData.uid,
                                     displayName = userData.displayName,
@@ -115,7 +80,6 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                                     tags = userData.tags.toList(),
                                     imageSrc = userData.imageSrc
                                 )
-                                // Chame o método para notificar que os dados foram recuperados com sucesso
                                 firebaseRTDBListener.onUserRTDBDataRetrievedSuccess(extractedUser)
                             } else {
                                 firebaseRTDBListener.onUserRTDBDataRetrievedSuccess(User())
@@ -124,7 +88,6 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                             firebaseRTDBListener.onUserRTDBDataRetrievedSuccess(User())
                         }
                     } else {
-                        // Lidar com falha na leitura do RTDB
                         firebaseRTDBListener.onUserRTDBDataRetrievedFailure()
                     }
                 }
@@ -133,6 +96,7 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             firebaseRTDBListener.onUserRTDBDataRetrievedFailure()
         }
     }
+
     fun getUsersDataByUids(firebaseAuth: FirebaseAuth, uids: List<String>) {
         if (firebaseAuth.currentUser != null) {
             val database = FirebaseDatabase.getInstance()
@@ -158,43 +122,28 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                                 )
                                 usersList.add(extractedUser)
                             } else {
-                                println("Erro ao obter dados do usuário com UID $uid")
+                                // Nothing
                             }
                         } else {
-                            println("Usuário com UID $uid não encontrado na base de dados")
+                            // Nothing
                         }
                     }
-
-                    // Verificar se todos os usuários foram recuperados
                     if (usersList.size == uids.size) {
-                        // Notificar que todos os usuários foram recuperados com sucesso
                         firebaseRTDBListener.onMultipleUsersRTDBDataRetrievedSuccess(usersList)
-                        println("1")
                     }
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
-                    // Lidar com falha na leitura do RTDB
                     firebaseRTDBListener.onMultipleUsersRTDBDataRetrievedFailure()
-                    println("2")
-                    println(databaseError.message)
                 }
             })
-
-            // Caso a lista de UIDs seja vazia
             if (uids.isEmpty()) {
                 firebaseRTDBListener.onMultipleUsersRTDBDataRetrievedSuccess(usersList)
-                println("3")
             }
         } else {
             firebaseRTDBListener.onMultipleUsersRTDBDataRetrievedFailure()
-            println("4")
         }
     }
-
-
-
-
 
 
     fun createRequest(request: Request, firebaseAuth: FirebaseAuth) {
@@ -218,15 +167,12 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
 
             newRequestRef.updateChildren(requestData)
                 .addOnSuccessListener {
-                    // Sucesso ao atualizar dados no Realtime Database
                     firebaseRTDBListener.onRequestRTDBDataUpdatedSuccess()
                 }
                 .addOnFailureListener {
-                    // Falha ao atualizar dados no Realtime Database
                     firebaseRTDBListener.onRequestRTDBDataUpdatedFailure()
                 }
         } ?: run {
-            // Usuário não autenticado
             firebaseRTDBListener.onRequestRTDBDataUpdatedFailure()
         }
     }
@@ -237,8 +183,6 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             uid?.let {
                 val database = FirebaseDatabase.getInstance()
                 val requestsRef = database.getReference("requests")
-
-                // Consulta para obter todas as requests não resolvidas
                 requestsRef.orderByChild("solved").equalTo(false).get()
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
@@ -247,7 +191,7 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
 
                             result?.children?.forEach { data ->
                                 val requestData = data.getValue(Request::class.java)
-                                val requestHash = data.key // Obter o hash da request
+                                val requestHash = data.key
 
                                 if (requestData != null && requestData.creatorUID != uid) {
                                     val requestWithHash = RequestWithHash(
@@ -258,18 +202,14 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                                 }
                             }
 
-                            // Embaralhar a lista
                             allRequests.shuffle()
 
-                            // Limitar a 10 resultados
                             val randomRequestsWithHash = allRequests.take(10)
 
-                            // Chame o método para notificar que os dados foram recuperados com sucesso
                             firebaseRTDBListener.onRequestListRTDBDataRetrievedSuccess(
                                 randomRequestsWithHash
                             )
                         } else {
-                            // Lidar com falha na leitura do RTDB
                             firebaseRTDBListener.onRequestListRTDBDataRetrievedFailure()
                         }
                     }
@@ -278,43 +218,35 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             firebaseRTDBListener.onRequestListRTDBDataRetrievedFailure()
         }
     }
-    fun deleteRequestByHash(firebaseAuth: FirebaseAuth, hash: String){
+
+    fun deleteRequestByHash(firebaseAuth: FirebaseAuth, hash: String) {
         if (firebaseAuth.currentUser != null) {
             val uid = firebaseAuth.uid
             uid?.let {
-                println("Aqui")
                 val database = FirebaseDatabase.getInstance()
                 val requestsRef = database.getReference("requests")
-                println(hash)
-                // Consulta para obter todas as requests com o UID passado
                 requestsRef.child(hash).setValue(null)
                     .addOnCompleteListener { task ->
-                        println("Ali")
                         if (task.isSuccessful) {
                             firebaseRTDBListener.onRequestDeleteSuccess(
                             )
                         } else {
-                            println(task.exception)
-                            // Lidar com falha na leitura do RTDB
                             firebaseRTDBListener.onRequestDeleteFailure()
                         }
                     }
             }
         } else {
-            println("Oxi")
             firebaseRTDBListener.onRequestDeleteFailure()
         }
     }
-    fun getRequestsWithHashByUID(firebaseAuth: FirebaseAuth, creatorUID : String) {
+
+    fun getRequestsWithHashByUID(firebaseAuth: FirebaseAuth, creatorUID: String) {
         val creatorUID = creatorUID
         if (firebaseAuth.currentUser != null) {
             val uid = firebaseAuth.uid
             uid?.let {
                 val database = FirebaseDatabase.getInstance()
                 val requestsRef = database.getReference("requests")
-                println(creatorUID)
-
-                // Consulta para obter todas as requests com o UID passado
                 requestsRef.orderByChild("creatorUID").equalTo(creatorUID).get()
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
@@ -322,7 +254,7 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                             val allRequests: MutableList<RequestWithHash> = mutableListOf()
                             result?.children?.forEach { data ->
                                 val requestData = data.getValue(Request::class.java)
-                                val requestHash = data.key // Obter o hash da request
+                                val requestHash = data.key
 
                                 if (requestData != null && requestData.creatorUID == uid) {
                                     val requestWithHash = RequestWithHash(
@@ -332,13 +264,10 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                                     allRequests.add(requestWithHash)
                                 }
                             }
-
-                            // Chame o método para notificar que os dados foram recuperados com sucesso
                             firebaseRTDBListener.onRequestsWithHashListDataRetrievedSuccess(
                                 allRequests
                             )
                         } else {
-                            // Lidar com falha na leitura do RTDB
                             firebaseRTDBListener.onRequestsWithHashListDataRetrievedFailure()
                         }
                     }
@@ -368,25 +297,22 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             chatData["tag2"] = chat.tag2
             newRequestRef.updateChildren(chatData)
                 .addOnSuccessListener {
-                    // Sucesso ao atualizar dados no Realtime Database
                     firebaseRTDBListener.onChatRTDBDataUpdatedSuccess()
                 }
                 .addOnFailureListener {
-                    // Falha ao atualizar dados no Realtime Database
                     firebaseRTDBListener.onChatRTDBDataUpdatedFailure()
                 }
         } ?: run {
-            // Usuário não autenticado
             firebaseRTDBListener.onChatRTDBDataUpdatedFailure()
         }
     }
-    fun verifyDuplicatedChat(chat : Chat, firebaseAuth: FirebaseAuth){
+
+    fun verifyDuplicatedChat(chat: Chat, firebaseAuth: FirebaseAuth) {
         if (firebaseAuth.currentUser != null) {
             val uid = firebaseAuth.currentUser!!.uid
             uid.let {
                 val database = FirebaseDatabase.getInstance()
                 val chatsRef = database.getReference("chats")
-                // Consulta para obter todos os chats onde o usuário é um membro
                 val queries = (0 until 2).map { index ->
                     chatsRef.orderByChild("chatMembers/$index/userUID").equalTo(uid).get()
                 }
@@ -399,13 +325,15 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                                     val snapshot = result.result as DataSnapshot
                                     snapshot.children.forEach { data ->
                                         val chatData = mapToChat(data.value as Map<String, Any>)
-                                        if(chat.requestID == chatData.requestID){
-                                            if(chat.chatMembers[0] == chatData.chatMembers[0] &&
-                                                chat.chatMembers[1] == chatData.chatMembers[1]){
+                                        if (chat.requestID == chatData.requestID) {
+                                            if (chat.chatMembers[0] == chatData.chatMembers[0] &&
+                                                chat.chatMembers[1] == chatData.chatMembers[1]
+                                            ) {
                                                 duplicated = true
-                                            }else{
-                                                if(chat.chatMembers[0] == chatData.chatMembers[1] &&
-                                                    chat.chatMembers[1] == chatData.chatMembers[0]){
+                                            } else {
+                                                if (chat.chatMembers[0] == chatData.chatMembers[1] &&
+                                                    chat.chatMembers[1] == chatData.chatMembers[0]
+                                                ) {
 
                                                     duplicated = true
                                                 }
@@ -417,7 +345,10 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                                     firebaseRTDBListener.onCreateChatVerifiedDuplicatesFailure()
                                 }
                             }
-                            firebaseRTDBListener.onCreateChatVerifiedDuplicatesSuccess(chat,duplicated)
+                            firebaseRTDBListener.onCreateChatVerifiedDuplicatesSuccess(
+                                chat,
+                                duplicated
+                            )
                         } else {
                             firebaseRTDBListener.onCreateChatVerifiedDuplicatesFailure()
                         }
@@ -434,7 +365,6 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             uid.let {
                 val database = FirebaseDatabase.getInstance()
                 val chatsRef = database.getReference("chats")
-                // Consulta para obter todos os chats onde o usuário é um membro
                 val queries = (0 until 2).map { index ->
                     chatsRef.orderByChild("chatMembers/$index/userUID").equalTo(uid).get()
                 }
@@ -447,25 +377,19 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                                     val snapshot = result.result as DataSnapshot
                                     snapshot.children.forEach { data ->
                                         val chatData = mapToChat(data.value as Map<String, Any>)
-                                        val hash = data.key // Obtém o hash da chave do chat
+                                        val hash = data.key
                                         if (chatData != null) {
                                             val chatWithHash = ChatWithHash(chatData, hash!!)
                                             allChatsWithHash.add(chatWithHash)
                                         }
                                     }
                                 } else {
-                                    // Lidar com falha na leitura do RTDB
                                     firebaseRTDBListener.onChatListRTDBDataRetrievedFailure()
-                                    println(result.exception)
                                 }
                             }
-
-                            // Chame o método para notificar que os dados foram recuperados com sucesso
                             firebaseRTDBListener.onChatListRTDBDataRetrievedSuccess(allChatsWithHash)
                         } else {
-                            // Lidar com falha na leitura do RTDB
                             firebaseRTDBListener.onChatListRTDBDataRetrievedFailure()
-                            println(task.exception)
                         }
                     }
             }
@@ -474,30 +398,30 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
         }
     }
 
-    fun addMessageToChatByHash(firebaseAuth: FirebaseAuth, chatWithHash: ChatWithHash, message: Message) {
+    fun addMessageToChatByHash(
+        firebaseAuth: FirebaseAuth,
+        chatWithHash: ChatWithHash,
+        message: Message
+    ) {
         if (firebaseAuth.currentUser != null) {
             val database = FirebaseDatabase.getInstance()
             val chatsRef = database.getReference("chats")
             val chatRef = chatsRef.child(chatWithHash.hash)
 
-            // Adicionando a nova mensagem ao final do array de mensagens
             val messagesRef = chatRef.child("messages").push()
             messagesRef.setValue(message).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Notificar o sucesso para o listener
                     firebaseRTDBListener.onMessageAddedSuccess(chatWithHash)
                 } else {
-                    // Notificar o fracasso para o listener
                     firebaseRTDBListener.onMessageAddedFailure()
                 }
             }
         } else {
-            // Notificar o fracasso para o listener se o usuário não estiver autenticado
             firebaseRTDBListener.onMessageAddedFailure()
         }
     }
 
-    fun getMyChatByHash(firebaseAuth: FirebaseAuth,hash: String) {
+    fun getMyChatByHash(firebaseAuth: FirebaseAuth, hash: String) {
         val hash = hash
         if (firebaseAuth.currentUser != null) {
             val uid = firebaseAuth.currentUser!!.uid
@@ -511,17 +435,15 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                 Tasks.whenAllComplete(queries)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            var chatWithHash: ChatWithHash = ChatWithHash(Chat(),"")
+                            var chatWithHash: ChatWithHash = ChatWithHash(Chat(), "")
                             task.result?.forEach { result ->
                                 if (result.isSuccessful) {
                                     val snapshot = result.result as DataSnapshot
                                     snapshot.children.forEach { data ->
                                         val chatData = mapToChat(data.value as Map<String, Any>)
                                         val key = data.key // Obtém o hash da chave do chat
-                                        if (chatData != null) {
-                                            if(key == hash){
-                                                chatWithHash = ChatWithHash(chatData,hash)
-                                            }
+                                        if (key == hash) {
+                                            chatWithHash = ChatWithHash(chatData, hash)
                                         }
                                     }
                                 } else {
@@ -530,10 +452,10 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                                     println(result.exception)
                                 }
                             }
-                            if(chatWithHash.hash != ""){
+                            if (chatWithHash.hash != "") {
                                 // Chame o método para notificar que os dados foram recuperados com sucesso
                                 firebaseRTDBListener.onChatRTDBDataRetrievedSuccess(chatWithHash)
-                            }else{
+                            } else {
                                 firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
                             }
                         } else {
@@ -547,51 +469,39 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
         }
     }
 
-    private fun isUserInChatMembers(userUID: String, dataSnapshot: DataSnapshot, targetUID: String): Boolean {
-        // Verifica se o usuário está em chats/chatMembers/0/userUID
-        val userUID0 = dataSnapshot.child("chatMembers/0/userUID").getValue(String::class.java)
-        if (userUID0 == userUID) {
-            return true
-        }
-
-        // Verifica se o usuário está em chats/chatMembers/1/User/UID
-        val userUID1 = dataSnapshot.child("chatMembers/1/User/UID").getValue(String::class.java)
-        return userUID1 == userUID
-    }
-    fun setupChatListenersForUser(firebaseAuth: FirebaseAuth, userUID: String, firebaseRTDBListener: FirebaseRTDBListener) {
+    fun setupChatListenersForUser(userUID: String, firebaseRTDBListener: FirebaseRTDBListener) {
         val database = FirebaseDatabase.getInstance()
         val chatsRef = database.getReference("chats")
-
-        // Consulta todos os chats onde o usuário é membro
-        chatsRef.orderByChild("chatMembers").addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (chatSnapshot in dataSnapshot.children) {
-                    val chatData = chatSnapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {}) // Utilize GenericTypeIndicator
-                    if (chatData != null) {
-                        val chat = mapToChat(chatData) // Converte o mapa em um objeto Chat
-                        val chatMembers = chat.chatMembers
-                        for (chatMember in chatMembers) {
-                            if (chatMember.userUID == userUID) {
-                                val chatHash = chatSnapshot.key
-                                if (chatHash != null) {
-                                    // Aplica o listener a cada chat onde o usuário é membro
-                                    setupChatListener(firebaseAuth, chatHash, firebaseRTDBListener)
+        chatsRef.orderByChild("chatMembers")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (chatSnapshot in dataSnapshot.children) {
+                        val chatData = chatSnapshot.getValue(object :
+                            GenericTypeIndicator<Map<String, Any>>() {}) // Utilize GenericTypeIndicator
+                        if (chatData != null) {
+                            val chat = mapToChat(chatData)
+                            val chatMembers = chat.chatMembers
+                            for (chatMember in chatMembers) {
+                                if (chatMember.userUID == userUID) {
+                                    val chatHash = chatSnapshot.key
+                                    if (chatHash != null) {
+                                        setupChatListener(chatHash, firebaseRTDBListener)
+                                    }
+                                    break
                                 }
-                                break
                             }
                         }
                     }
                 }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("error setup chats")
-            }
-        })
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Nothing
+                }
+            })
     }
 
 
-    fun setupChatListener(firebaseAuth: FirebaseAuth, chatHash: String, firebaseRTDBListener: FirebaseRTDBListener) {
+    fun setupChatListener(chatHash: String, firebaseRTDBListener: FirebaseRTDBListener) {
         val database = FirebaseDatabase.getInstance()
         val chatsRef = database.getReference("chats")
         val chatRef = chatsRef.child(chatHash)
@@ -611,43 +521,43 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             }
         })
     }
-    fun setupNewChatListener(firebaseAuth: FirebaseAuth, firebaseRTDBListener: FirebaseRTDBListener) {
+
+    fun setupNewChatListener(firebaseRTDBListener: FirebaseRTDBListener) {
         val database = FirebaseDatabase.getInstance()
         val chatsRef = database.getReference("chats")
 
-        // Adiciona um ChildEventListener para o nó "chats"
         chatsRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                // Este método é chamado sempre que um novo filho é adicionado ao nó "chats"
-                // Você pode verificar o que foi adicionado e agir conforme necessário
+
                 val chatHash = dataSnapshot.key
                 if (chatHash != null) {
-                    // Aqui você pode notificar o usuário ou fazer outra ação adequada ao novo chat adicionado
+
                     firebaseRTDBListener.onNewChatAdded(chatHash)
                 }
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                // Este método é chamado quando um filho existente é alterado
+                // Nothing
             }
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                // Este método é chamado quando um filho é removido
+                // Nothing
             }
 
             override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                // Este método é chamado quando um filho é movido
+                // Nothing
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Lidar com erros, se necessário
+                // Nothing
             }
         })
     }
 
 
     fun mapToChat(jsonData: Map<String, Any>): Chat {
-        val chatMembersData = jsonData["chatMembers"] as? List<Map<String, Any>> // Tente ler como uma lista diretamente
+        val chatMembersData =
+            jsonData["chatMembers"] as? List<Map<String, Any>> // Tente ler como uma lista diretamente
         val chatMembers = chatMembersData?.map { memberData ->
             ChatMember(
                 userUID = memberData["userUID"] as String,
@@ -678,52 +588,6 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             solved = jsonData["solved"] as Boolean
         )
     }
-
-
-
 }
-    /*fun getRequest(firebaseAuth: FirebaseAuth) {
-        if (firebaseAuth.currentUser != null) {
-            val uid = firebaseAuth.uid
-            uid?.let {
-                val database = FirebaseDatabase.getInstance()
-                val requestsRef = database.getReference("requests")
-
-                // Consulta para obter todas as requests não resolvidas
-                requestsRef.orderByChild("solved").equalTo(false).get()
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val result = task.result
-                            val allRequests: MutableList<Request> = mutableListOf()
-
-                            result?.children?.forEach { data ->
-                                val requestData = data.getValue(Request::class.java)
-                                if (requestData != null && requestData.creatorUID != uid) {
-                                    allRequests.add(requestData)
-                                }
-                            }
-
-                            // Embaralhar a lista
-                            allRequests.shuffle()
-
-                            // Limitar a 10 resultados
-                            val randomRequests = allRequests.take(10)
-
-                            // Chame o método para notificar que os dados foram recuperados com sucesso
-                            firebaseRTDBListener.onRequestListRTDBDataRetrievedSuccess(randomRequests)
-                        } else {
 
 
-                            // Lidar com falha na leitura do RTDB
-                            firebaseRTDBListener.onRequestListRTDBDataRetrievedFailure()
-                        }
-                    }
-            }
-        } else {
-
-            firebaseRTDBListener.onRequestListRTDBDataRetrievedFailure()
-        }
-    }
-
-}
-     */

@@ -58,9 +58,6 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     private var acceptedRequest : RequestWithHash? = null
     private var requestIndex : Int = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,7 +65,7 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container,false)
         firebaseAuth = Firebase.auth
-        firebaseStorageCommons = FirebaseStorageCommons(this,firebaseAuth)
+        firebaseStorageCommons = FirebaseStorageCommons(this)
         firebaseRTDBCommons = FirebaseRTDBCommons(this)
         titleTextView = binding.cardTitle
         descriptionTextInputEditText = binding.cardDescription
@@ -89,32 +86,52 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
         super.onViewCreated(view, savedInstanceState)
         loadRequests()
     }
-    private fun loadRequests(){
+
+    private fun loadRequests() {
         firebaseRTDBCommons.getRandomRequestsWithHash(firebaseAuth)
     }
 
-    private fun configCancelButton(){
-        cancelButton.setOnClickListener(){
-            if(requestIndex < requestsList.lastIndex){
+    private fun configCancelButton() {
+        cancelButton.setOnClickListener {
+            if (requestIndex < requestsList.lastIndex) {
                 requestIndex++
-                inflateRequest(requestsList,requestIndex)
-            }else{
+                inflateRequest(requestsList, requestIndex)
+            } else {
                 requestIndex = 0
                 loadRequests()
             }
-            cancelButton.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_in))
-            requestCard.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_out))
+            cancelButton.startAnimation(
+                AnimationUtils.loadAnimation(
+                    requireContext(),
+                    androidx.appcompat.R.anim.abc_fade_in
+                )
+            )
+            requestCard.startAnimation(
+                AnimationUtils.loadAnimation(
+                    requireContext(),
+                    androidx.appcompat.R.anim.abc_fade_out
+                )
+            )
         }
 
 
     }
-    private fun configAcceptButton(){
-        acceptButton.setOnClickListener(){
-            acceptButton.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_in))
-            if(acceptedRequest == null){
+
+    private fun configAcceptButton() {
+        acceptButton.setOnClickListener {
+            acceptButton.startAnimation(
+                AnimationUtils.loadAnimation(
+                    requireContext(),
+                    androidx.appcompat.R.anim.abc_fade_in
+                )
+            )
+            if (acceptedRequest == null) {
                 acceptedRequest = requestsList[requestIndex]
-                firebaseRTDBCommons.getUsersDataByUids(firebaseAuth, listOf(firebaseAuth.currentUser!!.uid, acceptedRequest!!.request.creatorUID))
-            }else{
+                firebaseRTDBCommons.getUsersDataByUids(
+                    firebaseAuth,
+                    listOf(firebaseAuth.currentUser!!.uid, acceptedRequest!!.request.creatorUID)
+                )
+            } else {
                 showMenuNameSnackbar(requireView(), "Waiting for another request to be loaded")
             }
 
@@ -128,15 +145,20 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
         titleTextView.text = currentRequest.request.title
         tag1.text = currentRequest.request.tag1
         tag2.text = currentRequest.request.tag2
-        if(currentRequest.request.imageSrc.isNotBlank()){
-            val storageReference = firebaseStorageCommons.getFileReference(firebaseAuth,"requests",currentRequest.request.imageSrc,"")
-            loadImageIntoButton(imageButton,storageReference)
-        }else{
+        if (currentRequest.request.imageSrc.isNotBlank()) {
+            val storageReference = firebaseStorageCommons.getFileReference(
+                "requests",
+                currentRequest.request.imageSrc,
+                ""
+            )
+            loadImageIntoButton(imageButton, storageReference)
+        } else {
             imageButton.setOnClickListener {
             }
             imageButton.setBackgroundResource(R.drawable.material_button_5dp_border_background)
             imageButton.clipToOutline = true
-            imageButton.foreground = ContextCompat.getDrawable(requireContext(), R.drawable.ic_image_foreground)
+            imageButton.foreground =
+                ContextCompat.getDrawable(requireContext(), R.drawable.ic_image_foreground)
             imageButton.text = "No image of problem added"
             imageButton.contentDescription = ""
         }
@@ -171,23 +193,23 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     }
 
     override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestsWithHashListDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestDeleteSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestDeleteFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageArrived() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
@@ -213,24 +235,24 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     }
 
     override fun onChatListRTDBDataRetrievedFailure() {
+        // Nothing
     }
-
     override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatRTDBDataRetrievedSuccess(chat: ChatWithHash) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
 
     override fun onChatRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatRTDBDataUpdatedSuccess() {
         showMenuNameSnackbar(requireView(), "Request accepted successfully")
-        changeToMessageFragment(acceptedRequest!!)
+        changeToMessageFragment()
         acceptedRequest = null
     }
 
@@ -240,11 +262,11 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     }
 
     override fun onRequestRTDBDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestRTDBDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
@@ -266,71 +288,86 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
     }
 
     override fun onUserRTDBDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBDataRetrievedSuccess(user: User) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBGoogleDataInsertedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBGoogleDataInsertedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageAddedSuccess(chatWithHash: ChatWithHash) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageAddedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageReceived(messageData: Message) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onNewChatAdded(chatHash: String) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onFileInsertedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onFileInsertedSuccess(fileReference: StorageReference) {
-        TODO("Not yet implemented")
+        // Nothing
     }
-    fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
-        Glide.get(requireContext()).registry.append(StorageReference::class.java, InputStream::class.java, StorageReferenceModelLoader.Factory())
+
+    private fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
+        Glide.get(requireContext()).registry.append(
+            StorageReference::class.java,
+            InputStream::class.java,
+            StorageReferenceModelLoader.Factory()
+        )
         Glide.with(requireContext())
             .load(storageReference)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
+                    // Nothing
                 }
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
                     button.background = getBorderedBackgroundDrawable(resource)
                     button.clipToOutline = true
                     button.foreground = null
                     button.text = ""
                     button.contentDescription = ""
                     button.setOnClickListener {
-                        button.startAnimation(AnimationUtils.loadAnimation
-                            (requireContext(),androidx.appcompat.R.anim.abc_tooltip_enter))
+                        button.startAnimation(
+                            AnimationUtils.loadAnimation
+                                (requireContext(), androidx.appcompat.R.anim.abc_tooltip_enter)
+                        )
                         if (childFragmentManager.fragments.isEmpty()) {
-                            ShowImageDialogFragment(storageReference).show(childFragmentManager, "CustomFragment")
+                            ShowImageDialogFragment(storageReference).show(
+                                childFragmentManager,
+                                "CustomFragment"
+                            )
                         }
                     }
                 }
@@ -355,11 +392,13 @@ class HomeFragment : Fragment(),FirebaseRTDBListener,FirebaseStorageListener {
         val scale = resources.displayMetrics.density
         return (dp * scale + 0.5f).toInt()
     }
-    private fun changeToMessageFragment(request: RequestWithHash) {
-        (activity as MainActivity).callMessageFragment(1,request)
+
+    private fun changeToMessageFragment() {
+        (activity as MainActivity).callMessageFragment(1)
     }
-    private fun showMenuNameSnackbar(view: View, message : String) {
-        val snackbar = Snackbar.make(view, "$message", Snackbar.LENGTH_SHORT)
+
+    private fun showMenuNameSnackbar(view: View, message: String) {
+        val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
         snackbar.setAction("OK") {
         }
         snackbar.show()

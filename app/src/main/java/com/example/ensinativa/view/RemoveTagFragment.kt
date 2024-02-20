@@ -15,17 +15,19 @@ import com.example.ensinativa.model.User
 import com.google.firebase.auth.FirebaseAuth
 
 
-private var _binding: FragmentRemoveTagBinding? = null
-private val binding get() = _binding!!
+private var binding_: FragmentRemoveTagBinding? = null
+private val binding get() = binding_!!
 
-class RemoveTagFragment(private val user: User, private val profileFragment: ProfileFragment) : DialogFragment() {
+class RemoveTagFragment(private val user: User, private val profileFragment: ProfileFragment) :
+    DialogFragment() {
     private var firebaseAuth = FirebaseAuth.getInstance()
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = FragmentRemoveTagBinding.inflate(LayoutInflater.from(context))
+        binding_ = FragmentRemoveTagBinding.inflate(LayoutInflater.from(context))
         return AlertDialog.Builder(requireActivity())
             .setView(binding.root)
             .create()
     }
+
     override fun onStart() {
         super.onStart()
         dialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -59,7 +61,7 @@ class RemoveTagFragment(private val user: User, private val profileFragment: Pro
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding_ = null
     }
     private fun configQuitButton(button: Button){
         button.setOnClickListener {

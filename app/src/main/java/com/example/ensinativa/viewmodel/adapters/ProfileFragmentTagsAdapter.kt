@@ -1,3 +1,5 @@
+package com.example.ensinativa.viewmodel.adapters
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -13,21 +15,28 @@ import com.example.ensinativa.view.AddTagDialogFragment
 import com.example.ensinativa.view.ProfileFragment
 import com.example.ensinativa.view.RemoveTagFragment
 
-class ProfileFragmentTagsAdapter(private val context: Context, tags: List<String>, private var editMode: Boolean, val fragmentManager: FragmentManager, val profileFragment: ProfileFragment) : RecyclerView.Adapter<ProfileFragmentTagsAdapter.ViewHolder>() {
+class ProfileFragmentTagsAdapter(
+    private val context: Context,
+    tags: List<String>,
+    private var editMode: Boolean,
+    private val fragmentManager: FragmentManager,
+    private val profileFragment: ProfileFragment
+) : RecyclerView.Adapter<ProfileFragmentTagsAdapter.ViewHolder>() {
     private var listOfTags = tags.toMutableList()
     private var tagsLastIndex = tags.lastIndex
 
     init {
-        if(tags.isEmpty()){
+        if (tags.isEmpty()) {
             listOfTags.add("Add tag")
             tagsLastIndex = listOfTags.lastIndex
-        }else{
-            if(editMode){
+        } else {
+            if (editMode) {
                 listOfTags.add("Add tag")
                 tagsLastIndex = listOfTags.lastIndex
             }
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.fragment_profile_skills_recyclerview, parent, false)
@@ -51,27 +60,42 @@ class ProfileFragmentTagsAdapter(private val context: Context, tags: List<String
         }
     }
 
-    inner class ViewHolder(view: View, val context: Context, var editMode: Boolean, val fragmentManager: FragmentManager, val profileFragment: ProfileFragment) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(
+        view: View,
+        val context: Context,
+        private var editMode: Boolean,
+        private val fragmentManager: FragmentManager,
+        private val profileFragment: ProfileFragment
+    ) : RecyclerView.ViewHolder(view) {
         fun bind(tagList: List<String>) {
-            if(listOfTags[0] == "Add tag"){
+            if (listOfTags[0] == "Add tag") {
                 editMode = true
             }
             for ((index, value) in tagList.withIndex()) {
                 when (index) {
                     0 -> {
-                        val tag1 = itemView.findViewById<Button>(R.id.fragmentProfileSkillsRecyclerViewTag1)
+                        val tag1 =
+                            itemView.findViewById<Button>(R.id.fragmentProfileSkillsRecyclerViewTag1)
                         tag1.text = value
                         tag1.visibility = View.VISIBLE
-                        val layout = itemView.findViewById<LinearLayout>(R.id.fragmentProfileSkillsLinearLayout)
+                        val layout =
+                            itemView.findViewById<LinearLayout>(R.id.fragmentProfileSkillsLinearLayout)
                         layout.visibility = View.VISIBLE
 
-                        val image1 = itemView.findViewById<Button>(R.id.fragmentProfileSkillsRecyclerViewTag1Image)
+                        val image1 =
+                            itemView.findViewById<Button>(R.id.fragmentProfileSkillsRecyclerViewTag1Image)
                         if (editMode) {
                             image1.visibility = View.VISIBLE
                             if (value == "Add tag") {
-                                image1.foreground = ContextCompat.getDrawable(context, R.drawable.ic_add_foreground)
+                                image1.foreground =
+                                    ContextCompat.getDrawable(context, R.drawable.ic_add_foreground)
                                 image1.setOnClickListener {
-                                    image1.startAnimation(android.view.animation.AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_fade_in))
+                                    image1.startAnimation(
+                                        android.view.animation.AnimationUtils.loadAnimation(
+                                            context,
+                                            androidx.appcompat.R.anim.abc_fade_in
+                                        )
+                                    )
                                     configAddTagFragment()
                                 }
                             } else {
@@ -163,10 +187,13 @@ class ProfileFragmentTagsAdapter(private val context: Context, tags: List<String
                 ).show(fragmentManager, "CustomFragment")
             }
         }
+
         private fun configAddTagFragment() {
             if (fragmentManager.fragments.isEmpty()) {
-                AddTagDialogFragment(profileFragment.user
-                ,profileFragment).show(fragmentManager, "CustomFragment")
+                AddTagDialogFragment(profileFragment.user, profileFragment).show(
+                    fragmentManager,
+                    "CustomFragment"
+                )
             }
         }
     }
@@ -191,7 +218,6 @@ class ProfileFragmentTagsAdapter(private val context: Context, tags: List<String
         }
     }
 
-    // Método para atualizar a lista de tags
     fun refresh(tags: List<String>) {
         listOfTags.clear()
         listOfTags.addAll(tags)

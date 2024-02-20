@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,17 +31,12 @@ import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
 import com.example.ensinativa.viewmodel.adapters.MessageFragmentChatAdapter
 import com.example.ensinativa.viewmodel.adapters.MessageFragmentChatsListAdapter
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.storage.StorageReference
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
-
-
-private var firebaseAuth: FirebaseAuth = Firebase.auth
 
 private lateinit var binding: FragmentMessageBinding
 
@@ -58,51 +52,54 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMessageBinding.inflate(inflater, container,false)
+        binding = FragmentMessageBinding.inflate(inflater, container, false)
         firebaseAuth = FirebaseAuth.getInstance()
-        firebaseStorageCommons = FirebaseStorageCommons(this,firebaseAuth)
+        firebaseStorageCommons = FirebaseStorageCommons(this)
         firebaseRTDBCommons = FirebaseRTDBCommons(this)
         configChats()
         configChatsListeners()
         return binding.root
     }
 
-    private fun configChatsListeners(){
-        firebaseRTDBCommons.setupNewChatListener(firebaseAuth,this)
-        firebaseRTDBCommons.setupChatListenersForUser(firebaseAuth,
-            firebaseAuth.currentUser!!.uid,this)
+    private fun configChatsListeners() {
+        firebaseRTDBCommons.setupNewChatListener(this)
+        firebaseRTDBCommons.setupChatListenersForUser(
+            firebaseAuth.currentUser!!.uid, this
+        )
     }
+
     override fun onResume() {
         super.onResume()
         configChats()
     }
+
     private fun configChats() {
         firebaseRTDBCommons.getMyChatsWithHash(firebaseAuth)
     }
 
 
     override fun onCreateChatVerifiedDuplicatesSuccess(chat: Chat, duplicated: Boolean) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onCreateChatVerifiedDuplicatesFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestsWithHashListDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestDeleteSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestDeleteFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageArrived() {
@@ -111,14 +108,15 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
     }
 
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
+        // Nothing
     }
 
     override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
-
+        // Nothing
     }
 
     override fun onChatListRTDBDataRetrievedFailure() {
-        Toast.makeText(requireContext(), "Something went wrong when retrieving your chats", Toast.LENGTH_SHORT).show()
+        showMenuNameSnackbar(requireView(), "Something went wrong when retrieving your chats")
     }
 
     override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
@@ -146,7 +144,6 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
             this,
             firebaseAuth,
             chatList,
-            this,
             binding.messagesViewSwitcher,
             binding.messagesBackButton,
             this,
@@ -162,7 +159,7 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
 
     }
     fun configChatAdapter(chat: ChatWithHash){
-        val adapter = MessageFragmentChatAdapter(requireContext(),this,firebaseAuth,chat)
+        val adapter = MessageFragmentChatAdapter(requireContext(), firebaseAuth, chat)
         adapter.refreshChat(chat)
         val recyclerView = binding.messagesRecyclerView
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -186,59 +183,80 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
             if (chat.chat.imageSrc.isNotBlank()) {
                 loadImageIntoButton(
                     chatImage, firebaseStorageCommons.getFileReference(
-                        firebaseAuth,
                         "requests",
                         chat.chat.imageSrc,
                         ""
                     )
                 )
-            }else{
-                chatImage.background = AppCompatResources.getDrawable(requireContext(),R.drawable.material_button_5dp_border_background)
-                chatImage.foreground = AppCompatResources.getDrawable(requireContext(),R.drawable.ic_image_foreground)
-                chatImage.setOnClickListener{
+            } else {
+                chatImage.background = AppCompatResources.getDrawable(
+                    requireContext(),
+                    R.drawable.material_button_5dp_border_background
+                )
+                chatImage.foreground =
+                    AppCompatResources.getDrawable(requireContext(), R.drawable.ic_image_foreground)
+                chatImage.setOnClickListener {
                 }
             }
         }
         configChatTextInput(chat)
     }
-    fun configChatTextInput(chat: ChatWithHash){
 
+    private fun configChatTextInput(chat: ChatWithHash) {
         val textInput = binding.messageTextInput
         val sendButton = binding.messagesChatSendButton
         sendButton.setOnClickListener {
-            if(textInput.text!!.isNotBlank()){
-                var sender = ""
-                var receiver = ""
-                if(chat.chat.chatMembers[0].userUID == firebaseAuth.currentUser!!.uid){
+            if (textInput.text!!.isNotBlank()) {
+                val sender: String
+                val receiver: String
+                if (chat.chat.chatMembers[0].userUID == firebaseAuth.currentUser!!.uid) {
                     sender = chat.chat.chatMembers[0].userUID
                     receiver = chat.chat.chatMembers[1].userUID
-                }else{
+                } else {
                     sender = chat.chat.chatMembers[1].userUID
                     receiver = chat.chat.chatMembers[0].userUID
                 }
 
                 val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                formatter.timeZone = TimeZone.getTimeZone("America/Sao_Paulo") // Define o fuso horário para Brasília
+                formatter.timeZone =
+                    TimeZone.getTimeZone("America/Sao_Paulo") // Define o fuso horário para Brasília
                 val current = formatter.format(Calendar.getInstance().time)
-                firebaseRTDBCommons.addMessageToChatByHash(firebaseAuth, chat, Message(sender, receiver, textInput.text.toString(), current))
+                firebaseRTDBCommons.addMessageToChatByHash(
+                    firebaseAuth,
+                    chat,
+                    Message(sender, receiver, textInput.text.toString(), current)
+                )
                 textInput.setText("")
             }
         }
         textInput.setText("")
     }
-    fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
-        Glide.get(requireContext()).registry.append(StorageReference::class.java, InputStream::class.java, StorageReferenceModelLoader.Factory())
+
+    private fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
+        Glide.get(requireContext()).registry.append(
+            StorageReference::class.java,
+            InputStream::class.java,
+            StorageReferenceModelLoader.Factory()
+        )
 
         Glide.with(requireContext())
             .load(storageReference)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
+                    // Nothing
                 }
-                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
                     button.setOnClickListener {
                         if (childFragmentManager.fragments.isEmpty()) {
-                            ShowImageDialogFragment(storageReference).show(childFragmentManager, "CustomFragment")
+                            ShowImageDialogFragment(storageReference).show(
+                                childFragmentManager,
+                                "CustomFragment"
+                            )
                         }
                     }
                     button.background = getBorderedBackgroundDrawable(resource)
@@ -268,54 +286,54 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
         return (dp * scale + 0.5f).toInt()
     }
     override fun onChatRTDBDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatRTDBDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestRTDBDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestRTDBDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestListRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBDataRetrievedSuccess(user: User) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBDataRetrievedFailure() {
-
+        // Nothing
     }
 
     override fun onUserRTDBGoogleDataInsertedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBGoogleDataInsertedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
-    override fun onMessageAddedSuccess(chat: ChatWithHash) {
+    override fun onMessageAddedSuccess(chatWithHash: ChatWithHash) {
         configChats()
     }
 
@@ -328,20 +346,21 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
     }
 
     override fun onNewChatAdded(chatHash: String) {
-        firebaseRTDBCommons.setupChatListenersForUser(firebaseAuth,
-            firebaseAuth.currentUser!!.uid,this)
+        firebaseRTDBCommons.setupChatListenersForUser(
+            firebaseAuth.currentUser!!.uid, this
+        )
         configChats()
     }
 
     override fun onFileInsertedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onFileInsertedSuccess(fileReference: StorageReference) {
-        TODO("Not yet implemented")
+        // Nothing
     }
     private fun showMenuNameSnackbar(view: View, message : String) {
-        val snackbar = Snackbar.make(view, "$message", Snackbar.LENGTH_SHORT)
+        val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
         snackbar.setAction("OK") {
         }
         snackbar.show()

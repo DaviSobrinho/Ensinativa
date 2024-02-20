@@ -1,8 +1,8 @@
 package com.example.ensinativa.model
 
 data class TagsList(val name: String) {
-    fun main() : List<String>{
-        val tags = listOf(
+    fun main(): List<String> {
+        return listOf(
             "3D Printing Support",
             "Active Directory Management",
             "Agile Methodology",
@@ -143,6 +143,5 @@ data class TagsList(val name: String) {
             "Zero-Day Exploits",
             "Zsh Shell Scripting"
         )
-        return tags
     }
 }

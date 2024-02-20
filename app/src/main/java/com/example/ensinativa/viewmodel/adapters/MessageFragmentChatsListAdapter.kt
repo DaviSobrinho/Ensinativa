@@ -19,7 +19,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.ensinativa.R
-import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
 import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.ChatWithHash
@@ -31,24 +30,36 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageReference
 import java.io.InputStream
 
-class MessageFragmentChatsListAdapter(private val context: Context, private val firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth, chats: List<ChatWithHash>, private val firebaseRTDBListener: FirebaseRTDBListener, val viewSwitcher: ViewSwitcher, val materialButton: MaterialButton, val messageFragment: MessageFragment, private val fragmentManager: FragmentManager) : RecyclerView.Adapter<MessageFragmentChatsListAdapter.ViewHolder>() {
+class MessageFragmentChatsListAdapter(
+    private val context: Context,
+    firebaseStorageListener: FirebaseStorageListener,
+    private val firebaseAuth: FirebaseAuth,
+    chats: List<ChatWithHash>,
+    private val viewSwitcher: ViewSwitcher,
+    private val materialButton: MaterialButton,
+    private val messageFragment: MessageFragment,
+    private val fragmentManager: FragmentManager
+) : RecyclerView.Adapter<MessageFragmentChatsListAdapter.ViewHolder>() {
     private var chats = chats.toMutableList()
-    val firebaseStorageCommons = FirebaseStorageCommons(firebaseStorageListener, firebaseAuth)
+    val firebaseStorageCommons = FirebaseStorageCommons(firebaseStorageListener)
 
     init {
         refreshChatList(chats)
     }
-    class ViewHolder(val view: View, firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth,val context: Context, val viewSwitcher: ViewSwitcher, val materialButton: MaterialButton,val messageFragmentChatsListAdapter : MessageFragmentChatsListAdapter,val messageFragment: MessageFragment) : RecyclerView.ViewHolder(view) {
 
-
-
-
+    class ViewHolder(
+        val view: View, private val firebaseAuth: FirebaseAuth, val context: Context,
+        private val messageFragmentChatsListAdapter: MessageFragmentChatsListAdapter
+    ) : RecyclerView.ViewHolder(view) {
         fun bind(chat: ChatWithHash) {
             if (chat.chat.requestID.isNotBlank()) {
-                val requestLayout = itemView.findViewById<ConstraintLayout>(R.id.fragmentMessageChatsRequestLayout)
-                val personalLayout = itemView.findViewById<ConstraintLayout>(R.id.fragmentMessageChatsUserLayout)
+                val requestLayout =
+                    itemView.findViewById<ConstraintLayout>(R.id.fragmentMessageChatsRequestLayout)
+                val personalLayout =
+                    itemView.findViewById<ConstraintLayout>(R.id.fragmentMessageChatsUserLayout)
                 val title = itemView.findViewById<TextView>(R.id.fragmentMessageChatsRequestTitle)
-                val description = itemView.findViewById<TextView>(R.id.fragmentMessageChatsRequestDescription)
+                val description =
+                    itemView.findViewById<TextView>(R.id.fragmentMessageChatsRequestDescription)
                 val tags = itemView.findViewById<TextView>(R.id.fragmentMessageChatsRequestTags)
                 val button = itemView.findViewById<Button>(R.id.fragmentMessageChatsRequestImage)
                 title.text = chat.chat.title
@@ -56,16 +67,19 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
                 tags.text = chat.chat.tag1 + "/" + chat.chat.tag2
                 if (chat.chat.imageSrc.isNotBlank()) {
                     messageFragmentChatsListAdapter.loadImageIntoButton(
-                        button, messageFragmentChatsListAdapter.firebaseStorageCommons.getFileReference(
-                            firebaseAuth,
+                        button,
+                        messageFragmentChatsListAdapter.firebaseStorageCommons.getFileReference(
                             "requests",
                             chat.chat.imageSrc,
                             ""
                         )
                     )
                 }
-                requestLayout.setOnClickListener{
-                    messageFragmentChatsListAdapter.configConstraintLayoutOnClick(requestLayout,chat, itemView)
+                requestLayout.setOnClickListener {
+                    messageFragmentChatsListAdapter.configConstraintLayoutOnClick(
+                        requestLayout,
+                        chat
+                    )
                 }
                 personalLayout.visibility = View.GONE
             } else {
@@ -78,7 +92,6 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
                     if (chat.chat.chatMembers[1].userUID.isNotBlank()) {
                         messageFragmentChatsListAdapter.loadImageIntoButton(
                             image, messageFragmentChatsListAdapter.firebaseStorageCommons.getFileReference(
-                                firebaseAuth,
                                 "users",
                                 chat.chat.chatMembers[1].userUID,
                                 "png"
@@ -90,8 +103,8 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
                         displayName.text = chat.chat.chatMembers[0].userUID
                         if (chat.chat.chatMembers[0].userUID.isNotBlank()) {
                             messageFragmentChatsListAdapter.loadImageIntoButton(
-                                image, messageFragmentChatsListAdapter.firebaseStorageCommons.getFileReference(
-                                    firebaseAuth,
+                                image,
+                                messageFragmentChatsListAdapter.firebaseStorageCommons.getFileReference(
                                     "users",
                                     chat.chat.chatMembers[0].userUID,
                                     "png"
@@ -101,8 +114,11 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
                     }
                     requestLayout.visibility = View.GONE
                 }
-                personalLayout.setOnClickListener{
-                    messageFragmentChatsListAdapter.configConstraintLayoutOnClick(personalLayout, chat,itemView)
+                personalLayout.setOnClickListener {
+                    messageFragmentChatsListAdapter.configConstraintLayoutOnClick(
+                        personalLayout,
+                        chat
+                    )
                 }
             }
         }
@@ -112,7 +128,12 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.fragment_message_chats_recyclerview, parent, false)
         configSwitcher()
-        return ViewHolder(view, firebaseStorageListener, firebaseAuth, context, viewSwitcher, materialButton,this,messageFragment)
+        return ViewHolder(
+            view,
+            firebaseAuth,
+            context,
+            this
+        )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -138,12 +159,14 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
     }
 
 
-    var page = 1
-    private fun configSwitcher(){
-        viewSwitcher.setInAnimation(AnimationUtils.loadAnimation(context,android.R.anim.slide_in_left))
-        viewSwitcher.setOutAnimation(AnimationUtils.loadAnimation(context,android.R.anim.slide_out_right))
-        materialButton.setOnClickListener{
-            if(page == 2) {
+    private var page = 1
+    private fun configSwitcher() {
+        viewSwitcher.inAnimation =
+            AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left)
+        viewSwitcher.outAnimation =
+            AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right)
+        materialButton.setOnClickListener {
+            if (page == 2) {
                 materialButton.startAnimation(
                     AnimationUtils.loadAnimation(
                         context,
@@ -155,9 +178,13 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
             }
         }
     }
-    private fun configConstraintLayoutOnClick(constraintLayout: ConstraintLayout, chat: ChatWithHash, itemView: View){
-        constraintLayout.setOnClickListener{
-            if(page == 1) {
+
+    private fun configConstraintLayoutOnClick(
+        constraintLayout: ConstraintLayout,
+        chat: ChatWithHash
+    ) {
+        constraintLayout.setOnClickListener {
+            if (page == 1) {
                 constraintLayout.startAnimation(
                     AnimationUtils.loadAnimation(
                         context,
@@ -180,6 +207,7 @@ class MessageFragmentChatsListAdapter(private val context: Context, private val 
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
+                    // Nothing
                 }
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                     button.setOnClickListener {

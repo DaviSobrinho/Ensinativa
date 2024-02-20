@@ -11,7 +11,6 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
@@ -21,43 +20,48 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.ensinativa.databinding.FragmentZoomInImageBinding
 import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageReference
 import java.io.InputStream
 
 
-private var _binding: FragmentZoomInImageBinding? = null
-private val binding get() = _binding!!
+private var binding_: FragmentZoomInImageBinding? = null
+private val binding get() = binding_!!
 
 class ShowImageDialogFragment(private val storageReference: StorageReference) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = FragmentZoomInImageBinding.inflate(LayoutInflater.from(context))
+        binding_ = FragmentZoomInImageBinding.inflate(LayoutInflater.from(context))
         return AlertDialog.Builder(requireActivity())
             .setView(binding.root)
             .create()
     }
+
     override fun onStart() {
         super.onStart()
-        val firebaseAuth = FirebaseAuth.getInstance()
         dialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog!!.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        // Ajuste da posição da janela para o topo
+        dialog!!.window?.setLayout(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         dialog!!.window?.setGravity(Gravity.CENTER)
         configQuitButton(binding.quitButton)
 
-        loadImageIntoButton(binding.image,storageReference)
+        loadImageIntoButton(binding.image, storageReference)
     }
 
-    fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
-        Glide.get(requireContext()).registry.append(StorageReference::class.java, InputStream::class.java, StorageReferenceModelLoader.Factory())
+    private fun loadImageIntoButton(button: Button, storageReference: StorageReference) {
+        Glide.get(requireContext()).registry.append(
+            StorageReference::class.java,
+            InputStream::class.java,
+            StorageReferenceModelLoader.Factory()
+        )
 
         Glide.with(requireContext())
             .load(storageReference)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .centerCrop() // Corta a imagem para preencher o espaço enquanto mantém a proporção original
+            .centerCrop()
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
-
+                    // Nothing
                 }
 
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
@@ -96,7 +100,7 @@ class ShowImageDialogFragment(private val storageReference: StorageReference) : 
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding_ = null
     }
     private fun configQuitButton(button: Button){
         button.setOnClickListener {
@@ -104,11 +108,6 @@ class ShowImageDialogFragment(private val storageReference: StorageReference) : 
                 dialog?.dismiss()
             }
         }
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
     }
 

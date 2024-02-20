@@ -1,49 +1,48 @@
 package com.example.ensinativa.viewmodel.adapters
 
 import android.content.Context
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.example.ensinativa.R
-import com.example.ensinativa.firebasestorage.FirebaseStorageCommons
-import com.example.ensinativa.firebasestorage.FirebaseStorageListener
 import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Message
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.StorageReference
 import java.text.SimpleDateFormat
 
-class MessageFragmentChatAdapter(private val context: Context, private val firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth, private var chat: ChatWithHash) : RecyclerView.Adapter<MessageFragmentChatAdapter.ViewHolder>() {
+class MessageFragmentChatAdapter(
+    private val context: Context,
+    private val firebaseAuth: FirebaseAuth,
+    private var chat: ChatWithHash
+) : RecyclerView.Adapter<MessageFragmentChatAdapter.ViewHolder>() {
     private val messages = chat.chat.messages.toMutableList()
+
     init {
         refreshChat(chat)
     }
-    class ViewHolder(val view: View, firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth,val context: Context) : RecyclerView.ViewHolder(view) {
 
-        fun bind(chat: ChatWithHash, message : Message) {
+    class ViewHolder(val view: View, private val firebaseAuth: FirebaseAuth, val context: Context) :
+        RecyclerView.ViewHolder(view) {
+
+        fun bind(chat: ChatWithHash, message: Message) {
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val parsedDate = formatter.parse(message.dateTime)
             val displayDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
 
             if (message.creatorUID == firebaseAuth.currentUser!!.uid) {
-                val messageLayout1 = itemView.findViewById<ConstraintLayout>(R.id.fragmentMessageChatLayout1)
-                val messageDisplayName2 = itemView.findViewById<TextView>(R.id.fragmentMessageChatDisplayName2)
+                val messageLayout1 =
+                    itemView.findViewById<ConstraintLayout>(R.id.fragmentMessageChatLayout1)
+                val messageDisplayName2 =
+                    itemView.findViewById<TextView>(R.id.fragmentMessageChatDisplayName2)
                 val messageTime2 = itemView.findViewById<TextView>(R.id.fragmentMessageChatTime2)
-                val messageContent2 = itemView.findViewById<TextView>(R.id.fragmentMessageChatContent2)
+                val messageContent2 =
+                    itemView.findViewById<TextView>(R.id.fragmentMessageChatContent2)
                 messageLayout1.visibility = View.GONE
 
-                messageTime2.text = displayDateFormat.format(parsedDate)
+                messageTime2.text = displayDateFormat.format(parsedDate!!)
                 messageContent2.text = message.value
 
                 if (message.creatorUID == chat.chat.chatMembers[0].userUID) {
@@ -58,7 +57,7 @@ class MessageFragmentChatAdapter(private val context: Context, private val fireb
                 val messageContent1 = itemView.findViewById<TextView>(R.id.fragmentMessageChatContent1)
                 messageLayout2.visibility = View.GONE
 
-                messageTime1.text = displayDateFormat.format(parsedDate)
+                messageTime1.text = displayDateFormat.format(parsedDate!!)
                 messageContent1.text = message.value
 
                 if (message.creatorUID == chat.chat.chatMembers[0].userUID) {
@@ -75,7 +74,7 @@ class MessageFragmentChatAdapter(private val context: Context, private val fireb
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.fragment_message_chat_recyclerview, parent, false)
-        return ViewHolder(view, firebaseStorageListener, firebaseAuth, context)
+        return ViewHolder(view, firebaseAuth, context)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

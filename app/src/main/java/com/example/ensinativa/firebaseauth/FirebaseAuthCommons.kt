@@ -56,12 +56,12 @@ class FirebaseAuthCommons (private val firebaseAuthListener: FirebaseAuthListene
         }
     }
     fun getProviders() : Providers {
-        val firebaseUser : FirebaseUser? = firebaseAuth.currentUser
-        val providersStatus = Providers(false,false)
-        if(firebaseUser != null){
+        val firebaseUser: FirebaseUser? = firebaseAuth.currentUser
+        val providersStatus = Providers(emailPasswordProvider = false, googleProvider = false)
+        if (firebaseUser != null) {
             val providers = firebaseUser.providerData
             for (profile in providers) {
-                println("Profile.providerID"+profile.providerId)
+                println("Profile.providerID" + profile.providerId)
                 when (profile.providerId) {
                     "google.com" -> {
                         providersStatus.googleProvider = true

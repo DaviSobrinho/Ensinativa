@@ -31,7 +31,6 @@ import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Message
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
-import com.facebook.Profile
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -59,7 +58,6 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
     private lateinit var firebaseAuthCommons: FirebaseAuthCommons
     private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
     private lateinit var googleAccount: GoogleSignInAccount
-    private lateinit var facebookAccount: Profile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -287,12 +285,15 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
     }
 
     override fun onEmailPasswordSignUpSuccess() {
+        // Nothing
     }
 
     override fun onEmailPasswordSignUpFailure() {
+        // Nothing
     }
 
     override fun onEmailPasswordSignUpFailureDuplicatedCredentials() {
+        // Nothing
     }
 
     override fun onUserDataUpdatedSuccess() {
@@ -307,80 +308,80 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
     }
 
     override fun onCreateChatVerifiedDuplicatesSuccess(chat: Chat, duplicated: Boolean) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onCreateChatVerifiedDuplicatesFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestsWithHashListDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestDeleteSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestDeleteFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageArrived() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatListRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatRTDBDataRetrievedSuccess(chat: ChatWithHash) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
 
     override fun onChatRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatRTDBDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatRTDBDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestRTDBDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestRTDBDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestListRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBDataUpdatedSuccess() {
@@ -410,10 +411,11 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
     }
 
     override fun onUserRTDBDataRetrievedFailure() {
+        // Nothing
     }
 
     override fun onUserRTDBGoogleDataInsertedSuccess() {
-        // Not implemented yet
+        // Nothing
     }
 
     override fun onUserRTDBGoogleDataInsertedFailure() {
@@ -424,19 +426,19 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
     }
 
     override fun onMessageAddedSuccess(chatWithHash: ChatWithHash) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageAddedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageReceived(messageData: Message) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onNewChatAdded(chatHash: String) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onGoogleSignInSuccess(account: GoogleSignInAccount?) {
@@ -456,7 +458,7 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
     }
 
     private fun showMenuNameSnackbar(view: View, message: String) {
-        val snackbar = Snackbar.make(view, "$message", Snackbar.LENGTH_SHORT)
+        val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
         snackbar.setAction("OK") {
         }
         snackbar.show()

@@ -15,8 +15,6 @@ import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
 import com.example.ensinativa.firebaseauth.FirebaseAuthListener
 import com.example.ensinativa.firebaseauth.GoogleAuthCommons
 import com.example.ensinativa.firebaseauth.GoogleAuthListener
-import com.example.ensinativa.model.Request
-import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.viewmodel.ViewPagerAdapter
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -35,11 +33,9 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
     private var emailPasswordAuthLoggedIn = false
     private var googleAuthLoggedIn = false
     private lateinit var googleAuthCommons: GoogleAuthCommons
-    private lateinit var firebaseAuthCommons : FirebaseAuthCommons
-    var startRequestFromRequest = false
-    private lateinit var request: Request
-
-    var fragmentArrayList : ArrayList<Fragment> = ArrayList<Fragment>()
+    private lateinit var firebaseAuthCommons: FirebaseAuthCommons
+    private var startRequestFromRequest = false
+    private var fragmentArrayList: ArrayList<Fragment> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         configAppCheck()
@@ -47,7 +43,7 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         firebaseAuth = Firebase.auth
         googleAuthCommons = GoogleAuthCommons(this, firebaseAuth, this)
         firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
-        if(firebaseAuth.currentUser == null){
+        if (firebaseAuth.currentUser == null) {
             startLoginActivity()
         }
         renderView()
@@ -123,9 +119,11 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
             }
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                // Nothing
             }
 
             override fun onPageScrollStateChanged(state: Int) {
+                // Nothing
             }
         })
         binding.bottomNav.setOnItemSelectedListener(object: BottomNavigationView.OnNavigationItemSelectedListener{
@@ -143,72 +141,66 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         })
     }
 
-    private fun setContextToAllFragments(adapterViewPager: ViewPagerAdapter) {
-        for (i in 0 until adapterViewPager.itemCount) {
-            mainPager.setCurrentItem(i, true)
-        }
-    }
-
-    fun callMessageFragment(index: Int, request: RequestWithHash) {
+    fun callMessageFragment(index: Int) {
         startRequestFromRequest = true
         mainPager.setCurrentItem(index, true)
     }
 
     override fun onResetEmailSentSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onResetEmailSentFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onGetUserSignOn() {
-
+        // Nothing
     }
 
     override fun onGetUserSignOut() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onEmailPasswordSignInFailureCredentials(exception: Exception) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onEmailPasswordSignInSuccess(email: String, password: String) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onEmailPasswordSignInFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onEmailPasswordSignUpSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onEmailPasswordSignUpFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onEmailPasswordSignUpFailureDuplicatedCredentials() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
 
     override fun onGoogleSignInSuccess(account: GoogleSignInAccount?) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onGoogleSignInFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     private fun startLoginActivity() {

@@ -13,19 +13,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
 import com.example.ensinativa.databinding.FragmentResetPasswordBinding
-import com.example.ensinativa.firebasertdb.FirebaseRTDBCommons
 import com.example.ensinativa.model.EmailValidation
-import com.google.firebase.auth.FirebaseAuth
 import org.apache.commons.validator.routines.EmailValidator
 
-private var _binding: FragmentResetPasswordBinding? = null
-private val binding get() = _binding!!
+private var binding_: FragmentResetPasswordBinding? = null
+private val binding get() = binding_!!
 
-class ResetEmailDialogFragment(val loginActivity: LoginActivity) : DialogFragment() {
-    private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
-    private var firebaseAuth = FirebaseAuth.getInstance()
+class ResetEmailDialogFragment(private val loginActivity: LoginActivity) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = FragmentResetPasswordBinding.inflate(LayoutInflater.from(context))
+        binding_ = FragmentResetPasswordBinding.inflate(LayoutInflater.from(context))
         return AlertDialog.Builder(requireActivity())
             .setView(binding.root)
             .create()
@@ -35,7 +31,6 @@ class ResetEmailDialogFragment(val loginActivity: LoginActivity) : DialogFragmen
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         super.onStart()
         val width = (resources.displayMetrics.widthPixels * 0.96).toInt()
-        val height = (resources.displayMetrics.heightPixels * 0.8).toInt()
         dialog!!.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
         configQuitButton(binding.quitButton)
         configCancelButton(binding.cancelEmail)
@@ -44,7 +39,7 @@ class ResetEmailDialogFragment(val loginActivity: LoginActivity) : DialogFragmen
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding_ = null
     }
 
     private fun configQuitButton(button: Button) {

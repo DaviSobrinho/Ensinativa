@@ -24,23 +24,24 @@ import com.example.ensinativa.model.User
 import com.google.firebase.auth.FirebaseAuth
 
 
-private var _binding: FragmentProfileAddTagsBinding? = null
-private val binding get() = _binding!!
+private var binding_: FragmentProfileAddTagsBinding? = null
+private val binding get() = binding_!!
 private lateinit var arrayList: List<String>
 
-class AddTagDialogFragment(var user: User,val profileFragment : ProfileFragment) : DialogFragment() {
+class AddTagDialogFragment(var user: User, private val profileFragment: ProfileFragment) :
+    DialogFragment() {
     private var firebaseAuth = FirebaseAuth.getInstance()
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = FragmentProfileAddTagsBinding.inflate(LayoutInflater.from(context))
+        binding_ = FragmentProfileAddTagsBinding.inflate(LayoutInflater.from(context))
         return AlertDialog.Builder(requireActivity())
             .setView(binding.root)
             .create()
     }
+
     override fun onStart() {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         super.onStart()
         val width = (resources.displayMetrics.widthPixels * 0.8).toInt()
-        val height = (resources.displayMetrics.heightPixels * 0.96).toInt()
         dialog!!.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
         configQuitButton(binding.quitButton)
         configCancelButton(binding.cancelTagSelection)
@@ -50,7 +51,7 @@ class AddTagDialogFragment(var user: User,val profileFragment : ProfileFragment)
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding_ = null
     }
     private fun configListView(){
         val tagsList = TagsList("Tags")
@@ -62,31 +63,26 @@ class AddTagDialogFragment(var user: User,val profileFragment : ProfileFragment)
             override fun afterTextChanged(s: Editable?) {
                 arrayAdapter.filter.filter(s)
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Nothing
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Nothing
             }
 
         })
-        binding.tagsListView.onItemClickListener = object :
-            AdapterView.OnItemClickListener {
-            override fun onItemClick(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (view != null) {
-                    view.startAnimation(
-                        AnimationUtils.loadAnimation(
-                            requireContext(),
-                            androidx.appcompat.R.anim.abc_fade_in
-                        )
+        binding.tagsListView.onItemClickListener =
+            AdapterView.OnItemClickListener { _, view, position, _ ->
+                view?.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        requireContext(),
+                        androidx.appcompat.R.anim.abc_fade_in
                     )
-                }
+                )
                 binding.tagsTextInputEditText.setText(arrayAdapter.getItem(position))
             }
-        }
     }
     private fun configQuitButton(button: Button){
         button.setOnClickListener {

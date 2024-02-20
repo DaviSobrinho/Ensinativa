@@ -13,25 +13,28 @@ import java.io.InputStream
 
 class StorageReferenceModelLoader : ModelLoader<StorageReference, InputStream> {
 
-    override fun buildLoadData(model: StorageReference, width: Int, height: Int, options: Options): ModelLoader.LoadData<InputStream>? {
+    override fun buildLoadData(
+        model: StorageReference,
+        width: Int,
+        height: Int,
+        options: Options
+    ): ModelLoader.LoadData<InputStream> {
         return ModelLoader.LoadData(ObjectKey(model), StorageReferenceFetcher(model))
     }
 
     override fun handles(model: StorageReference): Boolean {
-        // This ModelLoader should only handle StorageReference objects
         return true
     }
+
     class Factory : ModelLoaderFactory<StorageReference, InputStream> {
         override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<StorageReference, InputStream> {
             return StorageReferenceModelLoader()
         }
 
         override fun teardown() {
-            // No cleanup needed
+            // Nothing
         }
     }
-
-    // Nested class to handle fetching the data from Firebase Storage
     private class StorageReferenceFetcher(private val storageReference: StorageReference) :
         DataFetcher<InputStream> {
 
@@ -48,11 +51,11 @@ class StorageReferenceModelLoader : ModelLoader<StorageReference, InputStream> {
         }
 
         override fun cleanup() {
-            // Cleanup resources if needed
+            // Nothing
         }
 
         override fun cancel() {
-            // Cancel the loading process if needed
+            // Nothing
         }
 
         override fun getDataClass(): Class<InputStream> {

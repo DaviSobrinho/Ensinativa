@@ -113,7 +113,7 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         displayNameTextInput = binding.displayNameTextInput
         passwordTextInput = binding.passwordTextInput
         emailTextInput = binding.emailTextInput
-        var backButton = binding.backButton
+        val backButton = binding.backButton
         val createAccountButton = binding.createAccountButton
         configBackButton(backButton)
         configCreateAccountButton(createAccountButton, emailTextInput, passwordTextInput)
@@ -180,11 +180,11 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
 
 
     override fun onResetEmailSentSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onResetEmailSentFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onGetUserSignOn() {
@@ -203,15 +203,15 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
     }
 
     override fun onEmailPasswordSignInFailureCredentials(exception: Exception) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onEmailPasswordSignInSuccess(email: String, password: String) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onEmailPasswordSignInFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onEmailPasswordSignUpSuccess() {
@@ -229,11 +229,11 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
     }
 
     override fun onUserDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
 
@@ -249,81 +249,81 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
     }
 
     override fun onCreateChatVerifiedDuplicatesSuccess(chat: Chat, duplicated: Boolean) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onCreateChatVerifiedDuplicatesFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestsWithHashListDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestDeleteSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestDeleteFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageArrived() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatListRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatRTDBDataRetrievedSuccess(chat: ChatWithHash) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
 
     override fun onChatRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
 
     override fun onChatRTDBDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatRTDBDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestRTDBDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestRTDBDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestListRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBDataUpdatedSuccess() {
@@ -331,39 +331,39 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
     }
 
     override fun onUserRTDBDataUpdatedFailure() {
-
+        // Nothing
     }
 
     override fun onUserRTDBDataRetrievedSuccess(user: User) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBGoogleDataInsertedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onUserRTDBGoogleDataInsertedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageAddedSuccess(chatWithHash: ChatWithHash) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageAddedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageReceived(messageData: Message) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onNewChatAdded(chatHash: String) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
 }

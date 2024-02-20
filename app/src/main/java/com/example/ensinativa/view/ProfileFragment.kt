@@ -1,6 +1,5 @@
 package com.example.ensinativa.view
 
-import ProfileFragmentTagsAdapter
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -39,6 +38,7 @@ import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
 import com.example.ensinativa.viewmodel.adapters.ProfileFragmentAchievementsAdapter
+import com.example.ensinativa.viewmodel.adapters.ProfileFragmentTagsAdapter
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -51,8 +51,7 @@ import java.io.InputStream
 private lateinit var binding: FragmentProfileBinding
 private var firebaseAuth: FirebaseAuth = Firebase.auth
 
-private val PICK_IMAGE_REQUEST = 1
-private val CAMERA_REQUEST = 2
+private const val PICK_IMAGE_REQUEST = 1
 
 class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,FirebaseStorageListener {
     private lateinit var firebaseStorageCommons: FirebaseStorageCommons
@@ -76,7 +75,7 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
         firebaseRTDBCommons = FirebaseRTDBCommons(this)
         firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
         displayName = binding.displayName
-        firebaseStorageCommons = FirebaseStorageCommons(this, firebaseAuth)
+        firebaseStorageCommons = FirebaseStorageCommons(this)
         configProfile()
         configTagsEditModeButton()
         configDescriptionEditModeButton()
@@ -84,45 +83,65 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
     }
 
 
-    private fun configProfile(){
-        if(firebaseAuth.currentUser!= null){
+    private fun configProfile() {
+        if (firebaseAuth.currentUser != null) {
             firebaseRTDBCommons.getUserData(firebaseAuth)
         }
     }
-    private fun configTagsEditModeButton(){
-        binding.editSkills.setOnClickListener{
-            binding.editSkills.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_in))
+
+    private fun configTagsEditModeButton() {
+        binding.editSkills.setOnClickListener {
+            binding.editSkills.startAnimation(
+                AnimationUtils.loadAnimation(
+                    requireContext(),
+                    androidx.appcompat.R.anim.abc_fade_in
+                )
+            )
             skillsEditMode = !skillsEditMode
             configProfile()
         }
     }
-    private fun configDescriptionEditModeButton(){
-        binding.editDescription.setOnClickListener{
-            binding.editDescription.startAnimation(AnimationUtils.loadAnimation(requireContext(),androidx.appcompat.R.anim.abc_fade_in))
+
+    private fun configDescriptionEditModeButton() {
+        binding.editDescription.setOnClickListener {
+            binding.editDescription.startAnimation(
+                AnimationUtils.loadAnimation(
+                    requireContext(),
+                    androidx.appcompat.R.anim.abc_fade_in
+                )
+            )
             if (childFragmentManager.fragments.isEmpty()) {
-                AddDescriptionDialogFragment(user,this).show(childFragmentManager, "CustomFragment")
+                AddDescriptionDialogFragment(user, this).show(
+                    childFragmentManager,
+                    "CustomFragment"
+                )
             }
         }
     }
 
-    override fun onUserRTDBDataRetrievedSuccess(userModel: User) {
-        user = userModel
-        displayName.text = user.displayName
-        configTags(user.tags)
-        configAchievements(user.achievements)
-        configDescription(user.description)
-        val rating = user.rating
+    override fun onUserRTDBDataRetrievedSuccess(user: User) {
+        this.user = user
+        displayName.text = this.user.displayName
+        configTags(this.user.tags)
+        configAchievements(this.user.achievements)
+        configDescription(this.user.description)
+        val rating = this.user.rating
         val formattedRating = String.format("%.2f", rating)
         binding.rating.text = formattedRating
-        if(user.imageSrc.isNotBlank()){
-            configPhoto(binding.photo, firebaseStorageCommons.getFileReference(firebaseAuth,"users",user.imageSrc,""))
+        if (this.user.imageSrc.isNotBlank()) {
+            configPhoto(
+                binding.photo, firebaseStorageCommons.getFileReference(
+                    "users",
+                    this.user.imageSrc, ""
+                )
+            )
         }
     }
 
     private fun configAchievements(achievements: List<Achievement>) {
-        if(achievements.isEmpty()){
+        if (achievements.isEmpty()) {
             binding.achievementsTextView.visibility = View.VISIBLE
-        }else{
+        } else {
             binding.achievementsTextView.visibility = View.GONE
             configureAchievementsRecyclerView(achievements)
         }
@@ -131,116 +150,122 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
 
     private fun configureAchievementsRecyclerView(achievements: List<Achievement>) {
         val recyclerView = binding.achievementsRecyclerView
-        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        val layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
-        val adapter = ProfileFragmentAchievementsAdapter(requireContext(),
+        val adapter = ProfileFragmentAchievementsAdapter(
+            requireContext(),
             achievements,
-            this,
-            firebaseAuth)
+            this
+        )
         recyclerView.adapter = adapter
     }
 
-    fun configTags(tags : List<String>){
-        if(tags.isEmpty()){
+    private fun configTags(tags: List<String>) {
+        if (tags.isEmpty()) {
             binding.skillsTextView.visibility = View.VISIBLE
-            configTagsRecyclerView(tags,skillsEditMode)
-        }else{
+            configTagsRecyclerView(tags, skillsEditMode)
+        } else {
             binding.skillsTextView.visibility = View.GONE
-            configTagsRecyclerView(tags,skillsEditMode)
-        }
-    }
-    fun configDescription(description : String){
-        if(description.isNotBlank()){
-            binding.descriptionTextView.text = description
-        }else{
-            binding.descriptionTextView.text = "Your profile has no description, try to add one by clicking on edit button."
+            configTagsRecyclerView(tags, skillsEditMode)
         }
     }
 
-    private fun configTagsRecyclerView(tags: List<String>,editMode : Boolean) {
+    private fun configDescription(description: String) {
+        if (description.isNotBlank()) {
+            binding.descriptionTextView.text = description
+        } else {
+            binding.descriptionTextView.text =
+                "Your profile has no description, try to add one by clicking on edit button."
+        }
+    }
+
+    private fun configTagsRecyclerView(tags: List<String>, editMode: Boolean) {
         val recyclerView = binding.tagsRecyclerView
-        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        val layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
-        val adapter = ProfileFragmentTagsAdapter(requireContext(), tags,editMode,childFragmentManager,this)
+        val adapter =
+            ProfileFragmentTagsAdapter(requireContext(), tags, editMode, childFragmentManager, this)
         recyclerView.adapter = adapter
 
     }
 
     override fun onCreateChatVerifiedDuplicatesSuccess(chat: Chat, duplicated: Boolean) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onCreateChatVerifiedDuplicatesFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestsWithHashListDataRetrievedSuccess(requestList: List<RequestWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestsWithHashListDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestDeleteSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestDeleteFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageArrived() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMultipleUsersRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMultipleUsersRTDBDataRetrievedSuccess(userList: List<User>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatListRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatListRTDBDataRetrievedSuccess(chatList: List<ChatWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatRTDBDataRetrievedSuccess(chat: ChatWithHash) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
 
     override fun onChatRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatRTDBDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onChatRTDBDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestRTDBDataUpdatedSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestRTDBDataUpdatedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onRequestListRTDBDataRetrievedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
 
@@ -254,67 +279,79 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
         configProfile()
     }
     override fun onUserRTDBDataRetrievedFailure() {
-
+        // Nothing
     }
 
     override fun onUserRTDBGoogleDataInsertedSuccess() {
+        // Nothing
     }
 
     override fun onUserRTDBGoogleDataInsertedFailure() {
+        // Nothing
     }
 
     override fun onMessageAddedSuccess(chatWithHash: ChatWithHash) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageAddedFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onMessageReceived(messageData: Message) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onNewChatAdded(chatHash: String) {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onResetEmailSentSuccess() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onResetEmailSentFailure() {
-        TODO("Not yet implemented")
+        // Nothing
     }
 
     override fun onGetUserSignOn() {
+        // Nothing
     }
 
     override fun onGetUserSignOut() {
+        // Nothing
     }
 
     override fun onEmailPasswordSignInFailureCredentials(exception: Exception) {
+        // Nothing
     }
 
     override fun onEmailPasswordSignInSuccess(email: String, password: String) {
+        // Nothing
     }
 
     override fun onEmailPasswordSignInFailure() {
+        // Nothing
     }
 
     override fun onEmailPasswordSignUpSuccess() {
+        // Nothing
     }
 
     override fun onEmailPasswordSignUpFailure() {
+        // Nothing
     }
 
     override fun onEmailPasswordSignUpFailureDuplicatedCredentials() {
+        // Nothing
     }
 
     override fun onUserDataUpdatedSuccess() {
+        // Nothing
     }
 
     override fun onUserDataUpdatedFailure() {
+        // Nothing
     }
 
     override fun onFileInsertedFailure() {
@@ -336,7 +373,7 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
         ), firebaseAuth)
     }
     private fun showMenuNameSnackbar(view: View, message : String) {
-        val snackbar = Snackbar.make(view, "$message", Snackbar.LENGTH_SHORT)
+        val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
         snackbar.setAction("OK") {
         }
         snackbar.show()
@@ -354,6 +391,7 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
+                    // Nothing
                 }
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                     button.background = getBorderedBackgroundDrawable(resource)
@@ -389,10 +427,6 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
                         firebaseStorageCommons.insertFile("users","0",".png",userImageByteArray)
                     }
                 }
-                CAMERA_REQUEST -> {
-                    // Handle camera capture result
-                    // Você pode lidar com a imagem capturada aqui, se necessário
-                }
             }
         }
     }
@@ -420,8 +454,4 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
         return stream.toByteArray()
     }
 
-    private fun convertDpToPixel(dp: Float): Int {
-        val scale = resources.displayMetrics.density
-        return (dp * scale + 0.5f).toInt()
-    }
 }

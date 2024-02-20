@@ -25,90 +25,76 @@ import com.example.ensinativa.view.DeleteRequestFragment
 import com.example.ensinativa.view.RequestFragment
 import com.example.ensinativa.view.ShowImageDialogFragment
 import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageReference
 import java.io.InputStream
 
-class RequestFragmentRequestListAdapter(private val context: Context, private val firebaseStorageListener: FirebaseStorageListener, private val firebaseAuth: FirebaseAuth, val requestFragment: RequestFragment, private val fragmentManager: FragmentManager, requestList: List<RequestWithHash>) : RecyclerView.Adapter<RequestFragmentRequestListAdapter.ViewHolder>() {
+class RequestFragmentRequestListAdapter(
+    private val context: Context,
+    firebaseStorageListener: FirebaseStorageListener,
+    private val requestFragment: RequestFragment,
+    private val fragmentManager: FragmentManager,
+    requestList: List<RequestWithHash>
+) : RecyclerView.Adapter<RequestFragmentRequestListAdapter.ViewHolder>() {
     private var requests = requestList.toMutableList()
-    val firebaseStorageCommons = FirebaseStorageCommons(firebaseStorageListener, firebaseAuth)
+    val firebaseStorageCommons = FirebaseStorageCommons(firebaseStorageListener)
 
 
     init {
         refreshRequestList(requests)
     }
-    class ViewHolder(val view: View, private val firebaseAuth: FirebaseAuth, val context: Context, val requestFragmentRequestListAdapter: RequestFragmentRequestListAdapter , val requestFragment: RequestFragment,val fragmentManager: FragmentManager) : RecyclerView.ViewHolder(view) {
+
+    class ViewHolder(
+        val view: View,
+        val context: Context,
+        private val requestFragmentRequestListAdapter: RequestFragmentRequestListAdapter,
+        private val requestFragment: RequestFragment,
+        private val fragmentManager: FragmentManager
+    ) : RecyclerView.ViewHolder(view) {
 
         fun bind(requestWithHash: RequestWithHash) {
-            val requestLayout = itemView.findViewById<ConstraintLayout>(R.id.fragmentRequestMyRequestRequestLayout)
+            itemView.findViewById<ConstraintLayout>(R.id.fragmentRequestMyRequestRequestLayout)
             val title = itemView.findViewById<TextView>(R.id.fragmentRequestMyRequestRequestTitle)
-            val description = itemView.findViewById<TextView>(R.id.fragmentRequestMyRequestRequestDescription)
+            val description =
+                itemView.findViewById<TextView>(R.id.fragmentRequestMyRequestRequestDescription)
             val tags = itemView.findViewById<TextView>(R.id.fragmentRequestMyRequestRequestTags)
             val image = itemView.findViewById<Button>(R.id.fragmentRequestMyRequestRequestImage)
-            val removeButton = itemView.findViewById<Button>(R.id.fragmentRequestMyRequestRequestRemoveButton)
+            val removeButton =
+                itemView.findViewById<Button>(R.id.fragmentRequestMyRequestRequestRemoveButton)
             title.text = requestWithHash.request.title
             description.text = requestWithHash.request.description
             tags.text = requestWithHash.request.tag1 + "/" + requestWithHash.request.tag2
-            removeButton.setOnClickListener{
-                removeButton.startAnimation(AnimationUtils.loadAnimation(context,androidx.appcompat.R.anim.abc_fade_in))
+            removeButton.setOnClickListener {
+                removeButton.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        context,
+                        androidx.appcompat.R.anim.abc_fade_in
+                    )
+                )
                 if (fragmentManager.fragments.isEmpty()) {
-                    DeleteRequestFragment(requestWithHash.hash,requestFragment).show(fragmentManager, "CustomFragment")
+                    DeleteRequestFragment(requestWithHash.hash, requestFragment).show(
+                        fragmentManager,
+                        "CustomFragment"
+                    )
                 }
             }
             if (requestWithHash.request.imageSrc.isNotBlank()) {
                 requestFragmentRequestListAdapter.loadImageIntoButton(
-                    image, requestFragmentRequestListAdapter.firebaseStorageCommons.getFileReference(
-                        firebaseAuth,
+                    image,
+                    requestFragmentRequestListAdapter.firebaseStorageCommons.getFileReference(
                         "requests",
                         requestWithHash.request.imageSrc,
                         ""
                     )
                 )
 
-            }/* else {
-                val personalLayout = itemView.findViewById<ConstraintLayout>(R.id.fragmentMessageChatsUserLayout)
-                val requestLayout = itemView.findViewById<ConstraintLayout>(R.id.fragmentMessageChatsRequestLayout)
-                val displayName = itemView.findViewById<TextView>(R.id.fragmentMessageChatsUserDisplayName)
-                val image = itemView.findViewById<Button>(R.id.fragmentMessageChatsUserImage)
-                if (firebaseAuth.currentUser!!.uid == chat.chat.chatMembers[0].userUID) {
-                    displayName.text = chat.chat.chatMembers[1].userUID
-                    if (chat.chat.chatMembers[1].userUID.isNotBlank()) {
-                        messageFragmentChatsListAdapter.loadImageIntoButton(
-                            image, messageFragmentChatsListAdapter.firebaseStorageCommons.getFileReference(
-                                firebaseAuth,
-                                "users",
-                                chat.chat.chatMembers[1].userUID,
-                                "png"
-                            )
-                        )
-                    }
-                } else {
-                    if (firebaseAuth.currentUser!!.uid == chat.chat.chatMembers[1].userUID) {
-                        displayName.text = chat.chat.chatMembers[0].userUID
-                        if (chat.chat.chatMembers[0].userUID.isNotBlank()) {
-                            messageFragmentChatsListAdapter.loadImageIntoButton(
-                                image, messageFragmentChatsListAdapter.firebaseStorageCommons.getFileReference(
-                                    firebaseAuth,
-                                    "users",
-                                    chat.chat.chatMembers[0].userUID,
-                                    "png"
-                                )
-                            )
-                        }
-                    }
-                    requestLayout.visibility = View.GONE
-                }
-                personalLayout.setOnClickListener{
-                    messageFragmentChatsListAdapter.configConstraintLayoutOnClick(personalLayout, chat,itemView)
-                }
-            }*/
+            }
         }
 
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.fragment_request_my_requests_recycler_view, parent, false)
-        return ViewHolder(view, firebaseAuth, context,this,requestFragment,fragmentManager)
+        return ViewHolder(view, context, this, requestFragment, fragmentManager)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -138,6 +124,7 @@ class RequestFragmentRequestListAdapter(private val context: Context, private va
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(object : CustomTarget<Drawable>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
+                    // Nothing
                 }
                 override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                     button.setOnClickListener {
