@@ -7,7 +7,6 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ensinativa.R
@@ -24,6 +23,7 @@ import com.example.ensinativa.model.PasswordValidation
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -116,7 +116,12 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         val backButton = binding.backButton
         val createAccountButton = binding.createAccountButton
         configBackButton(backButton)
-        configCreateAccountButton(createAccountButton, emailTextInput, passwordTextInput)
+        configCreateAccountButton(
+            createAccountButton,
+            emailTextInput,
+            passwordTextInput,
+            displayNameTextInput
+        )
     }
 
     private fun configUserAccount( displayName: String, email: String){
@@ -124,11 +129,17 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         firebaseRTDBCommons.updateUser(user, firebaseAuth)
     }
 
-    private fun configCreateAccountButton(createAccountButton: Button, emailTextInput: TextInputEditText, passwordTextInput: TextInputEditText) {
+    private fun configCreateAccountButton(
+        createAccountButton: Button,
+        emailTextInput: TextInputEditText,
+        passwordTextInput: TextInputEditText,
+        displayNameTextInputEditText: TextInputEditText
+    ) {
         createAccountButton.setOnClickListener {
             val validatedEmail = validateEmail(emailTextInput.text.toString())
             val validatedPassword = validatePassword(passwordTextInput.text.toString())
-            val validatedDisplayName = validateDisplayName(displayNameTextInput.text.toString())
+            val validatedDisplayName =
+                validateDisplayName(displayNameTextInputEditText.text.toString())
             configErrorMessageTextView(emailErrorMessageTextView, validatedEmail.errorMessage)
             configErrorMessageTextView(passwordErrorMessageTextView, validatedPassword.errorMessage)
             if (!validatedDisplayName) {
@@ -145,7 +156,7 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
                     androidx.appcompat.R.anim.abc_fade_in
                 )
             )
-            if (validatedEmail.valid && validatedPassword.valid) {
+            if (validatedEmail.valid && validatedPassword.valid && validatedDisplayName) {
                 firebaseAuthCommons.emailPasswordSignUp(
                     firebaseAuth,
                     emailTextInput,
@@ -175,7 +186,7 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
     }
 
     private fun validateDisplayName(displayName: String): Boolean {
-        return displayName == ""
+        return displayName != ""
     }
 
 
@@ -195,11 +206,10 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
     }
 
     override fun onGetUserSignOut() {
-        Toast.makeText(
-            this,
-            "Something went wrong, try checking the inserted data or contact us",
-            Toast.LENGTH_SHORT
-        ).show()
+        showMenuNameSnackbar(
+            window.decorView.rootView,
+            "Something went wrong, try checking the inserted data or contact us"
+        )
     }
 
     override fun onEmailPasswordSignInFailureCredentials(exception: Exception) {
@@ -215,13 +225,19 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
     }
 
     override fun onEmailPasswordSignUpSuccess() {
-        configErrorMessageTextView(emailErrorMessageTextView,"")
-        Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
+        configErrorMessageTextView(emailErrorMessageTextView, "")
+        showMenuNameSnackbar(
+            window.decorView.rootView,
+            "Account created successfully"
+        )
         firebaseAuthCommons.getUserState()
     }
 
     override fun onEmailPasswordSignUpFailure() {
-        Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
+        showMenuNameSnackbar(
+            window.decorView.rootView,
+            "Something went wrong, try checking the inserted data or contact us"
+        )
     }
 
     override fun onEmailPasswordSignUpFailureDuplicatedCredentials() {
@@ -366,4 +382,10 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         // Nothing
     }
 
+    private fun showMenuNameSnackbar(view: View, message: String) {
+        val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
+        snackbar.setAction("OK") {
+        }
+        snackbar.show()
+    }
 }
