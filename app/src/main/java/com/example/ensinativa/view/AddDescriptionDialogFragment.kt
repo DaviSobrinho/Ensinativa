@@ -6,22 +6,12 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
-import com.example.ensinativa.R
-import com.example.ensinativa.databinding.FragmentAddTagBinding
-import com.example.ensinativa.databinding.FragmentProfileAddTagsBinding
 import com.example.ensinativa.databinding.FragmentProfileEditDescriptionBinding
-import com.example.ensinativa.model.TagsList
 import com.example.ensinativa.model.User
 import com.google.firebase.auth.FirebaseAuth
 

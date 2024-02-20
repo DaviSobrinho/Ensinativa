@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
 import com.example.ensinativa.R
-import com.example.ensinativa.databinding.FragmentAddTagBinding
 import com.example.ensinativa.databinding.FragmentProfileAddTagsBinding
 import com.example.ensinativa.model.TagsList
 import com.example.ensinativa.model.User
@@ -69,7 +68,7 @@ class AddTagDialogFragment(var user: User,val profileFragment : ProfileFragment)
             }
 
         })
-        binding.tagsListView.setOnItemClickListener(object :
+        binding.tagsListView.onItemClickListener = object :
             AdapterView.OnItemClickListener {
             override fun onItemClick(
                 parent: AdapterView<*>?,
@@ -87,7 +86,7 @@ class AddTagDialogFragment(var user: User,val profileFragment : ProfileFragment)
                 }
                 binding.tagsTextInputEditText.setText(arrayAdapter.getItem(position))
             }
-        })
+        }
     }
     private fun configQuitButton(button: Button){
         button.setOnClickListener {

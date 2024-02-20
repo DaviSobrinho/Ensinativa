@@ -198,7 +198,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_gravity="center"
                 android:layout_width="300dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
                 <Button
                     android:layout_gravity="center"
                     android:gravity="center"
@@ -296,6 +298,7 @@
                 app:backgroundTintMode="src_atop">
             </TextView>
             <TextView
+                android:id="@+id/reset_email_textView"
                 android:textSize="14sp"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_gravity="center"
@@ -308,8 +311,23 @@
                 android:text="@string/forgot_password"
                 android:background="@color/transaparent"
                 app:backgroundTint="@color/transaparent"
-                app:backgroundTintMode="src_atop">
-            </TextView>
+                app:backgroundTintMode="src_atop"></TextView>
+
+            <TextView
+                android:id="@+id/privacy_policies_textView"
+                android:layout_width="240dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Privacy Policies"
+                android:textColor="@color/blue7"
+                android:textSize="14sp"
+                app:backgroundTintMode="src_atop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="@color/transaparent"
+                app:backgroundTint="@color/transaparent"
+                app:layout_constraintTop_toTopOf="parent"></TextView>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

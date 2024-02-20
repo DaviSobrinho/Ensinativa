@@ -3,7 +3,6 @@ package com.example.ensinativa.view
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import com.example.ensinativa.R
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -13,19 +12,14 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.datastore.preferences.preferencesDataStore
-import com.example.ensinativa.databinding.ActivityLoginBinding
-import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import kotlinx.coroutines.CoroutineScope
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import com.example.ensinativa.R
+import com.example.ensinativa.databinding.ActivityLoginBinding
 import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
 import com.example.ensinativa.firebaseauth.FirebaseAuthListener
 import com.example.ensinativa.firebaseauth.GoogleAuthCommons
@@ -35,17 +29,19 @@ import com.example.ensinativa.firebasertdb.FirebaseRTDBListener
 import com.example.ensinativa.model.Chat
 import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.Message
-import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
-import com.google.firebase.appcheck.appCheck
-import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
-import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
-import com.google.firebase.initialize
+import com.facebook.Profile
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 private const val DATA_STORE_EMAIL_KEY = "email"
 private const val DATA_STORE_PASSWORD_KEY = "password"
@@ -62,6 +58,8 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
     private lateinit var googleAuthCommons: GoogleAuthCommons
     private lateinit var firebaseAuthCommons: FirebaseAuthCommons
     private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
+    private lateinit var googleAccount: GoogleSignInAccount
+    private lateinit var facebookAccount: Profile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,11 +86,17 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         googleAuthCommons = GoogleAuthCommons(this, firebaseAuth, this)
         firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
         firebaseRTDBCommons = FirebaseRTDBCommons(this)
-        fillEmailPasswordAndCheckboxFromDataStorage(emailTextInput, passwordTextInput, rememberMeCheckBox)
+        fillEmailPasswordAndCheckboxFromDataStorage(
+            emailTextInput,
+            passwordTextInput,
+            rememberMeCheckBox
+        )
         configGoogleSignInButton(googleButton, googleAuthCommons)
         configShowPasswordButton(showPasswordButton, passwordTextInput)
         configCreateAccountButton(createAccountTextView)
         configSignInButton(signInButton, firebaseAuthCommons, emailTextInput, passwordTextInput)
+        configResetPasswordButton(binding.resetEmailTextView)
+        configPrivacyPoliciesTextView(binding.privacyPoliciesTextView)
     }
     private fun configGoogleSignInButton(googleButton: ImageView, googleAuthCommons: GoogleAuthCommons) {
         googleButton.setOnClickListener {
@@ -156,6 +160,18 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         }
     }
 
+    private fun configResetPasswordButton(textView: TextView) {
+        textView.setOnClickListener {
+            textView.startAnimation(
+                AnimationUtils.loadAnimation(
+                    this,
+                    androidx.appcompat.R.anim.abc_fade_in
+                )
+            )
+            ResetEmailDialogFragment(this).show(supportFragmentManager, "reset_email_dialog")
+        }
+    }
+
     private fun startMainActivity() {
         val customAnimation = ActivityOptions.makeCustomAnimation(
             this,
@@ -199,7 +215,10 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         }
     }
 
-    private fun configErrorMessageTextView(passwordErrorMessageTextView: TextView, passwordErrorMessage: String) {
+    private fun configErrorMessageTextView(
+        passwordErrorMessageTextView: TextView,
+        passwordErrorMessage: String
+    ) {
         passwordErrorMessageTextView.text = passwordErrorMessage
         if (passwordErrorMessage != "") {
             passwordErrorMessageTextView.visibility = View.VISIBLE
@@ -208,12 +227,41 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         }
     }
 
+    private fun configPrivacyPoliciesTextView(privacyPoliciesTextView: TextView) {
+        privacyPoliciesTextView.setOnClickListener {
+            privacyPoliciesTextView.startAnimation(
+                AnimationUtils.loadAnimation(
+                    this,
+                    androidx.appcompat.R.anim.abc_fade_in
+                )
+            )
+            PrivacyPoliciesDialogFragment().show(supportFragmentManager, "reset_email_dialog")
+        }
+    }
+
+    override fun onResetEmailSentSuccess() {
+        showMenuNameSnackbar(
+            window.decorView.rootView,
+            "We've sent and recovery email to you, check your mailbox"
+        )
+    }
+
+    override fun onResetEmailSentFailure() {
+        showMenuNameSnackbar(
+            window.decorView.rootView,
+            "Something went wrong, when trying to mail you, try it later or contact us"
+        )
+    }
+
     override fun onGetUserSignOn() {
         startMainActivity()
     }
 
     override fun onGetUserSignOut() {
-        Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
+        showMenuNameSnackbar(
+            window.decorView.rootView,
+            "Something went wrong, try checking the inserted data or contact us"
+        )
     }
 
     override fun onEmailPasswordSignInSuccess(email: String, password: String) {
@@ -232,7 +280,10 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
 
     override fun onEmailPasswordSignInFailure() {
         configErrorMessageTextView(passwordErrorMessageTextView, "")
-        Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
+        showMenuNameSnackbar(
+            window.decorView.rootView,
+            "Something went wrong, try checking the inserted data or contact us"
+        )
     }
 
     override fun onEmailPasswordSignUpSuccess() {
@@ -246,15 +297,13 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
 
     override fun onUserDataUpdatedSuccess() {
         if (firebaseAuth.currentUser != null) {
-            val user = User(email = firebaseAuth.currentUser!!.email.toString(),
-                displayName = firebaseAuth.currentUser!!.displayName.toString(),
-                uid = firebaseAuth.currentUser!!.uid)
-            firebaseRTDBCommons.updateUser(user = user, firebaseAuth)
+            firebaseRTDBCommons.getUserData(firebaseAuth)
         }
     }
 
     override fun onUserDataUpdatedFailure() {
-        Toast.makeText(this, "Something went wrong, updating your data", Toast.LENGTH_SHORT).show()
+
+        showMenuNameSnackbar(window.decorView.rootView, "Something went wrong, updating your data")
     }
 
     override fun onCreateChatVerifiedDuplicatesSuccess(chat: Chat, duplicated: Boolean) {
@@ -339,15 +388,28 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
     }
 
     override fun onUserRTDBDataUpdatedFailure() {
-        Toast.makeText(this, "Something went wrong, retrieving your data", Toast.LENGTH_SHORT).show()
+        showMenuNameSnackbar(
+            window.decorView.rootView,
+            "Something went wrong, retrieving your data"
+        )
     }
 
     override fun onUserRTDBDataRetrievedSuccess(user: User) {
-        // Not implemented yet
+        firebaseRTDBCommons.updateUser(
+            User(
+                firebaseAuth.currentUser!!.uid,
+                googleAccount.displayName.toString(),
+                googleAccount.email.toString(),
+                user.description,
+                user.achievements,
+                user.tags,
+                user.imageSrc,
+                user.rating
+            ), firebaseAuth
+        )
     }
 
     override fun onUserRTDBDataRetrievedFailure() {
-        // Not implemented yet
     }
 
     override fun onUserRTDBGoogleDataInsertedSuccess() {
@@ -355,7 +417,10 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
     }
 
     override fun onUserRTDBGoogleDataInsertedFailure() {
-        Toast.makeText(this, "Failure when inserting google user data", Toast.LENGTH_SHORT).show()
+        showMenuNameSnackbar(
+            window.decorView.rootView,
+            "Something went wrong when inserting Google user data"
+        )
     }
 
     override fun onMessageAddedSuccess(chatWithHash: ChatWithHash) {
@@ -374,11 +439,26 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         TODO("Not yet implemented")
     }
 
-    override fun onGoogleSignInSuccess(user: User?) {
-        firebaseAuthCommons.updateUser(user!!)
+    override fun onGoogleSignInSuccess(account: GoogleSignInAccount?) {
+        googleAccount = account!!
+        firebaseAuthCommons.updateUserDisplayName(account.displayName.toString())
     }
 
     override fun onGoogleSignInFailure() {
-        Toast.makeText(this, "Something went wrong while trying to link account with Google", Toast.LENGTH_SHORT).show()
+        showMenuNameSnackbar(
+            window.decorView.rootView,
+            "Something went wrong while trying to link account with Google"
+        )
+    }
+
+    fun sendResetEmail(email: String) {
+        firebaseAuthCommons.sendResetPasswordEmail(email)
+    }
+
+    private fun showMenuNameSnackbar(view: View, message: String) {
+        val snackbar = Snackbar.make(view, "$message", Snackbar.LENGTH_SHORT)
+        snackbar.setAction("OK") {
+        }
+        snackbar.show()
     }
 }

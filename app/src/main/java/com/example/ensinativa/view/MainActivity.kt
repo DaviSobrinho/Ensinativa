@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Button
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -18,8 +17,8 @@ import com.example.ensinativa.firebaseauth.GoogleAuthCommons
 import com.example.ensinativa.firebaseauth.GoogleAuthListener
 import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
-import com.example.ensinativa.model.User
 import com.example.ensinativa.viewmodel.ViewPagerAdapter
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
@@ -27,7 +26,6 @@ import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import java.lang.Exception
 
 private lateinit var firebaseAuth: FirebaseAuth
 private lateinit var binding: ActivityMainBinding
@@ -36,7 +34,6 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
     private lateinit var mainPager: ViewPager2
     private var emailPasswordAuthLoggedIn = false
     private var googleAuthLoggedIn = false
-    private var facebookAuthLoggedIn = false
     private lateinit var googleAuthCommons: GoogleAuthCommons
     private lateinit var firebaseAuthCommons : FirebaseAuthCommons
     var startRequestFromRequest = false
@@ -46,7 +43,7 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         configAppCheck()
-        FirebaseApp.initializeApp(this);
+        FirebaseApp.initializeApp(this)
         firebaseAuth = Firebase.auth
         googleAuthCommons = GoogleAuthCommons(this, firebaseAuth, this)
         firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
@@ -55,7 +52,7 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         }
         renderView()
         configViewPager()
-        configMenuButton(binding.menuButton)
+        configMenuButton(binding.logoutButton)
         val backButtonCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 moveTaskToBack(true)
@@ -95,9 +92,6 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
             }
             if(googleAuthLoggedIn){
                 googleAuthCommons.googleSignOut()
-            }
-            if(facebookAuthLoggedIn){
-                //
             }
             startLoginActivity()
         }
@@ -148,15 +142,26 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
             }
         })
     }
-    private fun setContextToAllFragments(adapterViewPager : ViewPagerAdapter) {
+
+    private fun setContextToAllFragments(adapterViewPager: ViewPagerAdapter) {
         for (i in 0 until adapterViewPager.itemCount) {
             mainPager.setCurrentItem(i, true)
         }
     }
-    fun callMessageFragment(index: Int, request: RequestWithHash){
+
+    fun callMessageFragment(index: Int, request: RequestWithHash) {
         startRequestFromRequest = true
         mainPager.setCurrentItem(index, true)
     }
+
+    override fun onResetEmailSentSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onResetEmailSentFailure() {
+        TODO("Not yet implemented")
+    }
+
     override fun onGetUserSignOn() {
 
     }
@@ -197,13 +202,15 @@ class MainActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListen
         TODO("Not yet implemented")
     }
 
-    override fun onGoogleSignInSuccess(user: User?) {
+
+    override fun onGoogleSignInSuccess(account: GoogleSignInAccount?) {
         TODO("Not yet implemented")
     }
 
     override fun onGoogleSignInFailure() {
         TODO("Not yet implemented")
     }
+
     private fun startLoginActivity() {
         val customAnimation = ActivityOptions.makeCustomAnimation(
             this,

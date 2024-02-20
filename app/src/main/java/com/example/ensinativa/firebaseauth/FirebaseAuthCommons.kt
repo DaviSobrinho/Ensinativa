@@ -1,14 +1,14 @@
 package com.example.ensinativa.firebaseauth
 
 import com.example.ensinativa.model.Providers
-import com.example.ensinativa.model.User
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.auth
 import com.google.firebase.auth.userProfileChangeRequest
 
 class FirebaseAuthCommons (private val firebaseAuthListener: FirebaseAuthListener, private val firebaseAuth: FirebaseAuth) {
@@ -66,24 +66,40 @@ class FirebaseAuthCommons (private val firebaseAuthListener: FirebaseAuthListene
                     "google.com" -> {
                         providersStatus.googleProvider = true
                     }
+
                     "password" -> {
                         providersStatus.emailPasswordProvider = true
                     }
                 }
             }
         }
-        println("emailPasswordProvider"+providersStatus.emailPasswordProvider.toString()+"googlePasswordProvider"+providersStatus.googleProvider.toString())
+        println("emailPasswordProvider" + providersStatus.emailPasswordProvider.toString() + "googlePasswordProvider" + providersStatus.googleProvider.toString())
         return providersStatus
     }
-    fun updateUser(user: User){
-        val firebaseUser : FirebaseUser? = firebaseAuth.currentUser
+
+    fun updateUserDisplayName(userDisplayName: String) {
+        val firebaseUser: FirebaseUser? = firebaseAuth.currentUser
         if (firebaseUser != null) {
             firebaseUser.updateProfile(userProfileChangeRequest {
-                displayName = user.displayName
+
+                displayName = userDisplayName
             })
             firebaseAuthListener.onUserDataUpdatedSuccess()
-        }else{
+        } else {
             firebaseAuthListener.onUserDataUpdatedFailure()
         }
+    }
+
+    fun sendResetPasswordEmail(email: String) {
+        Firebase.auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    println(task.exception)
+                    firebaseAuthListener.onResetEmailSentSuccess()
+                } else {
+                    firebaseAuthListener.onResetEmailSentFailure()
+                    println(task.exception)
+                }
+            }
     }
 }

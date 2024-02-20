@@ -7,15 +7,12 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
 import com.example.ensinativa.databinding.FragmentRemoveTagBinding
 import com.example.ensinativa.model.User
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 
 
 private var _binding: FragmentRemoveTagBinding? = null

@@ -5,13 +5,13 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -54,14 +54,10 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
     private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
     private var currentChat: ChatWithHash = ChatWithHash(Chat(),"")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMessageBinding.inflate(inflater, container,false)
         firebaseAuth = FirebaseAuth.getInstance()
         firebaseStorageCommons = FirebaseStorageCommons(this,firebaseAuth)
@@ -71,9 +67,6 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
     private fun configChatsListeners(){
         firebaseRTDBCommons.setupNewChatListener(firebaseAuth,this)
         firebaseRTDBCommons.setupChatListenersForUser(firebaseAuth,
@@ -145,11 +138,27 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
 
     private fun configChatsAdapters(chatList: List<ChatWithHash>) {
         val recyclerView = binding.chatListRecyclerView
-        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        val layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
-        val adapter = MessageFragmentChatsListAdapter(requireContext(),this,firebaseAuth,chatList,this,binding.messagesViewSwitcher,binding.messagesBackButton,this,childFragmentManager)
+        val adapter = MessageFragmentChatsListAdapter(
+            requireContext(),
+            this,
+            firebaseAuth,
+            chatList,
+            this,
+            binding.messagesViewSwitcher,
+            binding.messagesBackButton,
+            this,
+            childFragmentManager
+        )
         adapter.refreshChatList(chatList)
         recyclerView.adapter = adapter
+        if (chatList.isEmpty()) {
+            binding.missingChatsTextView.visibility = View.VISIBLE
+        } else {
+            binding.missingChatsTextView.visibility = View.GONE
+        }
 
     }
     fun configChatAdapter(chat: ChatWithHash){
@@ -196,7 +205,7 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
 
         val textInput = binding.messageTextInput
         val sendButton = binding.messagesChatSendButton
-        sendButton.setOnClickListener(){
+        sendButton.setOnClickListener {
             if(textInput.text!!.isNotBlank()){
                 var sender = ""
                 var receiver = ""

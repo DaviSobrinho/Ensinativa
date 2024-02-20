@@ -2,7 +2,6 @@ package com.example.ensinativa.view
 
 import android.app.ActivityOptions
 import android.content.Intent
-import com.example.ensinativa.R
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -11,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import com.example.ensinativa.R
 import com.example.ensinativa.databinding.ActivityCreateAccountBinding
 import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
 import com.example.ensinativa.firebaseauth.FirebaseAuthListener
@@ -21,7 +21,6 @@ import com.example.ensinativa.model.ChatWithHash
 import com.example.ensinativa.model.EmailValidation
 import com.example.ensinativa.model.Message
 import com.example.ensinativa.model.PasswordValidation
-import com.example.ensinativa.model.Request
 import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.google.android.material.button.MaterialButton
@@ -31,7 +30,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.storage.storage
 import org.apache.commons.validator.routines.EmailValidator
-import java.lang.Exception
 
 
 private lateinit var binding: ActivityCreateAccountBinding
@@ -130,8 +128,17 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         createAccountButton.setOnClickListener {
             val validatedEmail = validateEmail(emailTextInput.text.toString())
             val validatedPassword = validatePassword(passwordTextInput.text.toString())
+            val validatedDisplayName = validateDisplayName(displayNameTextInput.text.toString())
             configErrorMessageTextView(emailErrorMessageTextView, validatedEmail.errorMessage)
             configErrorMessageTextView(passwordErrorMessageTextView, validatedPassword.errorMessage)
+            if (!validatedDisplayName) {
+                configErrorMessageTextView(
+                    displayNameErrorMessageTextView,
+                    "Please enter a display name"
+                )
+            } else {
+                configErrorMessageTextView(displayNameErrorMessageTextView, "")
+            }
             createAccountButton.startAnimation(
                 AnimationUtils.loadAnimation(
                     this,
@@ -139,7 +146,11 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
                 )
             )
             if (validatedEmail.valid && validatedPassword.valid) {
-                firebaseAuthCommons.emailPasswordSignUp(firebaseAuth, emailTextInput, passwordTextInput)
+                firebaseAuthCommons.emailPasswordSignUp(
+                    firebaseAuth,
+                    emailTextInput,
+                    passwordTextInput
+                )
             }
         }
     }
@@ -154,13 +165,26 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
         }
     }
 
-    private fun validateEmail(email : String) : EmailValidation{
-        val emailValidation = EmailValidation("",true)
-        if(!EmailValidator.getInstance().isValid(email)){
+    private fun validateEmail(email: String): EmailValidation {
+        val emailValidation = EmailValidation("", true)
+        if (!EmailValidator.getInstance().isValid(email)) {
             emailValidation.valid = false
             emailValidation.errorMessage = "Please enter a valid email address"
         }
         return emailValidation
+    }
+
+    private fun validateDisplayName(displayName: String): Boolean {
+        return displayName == ""
+    }
+
+
+    override fun onResetEmailSentSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onResetEmailSentFailure() {
+        TODO("Not yet implemented")
     }
 
     override fun onGetUserSignOn() {
@@ -171,7 +195,11 @@ class CreateAccountActivity : AppCompatActivity() , FirebaseAuthListener, Fireba
     }
 
     override fun onGetUserSignOut() {
-        Toast.makeText(this, "Something went wrong, try checking the inserted data or contact us", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            this,
+            "Something went wrong, try checking the inserted data or contact us",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun onEmailPasswordSignInFailureCredentials(exception: Exception) {

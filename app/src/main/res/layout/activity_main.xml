@@ -40,7 +40,7 @@
             app:layout_constraintEnd_toEndOf="parent">
         </View>
         <Button
-            android:id="@+id/menuButton"
+            android:id="@+id/logoutButton"
             android:scaleY="1.2"
             android:scaleX="1.2"
             android:scaleType="fitXY"
@@ -53,8 +53,7 @@
             android:padding="0dp"
             android:background="@color/transaparent"
             android:foregroundTint="@color/blue5"
-            android:foreground="@drawable/ic_menu_foreground">
-        </Button>
+            android:foreground="@drawable/ic_exit_foreground"></Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.viewpager2.widget.ViewPager2

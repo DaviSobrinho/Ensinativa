@@ -12,13 +12,13 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -39,7 +39,6 @@ import com.example.ensinativa.model.RequestWithHash
 import com.example.ensinativa.model.User
 import com.example.ensinativa.viewmodel.StorageReferenceModelLoader
 import com.example.ensinativa.viewmodel.adapters.ProfileFragmentAchievementsAdapter
-
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -48,7 +47,6 @@ import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.lang.Exception
 
 private lateinit var binding: FragmentProfileBinding
 private var firebaseAuth: FirebaseAuth = Firebase.auth
@@ -65,20 +63,14 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
     private var skillsEditMode : Boolean = false
     private lateinit var userImageByteArray : ByteArray
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentProfileBinding.inflate(inflater, container,false)
         return binding.root
     }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
+
     override fun onStart() {
         super.onStart()
         firebaseRTDBCommons = FirebaseRTDBCommons(this)
@@ -284,6 +276,14 @@ class ProfileFragment : Fragment(), FirebaseRTDBListener,FirebaseAuthListener,Fi
     }
 
     override fun onNewChatAdded(chatHash: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onResetEmailSentSuccess() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onResetEmailSentFailure() {
         TODO("Not yet implemented")
     }
 

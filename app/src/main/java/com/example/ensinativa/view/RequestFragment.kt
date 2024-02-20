@@ -48,11 +48,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
 
-
-// TODO: Rename parameter arguments, choose names that match
-
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
 var page = 1
 
 private val PICK_IMAGE_REQUEST = 1
@@ -75,18 +70,16 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     private lateinit var descriptionErrorMessageTextView: TextView
     private lateinit var tagsErrorMessageTextView: TextView
     private lateinit var imageErrorMessageTextView: TextView
-    private lateinit var missingRequestsMessageTextView : TextView
-    private lateinit var fragmentRequestMyRequestsRecyclerView : RecyclerView
+    private lateinit var missingRequestsMessageTextView: TextView
+    private lateinit var fragmentRequestMyRequestsRecyclerView: RecyclerView
     private var imageSelected: Boolean = false
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private var fileReference: String = ""
+    private var sendingRequest: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentRequestBinding.inflate(inflater, container,false)
         firebaseAuth = Firebase.auth
@@ -113,47 +106,63 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     }
 
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-    }
     fun configConfirmRequestButton(){
 
 
         binding.confirmRequestButton.setOnClickListener{
             val validatedTitle = validateTitle(titleTextInputEditText.text.toString())
-            val validatedDescription = validateDescription(descriptionTextInputEditText.text.toString())
-            val validatedTags = validateTags(tag1,tag2)
-            configErrorMessageTextView(titleErrorMessageTextView,validatedTitle.errorMessage)
-            configErrorMessageTextView(tagsErrorMessageTextView,validatedTags.errorMessage)
-            configErrorMessageTextView(descriptionErrorMessageTextView,validatedDescription.errorMessage)
-            binding.confirmRequestButton.startAnimation(AnimationUtils.loadAnimation(
-                requireContext(),
-                androidx.appcompat.R.anim.abc_fade_in
-            ))
-            if (validatedTitle.valid && validatedDescription.valid && validatedTags.valid && imageSelected) {
-                firebaseStorageCommons.insertFile("requests","0",".png",requestImageByteArray)
-            }else{
-                if(validatedTitle.valid && validatedDescription.valid && validatedTags.valid && !imageSelected){
-                    val time = Calendar.getInstance().time
-                    val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm")
-                    val current = formatter.format(time)
-                    firebaseRTDBCommons.createRequest(
-                        Request(
-                            firebaseAuth.currentUser!!.displayName!!,
-                            firebaseAuth.currentUser!!.uid,
-                            "",
-                            titleTextInputEditText.text.toString(),
-                            descriptionTextInputEditText.text.toString(),
-                            tag1.text.toString(),
-                            tag2.text.toString(), current.toString(),false,""),firebaseAuth)
+            val validatedDescription =
+                validateDescription(descriptionTextInputEditText.text.toString())
+            val validatedTags = validateTags(tag1, tag2)
+            configErrorMessageTextView(titleErrorMessageTextView, validatedTitle.errorMessage)
+            configErrorMessageTextView(tagsErrorMessageTextView, validatedTags.errorMessage)
+            configErrorMessageTextView(
+                descriptionErrorMessageTextView,
+                validatedDescription.errorMessage
+            )
+            binding.confirmRequestButton.startAnimation(
+                AnimationUtils.loadAnimation(
+                    requireContext(),
+                    androidx.appcompat.R.anim.abc_fade_in
+                )
+            )
+            if (!sendingRequest) {
+                if (validatedTitle.valid && validatedDescription.valid && validatedTags.valid && imageSelected) {
+                    sendingRequest = true
+                    firebaseStorageCommons.insertFile(
+                        "requests",
+                        "0",
+                        ".png",
+                        requestImageByteArray
+                    )
+                    showMenuNameSnackbar(
+                        requireView(),
+                        "Please await while your request image is being uploaded"
+                    )
+                } else {
+                    sendingRequest = true
+                    if (validatedTitle.valid && validatedDescription.valid && validatedTags.valid && !imageSelected) {
+                        val time = Calendar.getInstance().time
+                        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm")
+                        val current = formatter.format(time)
+                        firebaseRTDBCommons.createRequest(
+                            Request(
+                                firebaseAuth.currentUser!!.displayName!!,
+                                firebaseAuth.currentUser!!.uid,
+                                "",
+                                titleTextInputEditText.text.toString(),
+                                descriptionTextInputEditText.text.toString(),
+                                tag1.text.toString(),
+                                tag2.text.toString(), current.toString(), false, ""
+                            ), firebaseAuth
+                        )
+                    }
                 }
+            } else {
+                showMenuNameSnackbar(
+                    requireView(),
+                    "Please await while your other request is being processed"
+                )
             }
         }
     }
@@ -207,8 +216,8 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
         }
     }
     private fun configSwitcher(){
-        binding.viewSwitcher.setInAnimation(AnimationUtils.loadAnimation(requireContext(),android.R.anim.slide_in_left))
-        binding.viewSwitcher.setOutAnimation(AnimationUtils.loadAnimation(requireContext(),android.R.anim.slide_out_right))
+        binding.viewSwitcher.inAnimation = AnimationUtils.loadAnimation(requireContext(),android.R.anim.slide_in_left)
+        binding.viewSwitcher.outAnimation = AnimationUtils.loadAnimation(requireContext(),android.R.anim.slide_out_right)
         binding.myRequestsButton.setOnClickListener{
             if(page == 1){
                 configMyRequests()
@@ -314,25 +323,15 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
 
     override fun onFileInsertedFailure() {
         showMenuNameSnackbar(requireView(),"Something wnet wrong when creating your request")
+        sendingRequest = false
     }
 
 
     override fun onFileInsertedSuccess(fileReference: StorageReference) {
-        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        formatter.timeZone = TimeZone.getTimeZone("America/Sao_Paulo") // Define o fuso horário para Brasília
-        val current = formatter.format(Calendar.getInstance().time)
-        firebaseRTDBCommons.createRequest(
-            Request(
-                firebaseAuth.currentUser!!.displayName!!,
-                firebaseAuth.currentUser!!.uid,
-                fileReference.name,
-                titleTextInputEditText.text.toString(),
-                descriptionTextInputEditText.text.toString(),
-                tag1.text.toString(),
-                tag2.text.toString(),current.toString(),false,""),firebaseAuth)
+        firebaseRTDBCommons.getUserData(firebaseAuth)
     }
     fun configSelectTagButton(){
-        tag1.setOnClickListener(){
+        tag1.setOnClickListener {
             tag1.startAnimation(AnimationUtils.loadAnimation
                 (requireContext(),androidx.appcompat.R.anim.abc_tooltip_enter))
             val fragmentAddTagBinding = SelectTagDialogFragment(1)
@@ -340,7 +339,7 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
                 fragmentAddTagBinding.show(childFragmentManager, "CustomFragment")
             }
         }
-        tag2.setOnClickListener(){
+        tag2.setOnClickListener {
             tag2.startAnimation(AnimationUtils.loadAnimation
                 (requireContext(),androidx.appcompat.R.anim.abc_tooltip_enter))
             val fragmentAddTagBinding = SelectTagDialogFragment(2)
@@ -432,10 +431,12 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
 
     override fun onRequestRTDBDataUpdatedSuccess() {
         showMenuNameSnackbar(requireView(),"Your request was created successfully")
+        sendingRequest = false
     }
 
     override fun onRequestRTDBDataUpdatedFailure() {
         showMenuNameSnackbar(requireView(),"Something went wrong when creating your request")
+        sendingRequest = false
     }
 
     override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
@@ -453,6 +454,22 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     }
 
     override fun onUserRTDBDataRetrievedSuccess(user: User) {
+
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        formatter.timeZone =
+            TimeZone.getTimeZone("America/Sao_Paulo") // Define o fuso horário para Brasília
+        val current = formatter.format(Calendar.getInstance().time)
+        firebaseRTDBCommons.createRequest(
+            Request(
+                user.displayName,
+                user.uid,
+                fileReference,
+                titleTextInputEditText.text.toString(),
+                descriptionTextInputEditText.text.toString(),
+                tag1.text.toString(),
+                tag2.text.toString(), current.toString(), false, ""
+            ), firebaseAuth
+        )
     }
 
     override fun onUserRTDBDataRetrievedFailure() {

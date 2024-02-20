@@ -118,12 +118,10 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
                                 // Chame o método para notificar que os dados foram recuperados com sucesso
                                 firebaseRTDBListener.onUserRTDBDataRetrievedSuccess(extractedUser)
                             } else {
-                                // Caso os dados existam, mas não possam ser mapeados para User
-                                firebaseRTDBListener.onUserRTDBDataRetrievedFailure()
+                                firebaseRTDBListener.onUserRTDBDataRetrievedSuccess(User())
                             }
                         } else {
-                            // O nó do usuário não existe
-                            firebaseRTDBListener.onUserRTDBDataRetrievedFailure()
+                            firebaseRTDBListener.onUserRTDBDataRetrievedSuccess(User())
                         }
                     } else {
                         // Lidar com falha na leitura do RTDB
@@ -385,7 +383,7 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
     fun verifyDuplicatedChat(chat : Chat, firebaseAuth: FirebaseAuth){
         if (firebaseAuth.currentUser != null) {
             val uid = firebaseAuth.currentUser!!.uid
-            uid?.let {
+            uid.let {
                 val database = FirebaseDatabase.getInstance()
                 val chatsRef = database.getReference("chats")
                 // Consulta para obter todos os chats onde o usuário é um membro
@@ -433,7 +431,7 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
     fun getMyChatsWithHash(firebaseAuth: FirebaseAuth) {
         if (firebaseAuth.currentUser != null) {
             val uid = firebaseAuth.currentUser!!.uid
-            uid?.let {
+            uid.let {
                 val database = FirebaseDatabase.getInstance()
                 val chatsRef = database.getReference("chats")
                 // Consulta para obter todos os chats onde o usuário é um membro
@@ -503,7 +501,7 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
         val hash = hash
         if (firebaseAuth.currentUser != null) {
             val uid = firebaseAuth.currentUser!!.uid
-            uid?.let {
+            uid.let {
                 val database = FirebaseDatabase.getInstance()
                 val chatsRef = database.getReference("chats")
                 // Consulta para obter todos os chats onde o usuário é um membro
@@ -558,11 +556,7 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
 
         // Verifica se o usuário está em chats/chatMembers/1/User/UID
         val userUID1 = dataSnapshot.child("chatMembers/1/User/UID").getValue(String::class.java)
-        if (userUID1 == userUID) {
-            return true
-        }
-
-        return false
+        return userUID1 == userUID
     }
     fun setupChatListenersForUser(firebaseAuth: FirebaseAuth, userUID: String, firebaseRTDBListener: FirebaseRTDBListener) {
         val database = FirebaseDatabase.getInstance()

@@ -1,12 +1,12 @@
 package com.example.ensinativa.firebaseauth
 
-import java.lang.Exception
-
 interface FirebaseAuthListener {
+    fun onResetEmailSentSuccess()
+    fun onResetEmailSentFailure()
     fun onGetUserSignOn()
     fun onGetUserSignOut()
     fun onEmailPasswordSignInFailureCredentials(exception: Exception)
-    fun onEmailPasswordSignInSuccess(email : String, password : String)
+    fun onEmailPasswordSignInSuccess(email: String, password: String)
     fun onEmailPasswordSignInFailure()
     fun onEmailPasswordSignUpSuccess()
     fun onEmailPasswordSignUpFailure()
