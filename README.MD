@@ -114,4 +114,4 @@ classDiagram
       +endCall() Void
     }
 ```
-If you have any question or problem contact us in this email: davisobrinho82452@gmail.com
+If you have any question or problem, describe it and contact us in this email: davisobrinho82452@gmail.com
