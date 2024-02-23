@@ -9,11 +9,11 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.CheckBox
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.ensinativa.R
 import com.example.ensinativa.databinding.ActivityLoginBinding
 import com.example.ensinativa.firebaseauth.FirebaseAuthCommons
@@ -69,7 +69,7 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         val showPasswordButton = binding.showPasswordButton
         val createAccountTextView = binding.createAccountTextView
         val signInButton = binding.signIn
-        val googleButton = binding.googleLogo
+        val googleButton = binding.googleContinueLayout
         googleAuthCommons = GoogleAuthCommons(this, firebaseAuth, this)
         firebaseAuthCommons = FirebaseAuthCommons(this, firebaseAuth)
         firebaseRTDBCommons = FirebaseRTDBCommons(this)
@@ -80,8 +80,12 @@ class LoginActivity : AppCompatActivity(), GoogleAuthListener, FirebaseAuthListe
         configResetPasswordButton(binding.resetEmailTextView)
         configPrivacyPoliciesTextView(binding.privacyPoliciesTextView)
     }
-    private fun configGoogleSignInButton(googleButton: ImageView, googleAuthCommons: GoogleAuthCommons) {
-        googleButton.setOnClickListener {
+
+    private fun configGoogleSignInButton(
+        googleButton: ConstraintLayout,
+        googleAuthCommons: GoogleAuthCommons
+    ) {
+        binding.continueWithGoogleButton.setOnClickListener {
             googleAuthCommons.googleSignIn()
             googleButton.startAnimation(
                 AnimationUtils.loadAnimation(

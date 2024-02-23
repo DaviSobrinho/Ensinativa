@@ -13,7 +13,6 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 
 class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListener) {
@@ -428,38 +427,33 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
             uid.let {
                 val database = FirebaseDatabase.getInstance()
                 val chatsRef = database.getReference("chats")
-                // Consulta para obter todos os chats onde o usuário é um membro
                 val queries = (0 until 2).map { index ->
                     chatsRef.orderByChild("chatMembers/$index/userUID").equalTo(uid).get()
                 }
                 Tasks.whenAllComplete(queries)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            var chatWithHash: ChatWithHash = ChatWithHash(Chat(), "")
+                            var chatWithHash = ChatWithHash(Chat(), "")
                             task.result?.forEach { result ->
                                 if (result.isSuccessful) {
                                     val snapshot = result.result as DataSnapshot
                                     snapshot.children.forEach { data ->
                                         val chatData = mapToChat(data.value as Map<String, Any>)
-                                        val key = data.key // Obtém o hash da chave do chat
+                                        val key = data.key
                                         if (key == hash) {
                                             chatWithHash = ChatWithHash(chatData, hash)
                                         }
                                     }
                                 } else {
-                                    // Lidar com falha na leitura do RTDB
                                     firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
-                                    println(result.exception)
                                 }
                             }
                             if (chatWithHash.hash != "") {
-                                // Chame o método para notificar que os dados foram recuperados com sucesso
                                 firebaseRTDBListener.onChatRTDBDataRetrievedSuccess(chatWithHash)
                             } else {
                                 firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
                             }
                         } else {
-                            // Lidar com falha na leitura do RTDB
                             firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
                         }
                     }
@@ -472,54 +466,64 @@ class FirebaseRTDBCommons (private val firebaseRTDBListener : FirebaseRTDBListen
     fun setupChatListenersForUser(userUID: String, firebaseRTDBListener: FirebaseRTDBListener) {
         val database = FirebaseDatabase.getInstance()
         val chatsRef = database.getReference("chats")
-        chatsRef.orderByChild("chatMembers")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    for (chatSnapshot in dataSnapshot.children) {
-                        val chatData = chatSnapshot.getValue(object :
-                            GenericTypeIndicator<Map<String, Any>>() {}) // Utilize GenericTypeIndicator
-                        if (chatData != null) {
-                            val chat = mapToChat(chatData)
-                            val chatMembers = chat.chatMembers
-                            for (chatMember in chatMembers) {
-                                if (chatMember.userUID == userUID) {
-                                    val chatHash = chatSnapshot.key
-                                    if (chatHash != null) {
-                                        setupChatListener(chatHash, firebaseRTDBListener)
-                                    }
-                                    break
+        val queries = (0 until 2).map { index ->
+            chatsRef.orderByChild("chatMembers/$index/userUID").equalTo(userUID).get()
+        }
+        Tasks.whenAllComplete(queries)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    task.result?.forEach { result ->
+                        if (result.isSuccessful) {
+                            val snapshot = result.result as DataSnapshot
+                            snapshot.children.forEach { data ->
+                                val chatData = mapToChat(data.value as Map<String, Any>)
+                                var chatNumber = 0
+                                if (chatData.chatMembers[0].userUID == userUID) {
+                                    chatNumber = 0
+                                } else {
+                                    chatNumber = 1
                                 }
+                                chatsRef.orderByChild("chatMembers/$chatNumber/userUID")
+                                    .equalTo(userUID)
+                                    .addChildEventListener(object : ChildEventListener {
+                                        override fun onChildAdded(
+                                            dataSnapshot: DataSnapshot,
+                                            previousChildName: String?
+                                        ) {
+                                            firebaseRTDBListener.onMessageReceived(messageData = Message())
+                                        }
+
+                                        override fun onChildChanged(
+                                            dataSnapshot: DataSnapshot,
+                                            previousChildName: String?
+                                        ) {
+                                            firebaseRTDBListener.onMessageReceived(messageData = Message())
+                                        }
+
+                                        override fun onChildRemoved(snapshot: DataSnapshot) {
+                                            // Nothing
+                                        }
+
+                                        override fun onChildMoved(
+                                            snapshot: DataSnapshot,
+                                            previousChildName: String?
+                                        ) {
+                                            // Nothing
+                                        }
+
+                                        override fun onCancelled(databaseError: DatabaseError) {
+                                            // Nothing
+                                        }
+                                    })
                             }
+                        } else {
+                            // Nothing
                         }
                     }
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    // Nothing
-                }
-            })
-    }
-
-
-    fun setupChatListener(chatHash: String, firebaseRTDBListener: FirebaseRTDBListener) {
-        val database = FirebaseDatabase.getInstance()
-        val chatsRef = database.getReference("chats")
-        val chatRef = chatsRef.child(chatHash)
-
-        chatRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (messageSnapshot in dataSnapshot.child("messages").children) {
-                    val messageData = messageSnapshot.getValue(Message::class.java)
-                    if (messageData != null) {
-                        firebaseRTDBListener.onMessageArrived()
-                    }
+                } else {
+                    firebaseRTDBListener.onChatRTDBDataRetrievedFailure()
                 }
             }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("error setup chat")
-            }
-        })
     }
 
     fun setupNewChatListener(firebaseRTDBListener: FirebaseRTDBListener) {

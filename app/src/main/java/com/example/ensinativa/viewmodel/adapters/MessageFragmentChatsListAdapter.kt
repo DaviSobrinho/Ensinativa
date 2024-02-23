@@ -194,6 +194,7 @@ class MessageFragmentChatsListAdapter(
                 viewSwitcher.showNext()
                 page = 2
             }
+            messageFragment.currentChat = chat
             messageFragment.configChatAdapter(chat)
             messageFragment.configChatContent(chat)
         }

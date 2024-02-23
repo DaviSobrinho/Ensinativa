@@ -72,7 +72,7 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     private lateinit var missingRequestsMessageTextView: TextView
     private lateinit var fragmentRequestMyRequestsRecyclerView: RecyclerView
     private var imageSelected: Boolean = false
-    private var fileReference: String = ""
+    private var imageFileReference: String = ""
     private var sendingRequest: Boolean = false
 
     override fun onCreateView(
@@ -334,12 +334,13 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     }
 
     override fun onFileInsertedFailure() {
-        showMenuNameSnackbar(requireView(), "Something wnet wrong when creating your request")
+        showMenuNameSnackbar(requireView(), "Something went wrong when creating your request")
         sendingRequest = false
     }
 
 
     override fun onFileInsertedSuccess(fileReference: StorageReference) {
+        imageFileReference = fileReference.name
         firebaseRTDBCommons.getUserData(firebaseAuth)
     }
 
@@ -449,11 +450,13 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     override fun onRequestRTDBDataUpdatedSuccess() {
         showMenuNameSnackbar(requireView(),"Your request was created successfully")
         sendingRequest = false
+        imageFileReference = ""
     }
 
     override fun onRequestRTDBDataUpdatedFailure() {
         showMenuNameSnackbar(requireView(),"Something went wrong when creating your request")
         sendingRequest = false
+        imageFileReference = ""
     }
 
     override fun onRequestListRTDBDataRetrievedSuccess(requestList: List<RequestWithHash>) {
@@ -482,7 +485,7 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
             Request(
                 user.displayName,
                 user.uid,
-                fileReference,
+                imageFileReference,
                 titleTextInputEditText.text.toString(),
                 descriptionTextInputEditText.text.toString(),
                 tag1.text.toString(),
@@ -492,7 +495,7 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     }
 
     override fun onUserRTDBDataRetrievedFailure() {
-        // Nothing
+        showMenuNameSnackbar(requireView(), "Something went wrong when creating your request")
     }
 
     override fun onUserRTDBGoogleDataInsertedSuccess() {
@@ -520,7 +523,7 @@ class RequestFragment : Fragment(), FirebaseStorageListener, FirebaseRTDBListene
     }
 
     private fun showMenuNameSnackbar(view: View, message : String) {
-        val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
+        val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE)
         snackbar.setAction("OK") {
         }
         snackbar.show()

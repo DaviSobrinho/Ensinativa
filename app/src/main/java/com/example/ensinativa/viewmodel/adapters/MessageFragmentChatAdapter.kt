@@ -44,7 +44,6 @@ class MessageFragmentChatAdapter(
 
                 messageTime2.text = displayDateFormat.format(parsedDate!!)
                 messageContent2.text = message.value
-
                 if (message.creatorUID == chat.chat.chatMembers[0].userUID) {
                     messageDisplayName2.text = chat.chat.chatMembers[0].displayName
                 } else {
@@ -61,10 +60,10 @@ class MessageFragmentChatAdapter(
                 messageContent1.text = message.value
 
                 if (message.creatorUID == chat.chat.chatMembers[0].userUID) {
-                    messageDisplayName1.text = chat.chat.chatMembers[1].displayName
+                    messageDisplayName1.text = chat.chat.chatMembers[0].displayName
                     messageDisplayName1.setTextColor(context.getColor(R.color.green3))
                 } else {
-                    messageDisplayName1.text = chat.chat.chatMembers[0].displayName
+                    messageDisplayName1.text = chat.chat.chatMembers[1].displayName
                     messageDisplayName1.setTextColor(context.getColor(R.color.green3))
                 }
             }

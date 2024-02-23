@@ -46,7 +46,7 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
     private lateinit var firebaseStorageCommons: FirebaseStorageCommons
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firebaseRTDBCommons: FirebaseRTDBCommons
-    private var currentChat: ChatWithHash = ChatWithHash(Chat(),"")
+    var currentChat: ChatWithHash = ChatWithHash(Chat(), "")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -349,6 +349,7 @@ class MessageFragment : Fragment(), FirebaseStorageListener,FirebaseRTDBListener
         firebaseRTDBCommons.setupChatListenersForUser(
             firebaseAuth.currentUser!!.uid, this
         )
+
         configChats()
     }
 
