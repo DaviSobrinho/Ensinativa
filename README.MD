@@ -35,32 +35,11 @@ About the future: I'll look to implement a lot of new features to the app, like 
 Below is the video of the application in operation and images of it. Thank you everyone for your attention and support.
 
 
-<!-- Grade de imagens -->
-<div style="text-align: center;">
-  <div style="display: inline-block;">
-    <div style="display: inline-block; padding: 5px;">
-      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200" />
-    </div>
-    <div style="display: inline-block; padding: 5px;">
-      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200" />
-    </div>
-    <div style="display: inline-block; padding: 5px;">
-      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa003.jpg" width="200" />
-    </div>
-    <div style="display: inline-block; padding: 5px;">
-      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200" />
-    </div>
-    <div style="display: inline-block; padding: 5px;">
-      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa005.jpg" width="200" />
-    </div>
-    <div style="display: inline-block; padding: 5px;">
-      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa006.jpg" width="200" />
-    </div>
-    <div style="display: inline-block; padding: 5px;">
-      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg" width="200" />
-    </div>
-  </div>
-</div>
+<div style="display: inline_block"><br>
+  <img align="center" alt="Kotlin" height="600"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg" width="200">
+  <img align="center" alt="Android" height="600"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200">
+  <img align="center" alt="Firebase" height="600"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200">
+  <img align="center" alt="Java" height="600" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200">
 
 ## Implementation Diagram
 
