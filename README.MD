@@ -1,5 +1,10 @@
 # Ensinativa
 
+<!-- Banner -->
+<p align="center">
+  <img src="Media/images/Bannner001.png" width="600" />
+</p>
+
 ## Ensinativa - The idea
 
 Hi, I'm Davi and I developed Ensinativa starting in January 2024. The application is a kind of helpdesk app, but for Mobile. The idea to build it arose during my last semester of my college course in Systems Analysis and Development. Basically, I thought about the problem of having difficulty in solving some common technology problems and often not having a practical search tool, whether to solve a piece of code that AI struggles with, an architectural question, or even a problem with other areas besides programming, like configuring a router.
@@ -29,6 +34,42 @@ About the future: I'll look to implement a lot of new features to the app, like 
 
 Below is the video of the application in operation and images of it. Thank you everyone for your attention and support.
 
+
+<!-- Grade de imagens -->
+<div style="display: flex; justify-content: center;">
+  <!-- Linha 1 -->
+  <div style="display: flex;">
+    <div style="flex: 33.33%; padding: 5px;">
+      <img src="Media/images/Ensinativa001.jpg" width="200" />
+    </div>
+    <div style="flex: 33.33%; padding: 5px;">
+      <img src="Media/images/Ensinativa002.jpg" width="200" />
+    </div>
+    <div style="flex: 33.33%; padding: 5px;">
+      <img src="Media/images/Ensinativa003.jpg" width="200" />
+    </div>
+  </div>
+
+  <!-- Linha 2 -->
+  <div style="display: flex;">
+    <div style="flex: 33.33%; padding: 5px;">
+      <img src="Media/images/Ensinativa004.jpg" width="200" />
+    </div>
+    <div style="flex: 33.33%; padding: 5px;">
+      <img src="Media/images/Ensinativa005.jpg" width="200" />
+    </div>
+    <div style="flex: 33.33%; padding: 5px;">
+      <img src="Media/images/Ensinativa006.jpg" width="200" />
+    </div>
+  </div>
+
+  <!-- Linha 3 -->
+  <div style="display: flex; justify-content: center;">
+    <div style="padding: 5px;">
+      <img src="Media/images/Ensinativa007.jpg" width="200" />
+    </div>
+  </div>
+</div>
 
 ## Implementation Diagram
 
