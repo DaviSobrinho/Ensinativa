@@ -40,6 +40,20 @@ Below is the video of the application in operation and images of it. Thank you e
   <img align="center" alt="Android" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200">
   <img align="center" alt="Firebase" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200">
   <img align="center" alt="Java"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200">
+<div style="display: inline_block">
+  <div style="text-align: center; width: 200px;">
+    Login Screen
+  </div> 
+  <div style="text-align: center; width: 200px;">
+    Profile Screen
+  </div>
+  <div style="text-align: center; width: 200px;">
+    Home Screen
+  </div>
+  <div style="text-align: center; width: 200px;">
+    Messages Screen
+  </div>
+</div>
 
 ## Implementation Diagram
 
