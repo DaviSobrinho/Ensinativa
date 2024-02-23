@@ -24,7 +24,13 @@ About the future: I'll look to implement a lot of new features to the app, like 
 
 Below is the video of the application in operation and images of it. Thank you everyone for your attention and support.
 
+## Ensinativa - Presentation Video
+
+
+
 ## Implementation Diagram
+
+
 
 ## Class Diagram 
 
