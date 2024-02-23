@@ -14,16 +14,16 @@ So without further ado, let's go to the descriptions and specifications of the a
 
 ## Ensinativa - Specs
 
-Application name: Ensinativa
-Description: Education App
-Objectives: Solve technology doubts quickly and through mobile devices. In the application, users can create an account and create tickets about technology problems, being able to add images to them. Once this ticket is created, it will appear for other users, and they can accept and start a chat with that person to solve their problem. The idea is to bring everything quickly and dinnamically.
-Architecture: MVVM (M
-Client side: Kotlin, XML, and HTML
-Security: FirebaseAuth, AppCheck, Play Integrity 
-Backend: All done by Firebase (FirebaseAuth, FirebaseRTDB, FirebaseStorage, AppCheck)
-Testing: SonarLint and SonarCloud
-Deployment: PlayStore
-Kotlin Resources: Views, Activities, Dialogs, Adapters, Framents, ViewBinding, Tasks, Coroutines, Glide, ViewPager.
+- Application name: Ensinativa
+- Description: Education App
+- Architecture: MVVM
+- Client side: Kotlin, XML, and HTML
+- Security: FirebaseAuth, AppCheck, Play Integrity 
+- Backend: All done by Firebase (FirebaseAuth, FirebaseRTDB, FirebaseStorage, AppCheck)
+- Testing: SonarLint and SonarCloud
+- Deployment: PlayStore
+- Kotlin Resources: Views, Activities, Dialogs, Adapters, Framents, ViewBinding, Tasks, Coroutines, Glide, ViewPager.
+- Objectives: Solve technology doubts quickly and through mobile devices. In the application, users can create an account and create tickets about technology problems, being able to add images to them. Once this ticket is created, it will appear for other users, and they can accept and start a chat with that person to solve their problem. The idea is to bring everything quickly and dinnamically.
 
 ## Ensinativa - How it works
 
@@ -35,36 +35,37 @@ About the future: I'll look to implement a lot of new features to the app, like 
 Below is the video of the application in operation and images of it. Thank you everyone for your attention and support.
 
 
-<div style="display: flex; justify-content: center; flex-wrap: wrap;">
+<!-- Grade de imagens -->
+<div style="text-align: center;">
   <!-- Linha 1 -->
-  <div style="display: flex; justify-content: space-between; width: 800px;">
-    <div style="padding: 5px;">
+  <div>
+    <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200" />
     </div>
-    <div style="padding: 5px;">
+    <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200" />
     </div>
-    <div style="padding: 5px;">
+    <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa003.jpg" width="200" />
     </div>
   </div>
 
   <!-- Linha 2 -->
-  <div style="display: flex; justify-content: space-between; width: 800px;">
-    <div style="padding: 5px;">
+  <div>
+    <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200" />
     </div>
-    <div style="padding: 5px;">
+    <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa005.jpg" width="200" />
     </div>
-    <div style="padding: 5px;">
+    <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa006.jpg" width="200" />
     </div>
   </div>
 
   <!-- Linha 3 -->
-  <div style="display: flex; justify-content: center; width: 800px;">
-    <div style="padding: 5px;">
+  <div>
+    <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg" width="200" />
     </div>
   </div>
