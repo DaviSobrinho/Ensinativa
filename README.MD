@@ -36,10 +36,10 @@ Below is the video of the application in operation and images of it. Thank you e
 
 
 <div style="display: inline_block"><br>
-  <img align="center" alt="Kotlin" height="600"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg" width="200">
-  <img align="center" alt="Android" height="600"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200">
-  <img align="center" alt="Firebase" height="600"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200">
-  <img align="center" alt="Java" height="600" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200">
+  <img align="center" alt="Kotlin" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg" width="200">
+  <img align="center" alt="Android" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200">
+  <img align="center" alt="Firebase" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200">
+  <img align="center" alt="Java"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200">
 
 ## Implementation Diagram
 
