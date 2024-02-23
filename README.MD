@@ -25,7 +25,7 @@ Kotlin Resources: Views, Activities, Dialogs, Adapters, Framents, ViewBinding, T
 Basically, the application was built in Kotlin and can be downloaded by the user from the PlayStore (Currently awaiting validation of tests from GooglePlay). Once installed, the application runs on the client side and basically needs the Firebase to get nearly all data, whether for authentication, creating requests, conversations, and profile configuration. So it works like an MVVM, but the database is managed by Firebase's own Controller.
 About the future: I'll look to implement a lot of new features to the app, like adding video calls in the chats or adding a functional rating system. Expectations are high, and I think this MVP is just the beginning. Of course, everything takes some time, especially alone, but I think it will be very beneficial.
 
-## Ensinativa - Presentation Video
+## Ensinativa - Visual Presentation
 
 Below is the video of the application in operation and images of it. Thank you everyone for your attention and support.
 
