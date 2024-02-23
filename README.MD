@@ -35,7 +35,7 @@ About the future: I'll look to implement a lot of new features to the app, like 
 Below is the video of the application in operation and images of it. Thank you everyone for your attention and support.
 
 <a href="https://www.youtube.com/watch?v=PEEHo8OnwiM">
-  <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Banner001.png" alt="Banner" style="width: 100%;">
+  <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Banner001.png" alt="Banner" style="width: 800;">
 </a>
 
 Video only available on Youtube due to it size, click in the image to be redirected
