@@ -37,8 +37,7 @@ Below is the video of the application in operation and images of it. Thank you e
 
 <!-- Grade de imagens -->
 <div style="text-align: center;">
-  <!-- Linha 1 -->
-  <div>
+  <div style="display: inline-block;">
     <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200" />
     </div>
@@ -48,10 +47,6 @@ Below is the video of the application in operation and images of it. Thank you e
     <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa003.jpg" width="200" />
     </div>
-  </div>
-
-  <!-- Linha 2 -->
-  <div>
     <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200" />
     </div>
@@ -61,10 +56,6 @@ Below is the video of the application in operation and images of it. Thank you e
     <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa006.jpg" width="200" />
     </div>
-  </div>
-
-  <!-- Linha 3 -->
-  <div>
     <div style="display: inline-block; padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg" width="200" />
     </div>
