@@ -34,25 +34,19 @@ About the future: I'll look to implement a lot of new features to the app, like 
 
 Below is the video of the application in operation and images of it. Thank you everyone for your attention and support.
 
+<a href="https://www.youtube.com/watch?v=PEEHo8OnwiM">
+  <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" alt="Banner" style="width: 100%;">
+</a>
 
-<div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
-  <div style="text-align: center; width: 200px;">
-    <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg" width="200" alt="Kotlin">
-    <h6 style="margin-top: 5px;">Kotlin</h6>
-  </div>
-  <div style="text-align: center; width: 200px;">
-    <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200" alt="Android">
-    <h6 style="margin-top: 5px;">Android</h6>
-  </div>
-  <div style="text-align: center; width: 200px;">
-    <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200" alt="Firebase">
-    <h6 style="margin-top: 5px;">Firebase</h6>
-  </div>
-  <div style="text-align: center; width: 200px;">
-    <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200" alt="Java">
-    <h6 style="margin-top: 5px;">Java</h6>
-  </div>
-</div>
+Video only available on Youtube due to it size, click in the image to be redirected
+
+<div style="display: inline_block"><br>
+  <img align="center" alt="Login Screen" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg" width="200">
+  <img align="center" alt="Profile Screen" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200">
+  <img align="center" alt="Home Screen" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200">
+  <img align="center" alt="Messages Screen"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200">
+
+Some app screenshots above
 
 ## Implementation Diagram
 
