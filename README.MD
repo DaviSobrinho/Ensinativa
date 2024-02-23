@@ -2,7 +2,7 @@
 
 <!-- Banner -->
 <p align="center">
-  <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Banner001.jpg" width="600" />
+  <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Banner001.png" width="600" />
 </p>
 
 ## Ensinativa - The idea
@@ -56,17 +56,17 @@ Below is the video of the application in operation and images of it. Thank you e
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200" />
     </div>
     <div style="flex: 33.33%; padding: 5px;">
-      <img src="Media/images/Ensinativa005.jpg" width="200" />
+      <img src="Media/images/https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa005.jpg" width="200" />
     </div>
     <div style="flex: 33.33%; padding: 5px;">
-      <img src="Media/images/Ensinativa006.jpg" width="200" />
+      <img src="Media/images/https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa006.jpg.jpg" width="200" />
     </div>
   </div>
 
   <!-- Linha 3 -->
   <div style="display: flex; justify-content: center;">
     <div style="padding: 5px;">
-      <img src="Media/images/Ensinativa007.jpg" width="200" />
+      <img src="Media/images/https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg.jpg" width="200" />
     </div>
   </div>
 </div>
