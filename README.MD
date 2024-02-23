@@ -2,7 +2,7 @@
 
 <!-- Banner -->
 <p align="center">
-  <img src="Media/images/Bannner001.png" width="600" />
+  <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Banner001.jpg" width="600" />
 </p>
 
 ## Ensinativa - The idea
@@ -40,20 +40,20 @@ Below is the video of the application in operation and images of it. Thank you e
   <!-- Linha 1 -->
   <div style="display: flex;">
     <div style="flex: 33.33%; padding: 5px;">
-      <img src="Media/images/Ensinativa001.jpg" width="200" />
+      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200" />
     </div>
     <div style="flex: 33.33%; padding: 5px;">
-      <img src="Media/images/Ensinativa002.jpg" width="200" />
+      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200" />
     </div>
     <div style="flex: 33.33%; padding: 5px;">
-      <img src="Media/images/Ensinativa003.jpg" width="200" />
+      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa003.jpg" width="200" />
     </div>
   </div>
 
   <!-- Linha 2 -->
   <div style="display: flex;">
     <div style="flex: 33.33%; padding: 5px;">
-      <img src="Media/images/Ensinativa004.jpg" width="200" />
+      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200" />
     </div>
     <div style="flex: 33.33%; padding: 5px;">
       <img src="Media/images/Ensinativa005.jpg" width="200" />
