@@ -40,11 +40,11 @@ Below is the video of the application in operation and images of it. Thank you e
   <img align="center" alt="Android" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200">
   <img align="center" alt="Firebase" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200">
   <img align="center" alt="Java"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200">
-<div style="display: flex; justify-content: space-between; width: 800px; margin: 0 auto;">
-  <h1 style="width: 200px; text-align: center;">Login Screen</h1>
-  <h1 style="width: 200px; text-align: center;">Profile Screen</h1>
-  <h1 style="width: 200px; text-align: center;">Home Screen</h1>
-  <h1 style="width: 200px; text-align: center;">Messages Screen</h1>
+<div style="display: inline_block"><br>
+  <h6 style="width: 200px; text-align: center;">Login Screen</h1>
+  <h6 style="width: 200px; text-align: center;">Profile Screen</h1>
+  <h6 style="width: 200px; text-align: center;">Home Screen</h1>
+  <h6 style="width: 200px; text-align: center;">Messages Screen</h1>
 </div>
 
 ## Implementation Diagram
