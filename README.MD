@@ -2,7 +2,7 @@
 
 <!-- Banner -->
 <p align="center">
-  <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Banner001.png" width="600" />
+  <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Banner001.png" width="800" />
 </p>
 
 ## Ensinativa - The idea
@@ -35,38 +35,37 @@ About the future: I'll look to implement a lot of new features to the app, like 
 Below is the video of the application in operation and images of it. Thank you everyone for your attention and support.
 
 
-<!-- Grade de imagens -->
-<div style="display: flex; justify-content: center;">
+<div style="display: flex; justify-content: center; flex-wrap: wrap;">
   <!-- Linha 1 -->
-  <div style="display: flex;">
-    <div style="flex: 33.33%; padding: 5px;">
+  <div style="display: flex; flex: 33.33%; justify-content: space-around;">
+    <div style="padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200" />
     </div>
-    <div style="flex: 33.33%; padding: 5px;">
+    <div style="padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200" />
     </div>
-    <div style="flex: 33.33%; padding: 5px;">
+    <div style="padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa003.jpg" width="200" />
     </div>
   </div>
 
   <!-- Linha 2 -->
-  <div style="display: flex;">
-    <div style="flex: 33.33%; padding: 5px;">
+  <div style="display: flex; flex: 33.33%; justify-content: space-around;">
+    <div style="padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200" />
     </div>
-    <div style="flex: 33.33%; padding: 5px;">
-      <img src="Media/images/https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa005.jpg" width="200" />
+    <div style="padding: 5px;">
+      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa005.jpg" width="200" />
     </div>
-    <div style="flex: 33.33%; padding: 5px;">
-      <img src="Media/images/https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa006.jpg.jpg" width="200" />
+    <div style="padding: 5px;">
+      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa006.jpg" width="200" />
     </div>
   </div>
 
   <!-- Linha 3 -->
-  <div style="display: flex; justify-content: center;">
+  <div style="display: flex; flex: 100%; justify-content: center;">
     <div style="padding: 5px;">
-      <img src="Media/images/https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg.jpg" width="200" />
+      <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg" width="200" />
     </div>
   </div>
 </div>
