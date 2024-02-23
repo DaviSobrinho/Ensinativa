@@ -37,7 +37,7 @@ Below is the video of the application in operation and images of it. Thank you e
 
 <div style="display: flex; justify-content: center; flex-wrap: wrap;">
   <!-- Linha 1 -->
-  <div style="display: flex; flex: 33.33%; justify-content: space-around;">
+  <div style="display: flex; justify-content: space-between; width: 800px;">
     <div style="padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200" />
     </div>
@@ -50,7 +50,7 @@ Below is the video of the application in operation and images of it. Thank you e
   </div>
 
   <!-- Linha 2 -->
-  <div style="display: flex; flex: 33.33%; justify-content: space-around;">
+  <div style="display: flex; justify-content: space-between; width: 800px;">
     <div style="padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200" />
     </div>
@@ -63,7 +63,7 @@ Below is the video of the application in operation and images of it. Thank you e
   </div>
 
   <!-- Linha 3 -->
-  <div style="display: flex; flex: 100%; justify-content: center;">
+  <div style="display: flex; justify-content: center; width: 800px;">
     <div style="padding: 5px;">
       <img src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa007.jpg" width="200" />
     </div>
