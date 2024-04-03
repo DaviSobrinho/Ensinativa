@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    namespace = "com.example.ensinativa"
+    namespace = "com.ensinativapackage.ensinativa"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.ensinativa"
+        applicationId = "com.ensinativapackage.ensinativa"
         minSdk = 30
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 11
+        versionName = "11.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
