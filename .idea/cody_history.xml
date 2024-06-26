@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChatHistory">
+    <chats>
+      <list>
+        <chat>
+          <internalId value="7513cea3-4002-41f6-bc86-1753e94a1bed" />
+        </chat>
+        <chat>
+          <internalId value="6996fe19-3d2b-40d8-bc09-c3df6f2a1fc8" />
+        </chat>
+        <chat>
+          <enhancedContext>
+            <enhancedContext>
+              <remoteRepositories>
+                <list>
+                  <remoteRepository>
+                    <remoteUrl value="github.com/DaviSobrinho/Ensinativa" />
+                  </remoteRepository>
+                </list>
+              </remoteRepositories>
+            </enhancedContext>
+          </enhancedContext>
+          <internalId value="9d3723c4-84b7-4ff7-8992-871740ab9fc1" />
+        </chat>
+        <chat>
+          <enhancedContext>
+            <enhancedContext>
+              <remoteRepositories>
+                <list>
+                  <remoteRepository>
+                    <remoteUrl value="github.com/DaviSobrinho/Ensinativa" />
+                  </remoteRepository>
+                </list>
+              </remoteRepositories>
+            </enhancedContext>
+          </enhancedContext>
+          <internalId value="15b30e34-b0b9-4a85-adbe-268b950a5164" />
+        </chat>
+      </list>
+    </chats>
+  </component>
+</project>
