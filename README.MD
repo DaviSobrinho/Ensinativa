@@ -40,10 +40,10 @@ Below is the video of the application in operation and images of it. Thank you e
 Video only available on Youtube due to it size, click in the image to be redirected
 
 <div style="display: inline_block"><br>
-  <img align="center" alt="Login Screen" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.jpg" width="200">
-  <img align="center" alt="Profile Screen" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.jpg" width="200">
-  <img align="center" alt="Home Screen" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa003.jpg" width="200">
-  <img align="center" alt="Messages Screen"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.jpg" width="200">
+  <img align="center" alt="Login Screen" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa001.png" width="200">
+  <img align="center" alt="Profile Screen" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa002.png" width="200">
+  <img align="center" alt="Home Screen" src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa003.png" width="200">
+  <img align="center" alt="Messages Screen"  src="https://github.com/DaviSobrinho/Ensinativa/blob/master/Media/Images/Ensinativa004.png" width="200">
 
 Some app screenshots above
 
