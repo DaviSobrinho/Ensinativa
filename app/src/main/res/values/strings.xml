@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">Ensinativa</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_fragment">Home fragment</string>
+    <string name="message_fragment">Message fragment</string>
+    <string name="notifications_fragment">Notifications fragment</string>
+    <string name="profile_fragment">Profile fragment</string>
+    <string name="request_fragment">Request fragment</string>
+    <string name="ensinativa">Ensinativa</string>
+    <string name="confirm_request">Confirm request</string>
+    <string name="insert_image_of_problem">Insert image of problem</string>
+    <string name="problem_image">Problem image</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="sign_in">Sign in</string>
+    <string name="continue_with_facebook">Continue with Facebook</string>
+    <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign up</string>
+    <string name="or">Or</string>
+    <string name="sign_up">Sign up</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="email">Email</string>
+    <string name="nickname">Nickname</string>
+    <string name="remember_me">Remember me</string>
+    <string name="password_error_message">Password error message</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="email_error_message">Email error message</string>
+    <string name="nickname_error_message">Nickname error message</string>
+    <string name="first_name_error_message">First name error message</string>
+    <string name="last_name_error_message">Last name error message</string>
+    <string name="default_web_client_id" translatable="false">591395200926-vqe5n8ieucu7ibekq04pe4n2qhck5afm.apps.googleusercontent.com</string>
+    <string name="fullname">Fullname</string>
+    <string name="display_name">Display name</string>
+    <string name="you_haven_t_earned_an_achievement_yet_solve_requests_to_get_them">You haven\'t earned an achievement yet, solve requests to get them</string>
+    <string name="achievements">Achievements</string>
+    <string name="you_have_no_skills_added_try_to_add_one_by_editing_your_profile">You have no skills added, try to add one by editing your profile</string>
+    <string name="skills">Skills</string>
+    <string name="description_about_person">Description about person</string>
+    <string name="about">About</string>
+    <string name="person_name">Person name</string>
+    <string name="my_requests">My requests</string>
+    <string name="create_request">Create request</string>
+    <string name="click_here_to_add_an_image_of_your_problem">Click here to add an image of your problem</string>
+    <string name="image_of_problem">Image of problem</string>
+    <string name="add_tag1">Add tag1 +</string>
+    <string name="add_tag2">Add tag2 +</string>
+    <string name="tag_1">Tag 1</string>
+    <string name="tag_error_message">Tag error message</string>
+    <string name="request_title_error_message">Request title error message</string>
+    <string name="request_description_error_message">Request description error message</string>
+    <string name="request_tags_error_message">Request tags error message</string>
+    <string name="request_image_error_message">Request Image Error Message</string>
+    <string name="tag_2">Tag 2</string>
+    <string name="no_image_of_problem_added">No image of problem added</string>
+    <string name="select_tag_2">Select tag 2</string>
+    <string name="select_tag_1">Select tag 1</string>
+    <string name="requests">Requests</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="text_your_message_here">Text your message here</string>
+    <string name="message_content">Message content</string>
+    <string name="facebook_app_id">1234</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">56789</string>
+
+
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="display_error_message">Display error message</string>
+</resources>

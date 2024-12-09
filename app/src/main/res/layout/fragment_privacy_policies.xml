@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/material_button_5dp_border_background"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/quitButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="12dp"
+            android:background="@color/transaparent"
+            android:foreground="@drawable/ic_quit_foreground"
+            app:backgroundTint="@color/transaparent"
+            app:backgroundTintMode="src_in"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></Button>
+
+        <TextView
+            android:id="@+id/recoveryTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp"
+            android:text="Ensinativa App Privacy Policy
+\n\nLast updated: 19/02/2024
+\n\nWe from Ensinativa developed the Ensinativa mobile application (hereinafter referred to as the &quot;app&quot;).
+This privacy policy describes how we collect, use, and share personal information from users when using our app.
+\n\nCollection and Use of Information
+\n\nThe Ensinativa app does not collect personal information from users. However, for usability and performance purposes, we may collect usage data such as app usage statistics, error reports, and log information. This data is collected anonymously and used to improve user experience and app performance.
+\n\nInformation Security
+\n\nWe value the security of user information and have implemented appropriate measures to protect data against unauthorized access, disclosure, or alteration. However, it is important to note that no transmission of data over the internet or electronic storage is 100% secure. Thus, we cannot guarantee the absolute security of information.
+\n\nInformation Sharing
+\n\nThe Ensinativa app does not share users personal information with third parties.
+\n\nLinks to Other Sites
+\n\nOur app may contain links to other websites. We are not responsible for the privacy practices or content of these sites. We recommend that users review the privacy policies of these sites when redirected to them.
+\n\nChildren's Privacy
+\n\nThe Ensinativa app is intended for users of all ages and does not knowingly collect personal information from children under 13 years of age. If you believe we have collected personal information from a child under 13 years of age, please contact us so we can promptly remove such information.
+\n\nContact
+\n\nIf you have any questions or concerns about this privacy policy or the collection, use, or disclosure practices of information in the Ensinativa app, please contact us at davisobrinho82452@gmail.com
+\n\nChanges to this Privacy Policy
+\n\nWe may update this privacy policy periodically. We recommend that users regularly review this page to stay informed about how we are protecting the personal information we collect. Continued use of the app after any changes to this policy will be considered acceptance of those changes.
+\n\n"
+            android:textAlignment="textStart"
+            android:textColor="@color/gray5"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></TextView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</ScrollView>
